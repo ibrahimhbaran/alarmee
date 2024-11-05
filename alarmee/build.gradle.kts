@@ -1,5 +1,6 @@
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.net.URL
 
@@ -15,14 +16,9 @@ android {
     namespace = ProjectConfiguration.Alarmee.namespace
     compileSdk = ProjectConfiguration.Alarmee.compileSDK
 
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
-
     defaultConfig {
         minSdk = ProjectConfiguration.Alarmee.minSDK
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -71,8 +67,26 @@ kotlin {
         }
     }
 
-    sourceSets {
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser {
+            commonWebpackConfig {
+                outputFileName = "alarmee.js"
+            }
+        }
+        binaries.executable()
+    }
 
+    js(IR) {
+        browser {
+            commonWebpackConfig {
+                outputFileName = "alarmee.js"
+            }
+        }
+        binaries.executable()
+    }
+
+    sourceSets {
         commonMain.dependencies {
             implementation(libs.napier)
             implementation(libs.android.annotations)
