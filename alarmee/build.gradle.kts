@@ -1,5 +1,7 @@
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.net.URL
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -10,15 +12,15 @@ plugins {
 }
 
 android {
-    namespace = ProjectConfiguration.MyProject.namespace
-    compileSdk = ProjectConfiguration.MyProject.compileSDK
+    namespace = ProjectConfiguration.Alarmee.namespace
+    compileSdk = ProjectConfiguration.Alarmee.compileSDK
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
-        minSdk = ProjectConfiguration.MyProject.minSDK
+        minSdk = ProjectConfiguration.Alarmee.minSDK
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -64,7 +66,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "changehere"
+            baseName = "alarmee"
             isStatic = true
         }
     }
@@ -99,29 +101,38 @@ kotlin {
 
 // region Publishing
 
+group = ProjectConfiguration.Alarmee.Maven.group
+version = ProjectConfiguration.Alarmee.versionName
+
 // Dokka configuration
-val dokkaOutputDir = rootProject.layout.buildDirectory.asFile.get().resolve("dokka")
-tasks.dokkaHtml { outputDirectory.set(file(dokkaOutputDir)) }
-val deleteDokkaOutputDir by tasks.register<Delete>("deleteDokkaOutputDirectory") { delete(dokkaOutputDir) }
-val javadocJar = tasks.create<Jar>("javadocJar") {
+tasks.register<Jar>("dokkaJavadocJar") {
+    dependsOn(tasks.dokkaHtml)
+    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
     archiveClassifier.set("javadoc")
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    dependsOn(deleteDokkaOutputDir, tasks.dokkaHtml)
-    from(dokkaOutputDir)
 }
 
-group = ProjectConfiguration.MyProject.Maven.group
-version = ProjectConfiguration.MyProject.versionName
+tasks.withType<DokkaTask>().configureEach {
+    dokkaSourceSets.configureEach {
+        jdkVersion.set(ProjectConfiguration.Compiler.jvmTarget.toInt())
+        languageVersion.set(libs.versions.kotlin)
+
+        sourceLink {
+            localDirectory.set(rootProject.projectDir)
+            remoteUrl.set(URL(ProjectConfiguration.Alarmee.Maven.packageUrl + "/tree/main"))
+            remoteLineSuffix.set("#L")
+        }
+    }
+}
 
 publishing {
     publications {
         publications.withType<MavenPublication> {
-            artifact(javadocJar)
+            artifact(tasks["dokkaJavadocJar"])
 
             pom {
-                name.set(ProjectConfiguration.MyProject.Maven.name)
-                description.set(ProjectConfiguration.MyProject.Maven.description)
-                url.set(ProjectConfiguration.MyProject.Maven.packageUrl)
+                name.set(ProjectConfiguration.Alarmee.Maven.name)
+                description.set(ProjectConfiguration.Alarmee.Maven.description)
+                url.set(ProjectConfiguration.Alarmee.Maven.packageUrl)
 
                 licenses {
                     license {
@@ -132,21 +143,21 @@ publishing {
 
                 issueManagement {
                     system.set("GitHub Issues")
-                    url.set("${ProjectConfiguration.MyProject.Maven.packageUrl}/issues")
+                    url.set("${ProjectConfiguration.Alarmee.Maven.packageUrl}/issues")
                 }
 
                 developers {
                     developer {
-                        id.set(ProjectConfiguration.MyProject.Maven.Developer.id)
-                        name.set(ProjectConfiguration.MyProject.Maven.Developer.name)
-                        email.set(ProjectConfiguration.MyProject.Maven.Developer.email)
+                        id.set(ProjectConfiguration.Alarmee.Maven.Developer.id)
+                        name.set(ProjectConfiguration.Alarmee.Maven.Developer.name)
+                        email.set(ProjectConfiguration.Alarmee.Maven.Developer.email)
                     }
                 }
 
                 scm {
-                    connection.set("scm:git:git://${ProjectConfiguration.MyProject.Maven.gitUrl}")
-                    developerConnection.set("scm:git:ssh://${ProjectConfiguration.MyProject.Maven.gitUrl}")
-                    url.set(ProjectConfiguration.MyProject.Maven.packageUrl)
+                    connection.set("scm:git:git://${ProjectConfiguration.Alarmee.Maven.gitUrl}")
+                    developerConnection.set("scm:git:ssh://${ProjectConfiguration.Alarmee.Maven.gitUrl}")
+                    url.set(ProjectConfiguration.Alarmee.Maven.packageUrl)
                 }
             }
         }
