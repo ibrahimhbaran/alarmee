@@ -14,7 +14,7 @@ import kotlinx.datetime.plus
  * @author Vivien Mahe
  * @since 05/11/2024
  */
-class AlarmeeScheduler {
+abstract class AlarmeeScheduler {
 
     /**
      * Schedules an alarm to be triggered at a specific time of the day. When the alarm is triggered, a notification will be displayed.
@@ -22,8 +22,7 @@ class AlarmeeScheduler {
      * @param alarmee The [Alarmee] object containing the configuration for the alarm.
      */
     fun schedule(alarmee: Alarmee) {
-        val timeZone = alarmee.timeZone
-        val now = LocalDateTime.now(timeZone = timeZone)
+        val now = LocalDateTime.now(timeZone = alarmee.timeZone)
 
         // Adjust to the next day if the time has already passed
         var scheduledDateTime = alarmee.scheduledDateTime
@@ -35,6 +34,10 @@ class AlarmeeScheduler {
         val updatedAlarmee = alarmee.copy(scheduledDateTime = scheduledDateTime)
         scheduleAlarm(alarmee = updatedAlarmee)
     }
-}
 
-internal expect fun scheduleAlarm(alarmee: Alarmee)
+    fun cancel(uuid: String) {
+
+    }
+
+    internal abstract fun scheduleAlarm(alarmee: Alarmee)
+}
