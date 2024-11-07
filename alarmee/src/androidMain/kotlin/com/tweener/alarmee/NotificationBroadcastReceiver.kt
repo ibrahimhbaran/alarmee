@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import com.tweener.alarmee.android.R
 import com.tweener.common._internal.kotlinextension.getNotificationManager
 import com.tweener.common._internal.safeLet
 
@@ -25,7 +26,7 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
         const val KEY_CHANNEL_ID = "notificationChannelId"
         const val KEY_CHANNEL_NAME = "notificationChannelName"
 
-        private const val INVALID_ICON_RES_ID = -1
+        private val DEFAULT_ICON_RES_ID = R.drawable.ic_notification
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -34,7 +35,7 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
                 intent.getStringExtra(KEY_UUID),
                 intent.getStringExtra(KEY_TITLE),
                 intent.getStringExtra(KEY_BODY),
-                intent.getIntExtra(KEY_ICON_RES_ID, INVALID_ICON_RES_ID),
+                intent.getIntExtra(KEY_ICON_RES_ID, DEFAULT_ICON_RES_ID),
                 intent.getStringExtra(KEY_CHANNEL_ID),
                 intent.getStringExtra(KEY_CHANNEL_NAME),
             ) { uuid, title, body, iconResId, channelId, channelName ->
@@ -47,14 +48,12 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
                 // Create the notification
                 val notification = NotificationCompat.Builder(context, channelId)
                     .apply {
+                        setSmallIcon(iconResId)
                         setContentTitle(title)
                         setContentText(body)
                         setPriority(NotificationCompat.PRIORITY_HIGH)
                         setAutoCancel(true)
                         setContentIntent(getPendingIntent(context = context)) // Handles click on notification
-
-                        // Set small icon if there is a valid resId
-                        if (iconResId != INVALID_ICON_RES_ID) setSmallIcon(iconResId)
                     }
                     .build()
 
