@@ -59,6 +59,10 @@ The latest version is: [![Maven Central Version](https://img.shields.io/maven-ce
 
 We love your input and welcome any contributions! Please read our [contribution guidelines](https://github.com/Tweener/alarmee/blob/master/CONTRIBUTING.md) before submitting a pull request.
 
+## 🙏 Credits
+
+- Logo by [Freeicons](https://freeicons.io/essential-collection/alarm-icon-icon-2)
+
 ## 🪪 Licence
 
 Alarmee is licensed under the [Apache-2.0](https://github.com/Tweener/alarmee?tab=Apache-2.0-1-ov-file#readme).
