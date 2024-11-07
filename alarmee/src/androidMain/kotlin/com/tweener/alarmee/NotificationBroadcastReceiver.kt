@@ -8,7 +8,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.tweener.alarmee.android.R
-import com.tweener.common._internal.kotlinextension.getNotificationManager
+import com.tweener.common._internal.kotlinextensions.getNotificationManager
 import com.tweener.common._internal.safeLet
 
 /**

@@ -4,7 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.tweener.common._internal.kotlinextension.getAlarmManager
+import com.tweener.common._internal.kotlinextensions.getAlarmManager
 import com.tweener.common._internal.kotlinextensions.toEpochMilliseconds
 import io.github.aakira.napier.Napier
 

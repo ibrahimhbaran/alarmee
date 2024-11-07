@@ -5,7 +5,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.tweener.common._internal.kotlinextension.getNotificationManager
+import com.tweener.common._internal.kotlinextensions.getNotificationManager
 import io.github.aakira.napier.Napier
 
 /**
