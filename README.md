@@ -15,6 +15,8 @@
 
 A Kotlin Multiplatform library for effortless alarm and notification scheduling on both Android and iOS.
 
+Be sure to show your support by starring ⭐️ this repository, and feel free to [contribute](#-contributing) if you're interested!
+
 ## ⚙️ Installation
 
 In your `build.gradle.kts` file, add Maven Central to your repositories:
