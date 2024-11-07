@@ -7,7 +7,8 @@ import kotlinx.datetime.atTime
 import kotlinx.datetime.plus
 
 /**
- * Class to schedule an alarm to trigger at a specified time of day. Alarms can be configured with various parameters such as time, time zone, and notification content.
+ * Class to schedule and manage alarms that trigger at specified times of day.
+ * Alarms can be configured with various parameters such as time, time zone, and notification content.
  *
  * When the alarm triggers, a notification will be displayed with the specified title and body.
  *
@@ -35,9 +36,17 @@ abstract class AlarmeeScheduler {
         scheduleAlarm(alarmee = updatedAlarmee)
     }
 
+    /**
+     * Cancels an existing alarm based on its unique identifier.
+     * If an alarm with the specified identifier is found, it will be canceled, preventing any future notifications from being triggered for that alarm.
+     *
+     * @param uuid The unique identifier for the alarm to be canceled.
+     */
     fun cancel(uuid: String) {
-
+        cancelAlarm(uuid = uuid)
     }
 
     internal abstract fun scheduleAlarm(alarmee: Alarmee)
+
+    internal abstract fun cancelAlarm(uuid: String)
 }

@@ -40,7 +40,6 @@ class AlarmeeSchedulerIos : AlarmeeScheduler() {
         val request = UNNotificationRequest.requestWithIdentifier(identifier = alarmee.uuid, content = content, trigger = trigger)
 
         val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
-
         notificationCenter.requestAuthorizationWithOptions(options = UNAuthorizationOptionAlert or UNAuthorizationOptionSound or UNAuthorizationOptionBadge) { granted, authorizationError ->
             if (granted) {
                 // Schedule the notification
@@ -56,5 +55,10 @@ class AlarmeeSchedulerIos : AlarmeeScheduler() {
                 Napier.e { "Error requesting notification permission: $authorizationError" }
             }
         }
+    }
+
+    override fun cancelAlarm(uuid: String) {
+        val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
+        notificationCenter.removePendingNotificationRequestsWithIdentifiers(identifiers = listOf(uuid))
     }
 }

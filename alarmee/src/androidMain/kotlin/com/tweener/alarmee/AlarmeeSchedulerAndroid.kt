@@ -20,6 +20,7 @@ class AlarmeeSchedulerAndroid(
 ) : AlarmeeScheduler() {
 
     override fun scheduleAlarm(alarmee: Alarmee) {
+        // Create the receiver intent with the alarm parameters
         val receiverIntent = Intent(context, NotificationBroadcastReceiver::class.java).apply {
             action = NotificationBroadcastReceiver.ALARM_ACTION
             putExtra(NotificationBroadcastReceiver.KEY_UUID, alarmee.uuid)
@@ -30,19 +31,44 @@ class AlarmeeSchedulerAndroid(
             putExtra(NotificationBroadcastReceiver.KEY_CHANNEL_NAME, notificationChannelName)
         }
 
+        // Create the broadcast pending intent
         val pendingIntent = PendingIntent.getBroadcast(
             context,
             alarmee.uuid.hashCode(),
             receiverIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+            PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
 
-        // Schedule the alarm with AlarmManager
+        // Schedule the alarm
         context.getAlarmManager()?.let { alarmManager ->
             alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmee.scheduledDateTime.toEpochMilliseconds(timeZone = alarmee.timeZone), pendingIntent)
 
             // Notification scheduled successfully
             Napier.d { "Notification with title '${alarmee.notificationTitle}' scheduled at ${alarmee.scheduledDateTime}." }
+        }
+    }
+
+    override fun cancelAlarm(uuid: String) {
+        // Create the receiver intent with the alarm parameters
+        val receiverIntent = Intent(context, NotificationBroadcastReceiver::class.java).apply {
+            action = NotificationBroadcastReceiver.ALARM_ACTION
+            putExtra(NotificationBroadcastReceiver.KEY_UUID, uuid)
+        }
+
+        // Create the broadcast pending intent
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            uuid.hashCode(),
+            receiverIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
+
+        // Cancel the alarm with AlarmManager
+        context.getAlarmManager()?.let { alarmManager ->
+            alarmManager.cancel(pendingIntent)
+
+            // Notification canceled successfully
+            Napier.d { "Notification with ID '$uuid' canceled." }
         }
     }
 }
