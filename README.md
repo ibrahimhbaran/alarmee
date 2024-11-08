@@ -13,7 +13,7 @@
 
 ---
 
-<h3>A Kotlin Multiplatform library for effortless alarm and notification scheduling on both Android and iOS.</h3>
+<h3>A Kotlin Multiplatform library for effortless alarm and local notification scheduling on both Android and iOS.</h3>
 
 Be sure to show your support by starring ⭐️ this repository, and feel free to [contribute](#-contributing) if you're interested!
 
