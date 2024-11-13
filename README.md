@@ -13,12 +13,13 @@
 
 ---
 
-A Kotlin Multiplatform library for effortless alarm and notification scheduling on both Android and iOS.
+<h3>A Kotlin Multiplatform library for effortless alarm and local notification scheduling on both Android and iOS.</h3>
 
 Be sure to show your support by starring ⭐️ this repository, and feel free to [contribute](#-contributing) if you're interested!
 
-## ⚙️ Installation
+## ⚙️ Setup
 
+### Installation
 In your `build.gradle.kts` file, add Maven Central to your repositories:
 ```Groovy
 repositories {
@@ -54,6 +55,60 @@ dependencies {
 ```
 
 The latest version is: [![Maven Central Version](https://img.shields.io/maven-central/v/io.github.tweener/alarmee?color=orange)](https://central.sonatype.com/artifact/io.github.tweener/alarmee)
+
+### Platform configurations
+
+In the `commonModule`, you need to use an instance of a subclass of `AlarmeeScheduler`. Each platform will create the corresponding subclass of the `AlarmeeScheduler`. This can be easily done with dependency injection.
+
+<details>
+	<summary>🤖 Android</summary>
+
+In the `androidMain` module, create a `AlarmeeSchedulerAndroid(...)` instance with the following configuration:
+```Kotlin
+val alarmeeScheduler: AlarmeeScheduler = AlarmeeSchedulerAndroid(
+    context = context,  
+    notificationIconResId = R.drawable.ic_notification,  
+    notificationChannelId = "dailyNewsChannelId",  
+    notificationChannelName = "Daily news notifications",  
+)
+```
+</details>
+
+<details>
+	<summary>🍎 iOS</summary>
+    
+In your `iosMain` module, create a `AlarmeeSchedulerIos()`, no configuration is required:
+```Kotlin
+val alarmeeScheduler: AlarmeeScheduler = AlarmeeSchedulerIos()
+```
+</details>
+
+### Usage
+#### Notifications permission
+Before using Alarmee, make sure the Notifications permission is granted on the target platform (Android [official documentation](https://developer.android.com/develop/ui/views/notifications/notification-permission), iOS [official documentation](https://developer.apple.com/documentation/usernotifications/asking-permission-to-use-notifications)).
+
+Alternativally, you can use [`moko-permissions`](https://github.com/icerockdev/moko-permissions) to easily handle permissions for you.
+
+#### Scheduling an alarm
+You can schedule an alarm to be triggered at a specific time of the day, using `Alarmee#schedule(...)`. When the alarm is triggered, a notification will be displayed.
+
+For instance, to schedule an alarm on January 12th, 2025, at 5 pm:
+```Kotlin
+alarmeeScheduler.schedule(
+    alarmee = Alarmee(
+        uuid = "myAlarmId",
+        notificationTitle = "🎉 Congratulations! You've schedule an Alarmee!",
+        notificationBody = "This is the notification that will be displayed at the specified date and time.",
+        scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 12, hour = 17, minute = 0),
+    )
+)
+```
+
+#### Cancelling an alarm
+An alarm can be cancelled using its uuid, using `Alarmee#cancel(...)`. If an alarm with the specified uuid is found, it will be canceled, preventing any future notifications from being triggered for that alarm.
+```Kotlin
+alarmeeScheduler.cancel(uuid = "myAlarmId")
+```
 
 ## 👨‍💻 Contributing
 
