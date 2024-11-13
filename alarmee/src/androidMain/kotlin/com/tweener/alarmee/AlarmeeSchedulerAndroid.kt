@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import com.tweener.common._internal.kotlinextensions.getAlarmManager
 import com.tweener.common._internal.kotlinextensions.toEpochMilliseconds
-import io.github.aakira.napier.Napier
 
 /**
  * @author Vivien Mahe
@@ -44,7 +43,7 @@ class AlarmeeSchedulerAndroid(
             alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmee.scheduledDateTime.toEpochMilliseconds(timeZone = alarmee.timeZone), pendingIntent)
 
             // Notification scheduled successfully
-            Napier.d { "Notification with title '${alarmee.notificationTitle}' scheduled at ${alarmee.scheduledDateTime}." }
+            println("Notification with title '${alarmee.notificationTitle}' scheduled at ${alarmee.scheduledDateTime}.")
         }
     }
 
@@ -68,7 +67,7 @@ class AlarmeeSchedulerAndroid(
             alarmManager.cancel(pendingIntent)
 
             // Notification canceled successfully
-            Napier.d { "Notification with ID '$uuid' canceled." }
+            println("Notification with ID '$uuid' canceled.")
         }
     }
 }

@@ -6,7 +6,6 @@ nexusSonatype = "2.0.0"
 dokka = "1.9.20"
 androidAnnotations = "1.9.1"
 coroutines = "1.9.0"
-napier = "2.7.1"
 
 # Tweener
 tweenerBom = "2.1.2"
@@ -16,8 +15,6 @@ androidDesugarJdkLibs = "2.1.2"
 androidCore = "1.15.0"
 
 [libraries]
-napier = { group = "io.github.aakira", name = "napier", version.ref = "napier" }
-
 # Tweener
 tweener-bom = { group = "io.github.tweener", name = "kmp-bom", version.ref = "tweenerBom" }
 tweener-common = { group = "io.github.tweener", name = "kmp-common" }

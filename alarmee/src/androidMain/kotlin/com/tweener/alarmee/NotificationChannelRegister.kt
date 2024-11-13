@@ -6,7 +6,6 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.tweener.common._internal.kotlinextensions.getNotificationManager
-import io.github.aakira.napier.Napier
 
 /**
  * @author Vivien Mahe
@@ -22,7 +21,7 @@ class NotificationChannelRegister(
             val channel = NotificationChannel(id, name, importance).apply { description?.let { this.description = description } }
             notificationManager.createNotificationChannel(channel)
 
-            Napier.d { "Notification channel '${channel.name}' (ID: '${channel.id}') created!" }
+            println("Notification channel '${channel.name}' (ID: '${channel.id}') created!")
         }
     }
 }

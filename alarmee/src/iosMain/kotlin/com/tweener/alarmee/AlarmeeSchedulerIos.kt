@@ -1,7 +1,6 @@
 package com.tweener.alarmee
 
 import com.tweener.common._internal.kotlinextensions.toEpochMilliseconds
-import io.github.aakira.napier.Napier
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSCalendarUnitDay
 import platform.Foundation.NSCalendarUnitHour
@@ -45,14 +44,14 @@ class AlarmeeSchedulerIos : AlarmeeScheduler() {
                 // Schedule the notification
                 notificationCenter.addNotificationRequest(request) { requestError ->
                     if (requestError != null) {
-                        Napier.e { "Scheduling notification on iOS failed with error: $requestError" }
+                        println("Scheduling notification on iOS failed with error: $requestError")
                     }
 
                     // Notification scheduled successfully
-                    Napier.d { "Notification with title '${alarmee.notificationTitle}' scheduled at ${alarmee.scheduledDateTime}." }
+                    println("Notification with title '${alarmee.notificationTitle}' scheduled at ${alarmee.scheduledDateTime}.")
                 }
             } else if (authorizationError != null) {
-                Napier.e { "Error requesting notification permission: $authorizationError" }
+                println("Error requesting notification permission: $authorizationError")
             }
         }
     }

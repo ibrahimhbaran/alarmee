@@ -68,7 +68,6 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.napier)
             implementation(libs.android.annotations)
 
             // Tweener
