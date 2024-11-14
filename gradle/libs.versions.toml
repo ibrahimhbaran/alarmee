@@ -6,12 +6,13 @@ nexusSonatype = "2.0.0"
 dokka = "1.9.20"
 androidAnnotations = "1.9.1"
 coroutines = "1.9.0"
+composeMultiplatform = "1.7.0"
 
 # Tweener
 tweenerBom = "2.1.2"
 
 # Android
-androidDesugarJdkLibs = "2.1.2"
+androidDesugarJdkLibs = "2.1.3"
 androidCore = "1.15.0"
 
 [libraries]
@@ -34,3 +35,5 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 dependency-versions = { id = "com.github.ben-manes.versions", version.ref = "dependencyVersionsPlugin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 nexus-sonatype = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexusSonatype" }
+jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
+jetbrains-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

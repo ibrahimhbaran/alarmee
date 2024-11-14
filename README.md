@@ -32,7 +32,7 @@ Then add Alarmee dependency to your module:
 - With version catalog, open `libs.versions.toml`:
 ```Groovy
 [versions]
-alarmee = "1.0.0" // Check latest version
+alarmee = "1.1.0" // Check latest version
 
 [libraries]
 alarmee = { group = "io.github.tweener", name = "alarmee", version.ref = "alarmee" }
@@ -48,7 +48,7 @@ dependencies {
 - Without version catalog, in your module `build.gradle.kts` add:
 ```Groovy
 dependencies {
-    val alarmee_version = "1.0.0" // Check latest version
+    val alarmee_version = "1.1.0" // Check latest version
 
     implementation("io.github.tweener:alarmee:$alarmee_version")
 }
@@ -63,10 +63,9 @@ In the `commonModule`, you need to use an instance of a subclass of `AlarmeeSche
 <details>
 	<summary>🤖 Android</summary>
 
-In the `androidMain` module, create a `AlarmeeSchedulerAndroid(...)` instance with the following configuration:
+In the `androidMain` module, create a `AlarmeePlatformConfiguration.Android(...)` instance with the following parameters:
 ```Kotlin
-val alarmeeScheduler: AlarmeeScheduler = AlarmeeSchedulerAndroid(
-    context = context,  
+val platformConfiguration: AlarmeePlatformConfiguration = AlarmeePlatformConfiguration.Android(
     notificationIconResId = R.drawable.ic_notification,  
     notificationChannelId = "dailyNewsChannelId",  
     notificationChannelName = "Daily news notifications",  
@@ -76,10 +75,10 @@ val alarmeeScheduler: AlarmeeScheduler = AlarmeeSchedulerAndroid(
 
 <details>
 	<summary>🍎 iOS</summary>
-    
-In your `iosMain` module, create a `AlarmeeSchedulerIos()`, no configuration is required:
+
+In your `iosMain` module, create a `AlarmeePlatformConfiguration.Ios`:
 ```Kotlin
-val alarmeeScheduler: AlarmeeScheduler = AlarmeeSchedulerIos()
+val platformConfiguration: AlarmeePlatformConfiguration = AlarmeePlatformConfiguration.Ios
 ```
 </details>
 
@@ -88,6 +87,27 @@ val alarmeeScheduler: AlarmeeScheduler = AlarmeeSchedulerIos()
 Before using Alarmee, make sure the Notifications permission is granted on the target platform (Android [official documentation](https://developer.android.com/develop/ui/views/notifications/notification-permission), iOS [official documentation](https://developer.apple.com/documentation/usernotifications/asking-permission-to-use-notifications)).
 
 Alternativally, you can use [`moko-permissions`](https://github.com/icerockdev/moko-permissions) to easily handle permissions for you.
+
+#### Create an instance of AlarmeeScheduler
+Depending on your project configuration, you can create an instance of `AlarmeeScheduler` in two different ways:
+
+<details>
+	<summary>Kotlin Multplatform (without Compose)</summary>
+
+Using `createAlarmeeScheduler(...)` with the configuration created previously:
+```Kotlin
+val alarmeeScheduler: AlarmeeScheduler = createAlarmeeScheduler(platformConfiguration = platformConfiguration)
+```
+</details>
+
+<details>
+	<summary>Compose Multplatform</summary>
+
+Using `rememberAlarmeeScheduler(...)` with the configuration created previously:
+```Kotlin
+val alarmeeScheduler: AlarmeeScheduler = rememberAlarmeeScheduler(platformConfiguration = platformConfiguration)
+```
+</details>
 
 #### Scheduling an alarm
 You can schedule an alarm to be triggered at a specific time of the day, using `Alarmee#schedule(...)`. When the alarm is triggered, a notification will be displayed.

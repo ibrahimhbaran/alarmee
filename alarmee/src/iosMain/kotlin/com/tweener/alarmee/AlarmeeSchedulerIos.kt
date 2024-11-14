@@ -1,5 +1,7 @@
 package com.tweener.alarmee
 
+import androidx.compose.runtime.Composable
+import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
 import com.tweener.common._internal.kotlinextensions.toEpochMilliseconds
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSCalendarUnitDay
@@ -23,6 +25,7 @@ import platform.UserNotifications.UNUserNotificationCenter
  */
 class AlarmeeSchedulerIos : AlarmeeScheduler() {
 
+    @Composable
     override fun scheduleAlarm(alarmee: Alarmee) {
         val content = UNMutableNotificationContent().apply {
             setTitle(alarmee.notificationTitle)
@@ -56,8 +59,16 @@ class AlarmeeSchedulerIos : AlarmeeScheduler() {
         }
     }
 
+    @Composable
     override fun cancelAlarm(uuid: String) {
         val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
         notificationCenter.removePendingNotificationRequestsWithIdentifiers(identifiers = listOf(uuid))
     }
 }
+
+actual fun createAlarmeeScheduler(platformConfiguration: AlarmeePlatformConfiguration): AlarmeeScheduler {
+    requirePlatformConfiguration(providedPlatformConfiguration = platformConfiguration, targetPlatformConfiguration = AlarmeePlatformConfiguration.Ios::class)
+
+    return AlarmeeSchedulerIos()
+}
+

@@ -1,9 +1,12 @@
 package com.tweener.alarmee
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
 import com.tweener.common._internal.kotlinextensions.getAlarmManager
 import com.tweener.common._internal.kotlinextensions.toEpochMilliseconds
 
@@ -11,14 +14,17 @@ import com.tweener.common._internal.kotlinextensions.toEpochMilliseconds
  * @author Vivien Mahe
  * @since 06/11/2024
  */
+@SuppressLint("ComposableNaming")
 class AlarmeeSchedulerAndroid(
-    private val context: Context,
     private val notificationIconResId: Int,
     private val notificationChannelId: String,
     private val notificationChannelName: String,
 ) : AlarmeeScheduler() {
 
+    @Composable
     override fun scheduleAlarm(alarmee: Alarmee) {
+        val context = LocalContext.current
+
         // Create the receiver intent with the alarm parameters
         val receiverIntent = Intent(context, NotificationBroadcastReceiver::class.java).apply {
             action = NotificationBroadcastReceiver.ALARM_ACTION
@@ -47,7 +53,10 @@ class AlarmeeSchedulerAndroid(
         }
     }
 
+    @Composable
     override fun cancelAlarm(uuid: String) {
+        val context = LocalContext.current
+
         // Create the receiver intent with the alarm parameters
         val receiverIntent = Intent(context, NotificationBroadcastReceiver::class.java).apply {
             action = NotificationBroadcastReceiver.ALARM_ACTION
@@ -70,4 +79,14 @@ class AlarmeeSchedulerAndroid(
             println("Notification with ID '$uuid' canceled.")
         }
     }
+}
+
+actual fun createAlarmeeScheduler(platformConfiguration: AlarmeePlatformConfiguration): AlarmeeScheduler {
+    requirePlatformConfiguration(providedPlatformConfiguration = platformConfiguration, targetPlatformConfiguration = AlarmeePlatformConfiguration.Android::class)
+
+    return AlarmeeSchedulerAndroid(
+        notificationIconResId = platformConfiguration.notificationIconResId,
+        notificationChannelId = platformConfiguration.notificationChannelId,
+        notificationChannelName = platformConfiguration.notificationChannelName,
+    )
 }
