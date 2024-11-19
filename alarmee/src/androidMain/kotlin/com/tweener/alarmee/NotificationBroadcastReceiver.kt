@@ -61,6 +61,8 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
                 context.getNotificationManager()?.let { notificationManager ->
                     if (notificationManager.areNotificationsEnabled()) {
                         notificationManager.notify(uuid.hashCode(), notification)
+                    } else {
+                        println("Notifications permission is not granted! Can't show the notification.")
                     }
                 }
             }

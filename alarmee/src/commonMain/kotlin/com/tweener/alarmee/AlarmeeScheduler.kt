@@ -30,17 +30,29 @@ abstract class AlarmeeScheduler {
      */
     @Composable
     fun schedule(alarmee: Alarmee) {
-        val now = LocalDateTime.now(timeZone = alarmee.timeZone)
-
-        // Adjust to the next day if the time has already passed
-        var scheduledDateTime = alarmee.scheduledDateTime
-        if (scheduledDateTime <= now) {
-            scheduledDateTime = scheduledDateTime.date.plus(1, DateTimeUnit.DAY).atTime(time = alarmee.scheduledDateTime.time)
-        }
-
         // Schedule an alarm with the correct calculated time
+        val scheduledDateTime = adjustDateInFuture(alarmee)
         val updatedAlarmee = alarmee.copy(scheduledDateTime = scheduledDateTime)
-        scheduleAlarm(alarmee = updatedAlarmee)
+
+        updatedAlarmee.repeatInterval
+            ?.let { repeatInterval ->
+                scheduleRepeatingAlarm(alarmee = alarmee, repeatInterval = repeatInterval) {
+                    val message = when (repeatInterval) {
+                        RepeatInterval.HOURLY -> "every hour at minute: ${scheduledDateTime.minute}"
+                        RepeatInterval.DAILY -> "every day at ${scheduledDateTime.time}"
+                        RepeatInterval.WEEKLY -> "every week on ${scheduledDateTime.dayOfWeek} at ${scheduledDateTime.time}"
+                        RepeatInterval.MONTHLY -> "every month on day ${scheduledDateTime.dayOfMonth} at ${scheduledDateTime.time}"
+                        RepeatInterval.YEARLY -> "every year on the ${scheduledDateTime.month}/${scheduledDateTime.dayOfMonth} at ${scheduledDateTime.time}"
+                    }
+
+                    println("Notification with title '${alarmee.notificationTitle}' scheduled $message.")
+                }
+            }
+            ?: run {
+                scheduleAlarm(alarmee = alarmee) {
+                    println("Notification with title '${alarmee.notificationTitle}' scheduled at ${alarmee.scheduledDateTime}.")
+                }
+            }
     }
 
     /**
@@ -55,10 +67,27 @@ abstract class AlarmeeScheduler {
     }
 
     @Composable
-    internal abstract fun scheduleAlarm(alarmee: Alarmee)
+    internal abstract fun scheduleAlarm(alarmee: Alarmee, onSuccess: () -> Unit)
+
+    @Composable
+    internal abstract fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: RepeatInterval, onSuccess: () -> Unit)
 
     @Composable
     internal abstract fun cancelAlarm(uuid: String)
+
+    /**
+     * Adjust to the next day if the time has already passed.
+     */
+    private fun adjustDateInFuture(alarmee: Alarmee): LocalDateTime {
+        val now = LocalDateTime.now(timeZone = alarmee.timeZone)
+
+        var scheduledDateTime = alarmee.scheduledDateTime
+        if (scheduledDateTime <= now) {
+            scheduledDateTime = scheduledDateTime.date.plus(1, DateTimeUnit.DAY).atTime(time = alarmee.scheduledDateTime.time)
+        }
+
+        return scheduledDateTime
+    }
 }
 
 /**
@@ -87,8 +116,6 @@ expect fun createAlarmeeScheduler(platformConfiguration: AlarmeePlatformConfigur
  * requirePlatformConfiguration(configuration, AlarmeePlatformConfiguration.Ios::class)
  * // Now `configuration` is smart-cast to `AlarmeePlatformConfiguration.Ios`
  * ```
- *
- * @see kotlin.contracts.ExperimentalContracts
  */
 @OptIn(ExperimentalContracts::class)
 internal inline fun <reified T : AlarmeePlatformConfiguration> requirePlatformConfiguration(

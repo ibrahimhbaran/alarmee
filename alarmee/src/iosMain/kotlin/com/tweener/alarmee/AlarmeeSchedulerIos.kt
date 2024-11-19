@@ -3,6 +3,7 @@ package com.tweener.alarmee
 import androidx.compose.runtime.Composable
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
 import com.tweener.common._internal.kotlinextensions.toEpochMilliseconds
+import kotlinx.datetime.isoDayNumber
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSCalendarUnitDay
 import platform.Foundation.NSCalendarUnitHour
@@ -10,6 +11,7 @@ import platform.Foundation.NSCalendarUnitMinute
 import platform.Foundation.NSCalendarUnitMonth
 import platform.Foundation.NSCalendarUnitYear
 import platform.Foundation.NSDate
+import platform.Foundation.NSDateComponents
 import platform.Foundation.dateWithTimeIntervalSince1970
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge
@@ -26,12 +28,7 @@ import platform.UserNotifications.UNUserNotificationCenter
 class AlarmeeSchedulerIos : AlarmeeScheduler() {
 
     @Composable
-    override fun scheduleAlarm(alarmee: Alarmee) {
-        val content = UNMutableNotificationContent().apply {
-            setTitle(alarmee.notificationTitle)
-            setBody(alarmee.notificationBody)
-        }
-
+    override fun scheduleAlarm(alarmee: Alarmee, onSuccess: () -> Unit) {
         val nsDateTime = NSDate.dateWithTimeIntervalSince1970(secs = alarmee.scheduledDateTime.toEpochMilliseconds(timeZone = alarmee.timeZone) / 1000.0)
         val dateComponents = NSCalendar.currentCalendar.components(
             unitFlags = NSCalendarUnitYear or NSCalendarUnitMonth or NSCalendarUnitDay or NSCalendarUnitHour or NSCalendarUnitMinute,
@@ -39,7 +36,59 @@ class AlarmeeSchedulerIos : AlarmeeScheduler() {
         )
 
         val trigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = dateComponents, repeats = false)
-        val request = UNNotificationRequest.requestWithIdentifier(identifier = alarmee.uuid, content = content, trigger = trigger)
+
+        configureNotification(alarmee = alarmee, notificationTrigger = trigger, onSuccess = onSuccess)
+    }
+
+    @Composable
+    override fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: RepeatInterval, onSuccess: () -> Unit) {
+        val dateComponents = NSDateComponents()
+        dateComponents.calendar = NSCalendar.currentCalendar
+
+        dateComponents.minute = alarmee.scheduledDateTime.minute.toLong()
+
+        when (repeatInterval) {
+            RepeatInterval.HOURLY -> Unit // No need to set specific date or hour; repeats every hour
+
+            RepeatInterval.DAILY -> {
+                dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
+            }
+
+            RepeatInterval.WEEKLY -> {
+                dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
+                dateComponents.weekday = alarmee.scheduledDateTime.dayOfWeek.isoDayNumber.toLong()
+            }
+
+            RepeatInterval.MONTHLY -> {
+                dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
+                dateComponents.day = alarmee.scheduledDateTime.dayOfMonth.toLong()
+            }
+
+            RepeatInterval.YEARLY -> {
+                dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
+                dateComponents.day = alarmee.scheduledDateTime.dayOfMonth.toLong()
+                dateComponents.month = alarmee.scheduledDateTime.monthNumber.toLong()
+            }
+        }
+
+        val trigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = dateComponents, repeats = true)
+
+        configureNotification(alarmee = alarmee, notificationTrigger = trigger, onSuccess = onSuccess)
+    }
+
+    @Composable
+    override fun cancelAlarm(uuid: String) {
+        val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
+        notificationCenter.removePendingNotificationRequestsWithIdentifiers(identifiers = listOf(uuid))
+    }
+
+    private fun configureNotification(alarmee: Alarmee, notificationTrigger: UNCalendarNotificationTrigger, onSuccess: () -> Unit) {
+        val content = UNMutableNotificationContent().apply {
+            setTitle(alarmee.notificationTitle)
+            setBody(alarmee.notificationBody)
+        }
+
+        val request = UNNotificationRequest.requestWithIdentifier(identifier = alarmee.uuid, content = content, trigger = notificationTrigger)
 
         val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
         notificationCenter.requestAuthorizationWithOptions(options = UNAuthorizationOptionAlert or UNAuthorizationOptionSound or UNAuthorizationOptionBadge) { granted, authorizationError ->
@@ -51,18 +100,12 @@ class AlarmeeSchedulerIos : AlarmeeScheduler() {
                     }
 
                     // Notification scheduled successfully
-                    println("Notification with title '${alarmee.notificationTitle}' scheduled at ${alarmee.scheduledDateTime}.")
+                    onSuccess()
                 }
             } else if (authorizationError != null) {
                 println("Error requesting notification permission: $authorizationError")
             }
         }
-    }
-
-    @Composable
-    override fun cancelAlarm(uuid: String) {
-        val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
-        notificationCenter.removePendingNotificationRequestsWithIdentifiers(identifiers = listOf(uuid))
     }
 }
 
@@ -71,4 +114,3 @@ actual fun createAlarmeeScheduler(platformConfiguration: AlarmeePlatformConfigur
 
     return AlarmeeSchedulerIos()
 }
-
