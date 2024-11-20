@@ -32,7 +32,7 @@ Then add Alarmee dependency to your module:
 - With version catalog, open `libs.versions.toml`:
 ```Groovy
 [versions]
-alarmee = "1.1.0" // Check latest version
+alarmee = "1.2.0" // Check latest version
 
 [libraries]
 alarmee = { group = "io.github.tweener", name = "alarmee", version.ref = "alarmee" }
@@ -48,7 +48,7 @@ dependencies {
 - Without version catalog, in your module `build.gradle.kts` add:
 ```Groovy
 dependencies {
-    val alarmee_version = "1.1.0" // Check latest version
+    val alarmee_version = "1.2.0" // Check latest version
 
     implementation("io.github.tweener:alarmee:$alarmee_version")
 }
@@ -63,12 +63,15 @@ In the `commonModule`, you need to use an instance of a subclass of `AlarmeeSche
 <details>
 	<summary>🤖 Android</summary>
 
-In the `androidMain` module, create a `AlarmeePlatformConfiguration.Android(...)` instance with the following parameters:
+In the `androidMain` module, create a `AlarmeeAndroidPlatformConfiguration(...)` instance with the following parameters:
 ```Kotlin
-val platformConfiguration: AlarmeePlatformConfiguration = AlarmeePlatformConfiguration.Android(
+val platformConfiguration: AlarmeePlatformConfiguration = AlarmeeAndroidPlatformConfiguration(
     notificationIconResId = R.drawable.ic_notification,  
-    notificationChannelId = "dailyNewsChannelId",  
-    notificationChannelName = "Daily news notifications",  
+    notificationChannels = listOf(
+        AlarmeeNotificationChannel(id = "dailyNewsChannelId", name = "Daily news notifications"),
+        AlarmeeNotificationChannel(id = "breakingNewsChannelId", name = "Breaking news notifications"),
+        // List all the notification channels you need here
+    )
 )
 ```
 </details>
@@ -76,9 +79,9 @@ val platformConfiguration: AlarmeePlatformConfiguration = AlarmeePlatformConfigu
 <details>
 	<summary>🍎 iOS</summary>
 
-In your `iosMain` module, create a `AlarmeePlatformConfiguration.Ios`:
+In your `iosMain` module, create a `AlarmeeIosPlatformConfiguration`:
 ```Kotlin
-val platformConfiguration: AlarmeePlatformConfiguration = AlarmeePlatformConfiguration.Ios
+val platformConfiguration: AlarmeePlatformConfiguration = AlarmeeIosPlatformConfiguration
 ```
 </details>
 
@@ -112,7 +115,7 @@ val alarmeeScheduler: AlarmeeScheduler = rememberAlarmeeScheduler(platformConfig
 #### Scheduling an alarm
 You can schedule an alarm to be triggered at a specific time of the day, using `Alarmee#schedule(...)`. When the alarm is triggered, a notification will be displayed.
 
-For instance, to schedule an alarm on January 12th, 2025, at 5 pm:
+For instance, to schedule an alarm on January 12th, 2025, at 5 PM:
 ```Kotlin
 alarmeeScheduler.schedule(
     alarmee = Alarmee(
@@ -120,6 +123,23 @@ alarmeeScheduler.schedule(
         notificationTitle = "🎉 Congratulations! You've schedule an Alarmee!",
         notificationBody = "This is the notification that will be displayed at the specified date and time.",
         scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 12, hour = 17, minute = 0),
+        androidNotificationChannelId = "dailyNewsChannelId" // The notification channel to post the notification on (Only works for Android, this parameter is ignored on iOS)
+    )
+)
+```
+
+You can specify a [`RepeatInterval`](https://github.com/Tweener/alarmee/blob/main/alarmee/src/commonMain/kotlin/com/tweener/alarmee/RepeatInterval.kt) parameter, which allows scheduling an alarm to repeat hourly, daily, weekly, monthly, or yearly, based on the specified scheduledDateTime.
+
+For instance, to schedule an alarm to repeat every day at 9:30 AM, you can use `RepeatInterval.DAILY`:
+```Kotlin
+alarmeeScheduler.schedule(
+    alarmee = Alarmee(
+        uuid = "myAlarmId",
+        notificationTitle = "🎉 Congratulations! You've schedule an Alarmee!",
+        notificationBody = "This is the notification that will be displayed at the specified date and time.",
+        scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 12, hour = 9, minute = 30), // In this case, year, month and dayOfMonth are ignored
+        repeatInterval = RepeatInterval.DAILY, // Will schedule an alarm every day
+        androidNotificationChannelId = "dailyNewsChannelId"
     )
 )
 ```
