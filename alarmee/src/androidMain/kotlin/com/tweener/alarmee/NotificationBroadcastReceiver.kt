@@ -1,11 +1,9 @@
 package com.tweener.alarmee
 
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.tweener.alarmee.android.R
 import com.tweener.common._internal.kotlinextensions.getNotificationManager
@@ -22,9 +20,8 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
         const val KEY_UUID = "notificationUuid"
         const val KEY_TITLE = "notificationTitle"
         const val KEY_BODY = "notificationBody"
-        const val KEY_ICON_RES_ID = "notificationIconResId"
         const val KEY_CHANNEL_ID = "notificationChannelId"
-        const val KEY_CHANNEL_NAME = "notificationChannelName"
+        const val KEY_ICON_RES_ID = "notificationIconResId"
 
         private val DEFAULT_ICON_RES_ID = R.drawable.ic_notification
     }
@@ -35,16 +32,9 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
                 intent.getStringExtra(KEY_UUID),
                 intent.getStringExtra(KEY_TITLE),
                 intent.getStringExtra(KEY_BODY),
-                intent.getIntExtra(KEY_ICON_RES_ID, DEFAULT_ICON_RES_ID),
                 intent.getStringExtra(KEY_CHANNEL_ID),
-                intent.getStringExtra(KEY_CHANNEL_NAME),
-            ) { uuid, title, body, iconResId, channelId, channelName ->
-                // Create a notification channel for Android O and above
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val notificationChannelRegister = NotificationChannelRegister(context = context)
-                    notificationChannelRegister.register(id = channelId, name = channelName, importance = NotificationManager.IMPORTANCE_HIGH)
-                }
-
+                intent.getIntExtra(KEY_ICON_RES_ID, DEFAULT_ICON_RES_ID),
+            ) { uuid, title, body, channelId, iconResId ->
                 // Create the notification
                 val notification = NotificationCompat.Builder(context, channelId)
                     .apply {

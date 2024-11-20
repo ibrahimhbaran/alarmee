@@ -23,4 +23,5 @@ data class Alarmee(
     val scheduledDateTime: LocalDateTime,
     val timeZone: TimeZone = TimeZone.currentSystemDefault(),
     val repeatInterval: RepeatInterval? = null,
+    val androidNotificationChannelId: String? = null,
 )

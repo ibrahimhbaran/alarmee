@@ -1,6 +1,7 @@
 package com.tweener.alarmee
 
 import androidx.compose.runtime.Composable
+import com.tweener.alarmee.configuration.AlarmeeIosPlatformConfiguration
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
 import com.tweener.common._internal.kotlinextensions.toEpochMilliseconds
 import kotlinx.datetime.isoDayNumber
@@ -110,7 +111,7 @@ class AlarmeeSchedulerIos : AlarmeeScheduler() {
 }
 
 actual fun createAlarmeeScheduler(platformConfiguration: AlarmeePlatformConfiguration): AlarmeeScheduler {
-    requirePlatformConfiguration(providedPlatformConfiguration = platformConfiguration, targetPlatformConfiguration = AlarmeePlatformConfiguration.Ios::class)
+    require(platformConfiguration is AlarmeeIosPlatformConfiguration) { "platformConfiguration must be of type ${AlarmeeIosPlatformConfiguration::class.simpleName}" }
 
     return AlarmeeSchedulerIos()
 }
