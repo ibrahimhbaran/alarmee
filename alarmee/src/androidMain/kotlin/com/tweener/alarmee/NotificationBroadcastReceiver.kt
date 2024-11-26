@@ -20,10 +20,13 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
         const val KEY_UUID = "notificationUuid"
         const val KEY_TITLE = "notificationTitle"
         const val KEY_BODY = "notificationBody"
+        const val KEY_PRIORITY = "notificationPriority"
         const val KEY_CHANNEL_ID = "notificationChannelId"
         const val KEY_ICON_RES_ID = "notificationIconResId"
 
         private val DEFAULT_ICON_RES_ID = R.drawable.ic_notification
+        private const val DEFAULT_PRIORITY = NotificationCompat.PRIORITY_DEFAULT
+        private const val DEFAULT_CHANNEL_ID = "notificationsChannelId"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -32,16 +35,19 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
                 intent.getStringExtra(KEY_UUID),
                 intent.getStringExtra(KEY_TITLE),
                 intent.getStringExtra(KEY_BODY),
-                intent.getStringExtra(KEY_CHANNEL_ID),
+                intent.getIntExtra(KEY_PRIORITY, DEFAULT_PRIORITY),
                 intent.getIntExtra(KEY_ICON_RES_ID, DEFAULT_ICON_RES_ID),
-            ) { uuid, title, body, channelId, iconResId ->
+            ) { uuid, title, body, priority, iconResId ->
+                // For devices running on Android before Android 0, channelId passed through intents might be null so we used a default channelId that will be ignored
+                val channelId = intent.getStringExtra(KEY_CHANNEL_ID) ?: DEFAULT_CHANNEL_ID
+
                 // Create the notification
                 val notification = NotificationCompat.Builder(context, channelId)
                     .apply {
                         setSmallIcon(iconResId)
                         setContentTitle(title)
                         setContentText(body)
-                        setPriority(NotificationCompat.PRIORITY_HIGH)
+                        setPriority(priority)
                         setAutoCancel(true)
                         setContentIntent(getPendingIntent(context = context)) // Handles click on notification
                     }
