@@ -1,5 +1,3 @@
-import ProjectConfiguration.Compiler.jvmTarget
-
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.android.application)
@@ -42,20 +40,13 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
-            implementation(compose.materialIconsExtended)
             implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
             implementation(libs.compose.multiplatform.material3)
         }
 
         androidMain.dependencies {
             implementation(libs.android.activity)
             implementation(libs.android.activity.compose)
-
-            // Compose
-            implementation(compose.preview)
-            implementation(compose.uiTooling)
         }
     }
 }
