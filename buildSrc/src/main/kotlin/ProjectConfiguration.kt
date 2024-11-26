@@ -9,7 +9,7 @@ object ProjectConfiguration {
 
     object Alarmee {
         const val packageName = "com.tweener.alarmee"
-        const val versionName = "1.2.0"
+        const val versionName = "1.2.1"
         const val namespace = "$packageName.android"
         const val compileSDK = 34
         const val minSDK = 24
@@ -30,7 +30,7 @@ object ProjectConfiguration {
     }
 
     object Compiler {
-        const val jvmTarget = "17"
-        val javaCompatibility = JavaVersion.VERSION_17
+        val javaCompatibility = JavaVersion.VERSION_21
+        val jvmTarget = javaCompatibility.toString()
     }
 }

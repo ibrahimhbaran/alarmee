@@ -74,7 +74,6 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.android.annotations)
 
             // Tweener
             implementation(project.dependencies.platform(libs.tweener.bom))
@@ -85,18 +84,6 @@ kotlin {
 
             // Compose
             implementation(compose.foundation)
-        }
-
-        androidMain.dependencies {
-            // Coroutines
-            implementation(libs.kotlin.coroutines.android)
-
-            // Android
-            implementation(libs.android.core)
-        }
-
-        iosMain.dependencies {
-
         }
     }
 }

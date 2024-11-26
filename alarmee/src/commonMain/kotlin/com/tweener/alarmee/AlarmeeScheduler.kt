@@ -1,7 +1,6 @@
 package com.tweener.alarmee
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
 import com.tweener.common._internal.kotlinextensions.now
 import kotlinx.datetime.DateTimeUnit
@@ -11,6 +10,12 @@ import kotlinx.datetime.plus
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import kotlin.reflect.KClass
+
+/**
+ * Creates an [AlarmeeScheduler] instance and remembers it.
+ */
+@Composable
+expect fun rememberAlarmeeScheduler(platformConfiguration: AlarmeePlatformConfiguration): AlarmeeScheduler
 
 /**
  * Class to schedule and manage alarms that trigger at specified times of day.
@@ -28,7 +33,6 @@ abstract class AlarmeeScheduler {
      *
      * @param alarmee The [Alarmee] object containing the configuration for the alarm.
      */
-    @Composable
     fun schedule(alarmee: Alarmee) {
         // Schedule an alarm with the correct calculated time
         val scheduledDateTime = adjustDateInFuture(alarmee)
@@ -36,7 +40,7 @@ abstract class AlarmeeScheduler {
 
         updatedAlarmee.repeatInterval
             ?.let { repeatInterval ->
-                scheduleRepeatingAlarm(alarmee = alarmee, repeatInterval = repeatInterval) {
+                scheduleRepeatingAlarm(alarmee = updatedAlarmee, repeatInterval = repeatInterval) {
                     val message = when (repeatInterval) {
                         RepeatInterval.HOURLY -> "every hour at minute: ${scheduledDateTime.minute}"
                         RepeatInterval.DAILY -> "every day at ${scheduledDateTime.time}"
@@ -45,12 +49,12 @@ abstract class AlarmeeScheduler {
                         RepeatInterval.YEARLY -> "every year on the ${scheduledDateTime.month}/${scheduledDateTime.dayOfMonth} at ${scheduledDateTime.time}"
                     }
 
-                    println("Notification with title '${alarmee.notificationTitle}' scheduled $message.")
+                    println("Notification with title '${updatedAlarmee.notificationTitle}' scheduled $message.")
                 }
             }
             ?: run {
                 scheduleAlarm(alarmee = alarmee) {
-                    println("Notification with title '${alarmee.notificationTitle}' scheduled at ${alarmee.scheduledDateTime}.")
+                    println("Notification with title '${updatedAlarmee.notificationTitle}' scheduled at ${updatedAlarmee.scheduledDateTime}.")
                 }
             }
     }
@@ -61,45 +65,30 @@ abstract class AlarmeeScheduler {
      *
      * @param uuid The unique identifier for the alarm to be canceled.
      */
-    @Composable
     fun cancel(uuid: String) {
         cancelAlarm(uuid = uuid)
     }
 
-    @Composable
     internal abstract fun scheduleAlarm(alarmee: Alarmee, onSuccess: () -> Unit)
 
-    @Composable
     internal abstract fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: RepeatInterval, onSuccess: () -> Unit)
 
-    @Composable
     internal abstract fun cancelAlarm(uuid: String)
 
     /**
-     * Adjust to the next day if the time has already passed.
+     * Adjust the scheduled date to tomorrow if it is in the past.
      */
     private fun adjustDateInFuture(alarmee: Alarmee): LocalDateTime {
         val now = LocalDateTime.now(timeZone = alarmee.timeZone)
 
         var scheduledDateTime = alarmee.scheduledDateTime
         if (scheduledDateTime <= now) {
-            scheduledDateTime = scheduledDateTime.date.plus(1, DateTimeUnit.DAY).atTime(time = alarmee.scheduledDateTime.time)
+            scheduledDateTime = now.date.plus(1, DateTimeUnit.DAY).atTime(time = alarmee.scheduledDateTime.time)
         }
 
         return scheduledDateTime
     }
 }
-
-/**
- * Creates an [AlarmeeScheduler] instance and remembers it.
- */
-@Composable
-fun rememberAlarmeeScheduler(platformConfiguration: AlarmeePlatformConfiguration): AlarmeeScheduler =
-    remember {
-        createAlarmeeScheduler(platformConfiguration = platformConfiguration)
-    }
-
-expect fun createAlarmeeScheduler(platformConfiguration: AlarmeePlatformConfiguration): AlarmeeScheduler
 
 /**
  * Ensures that the provided platform configuration matches the specified target platform type and throws an [IllegalArgumentException] if it does not.

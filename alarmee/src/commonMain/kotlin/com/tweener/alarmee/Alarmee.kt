@@ -24,5 +24,18 @@ data class Alarmee(
     val scheduledDateTime: LocalDateTime,
     val timeZone: TimeZone = TimeZone.currentSystemDefault(),
     val repeatInterval: RepeatInterval? = null,
-    val androidNotificationChannelId: String? = null,
+    val androidNotificationConfiguration: AndroidNotificationConfiguration,
 )
+
+data class AndroidNotificationConfiguration(
+    val priority: AndroidNotificationPriority = AndroidNotificationPriority.DEFAULT,
+    val notificationChannelId: String? = null,
+)
+
+enum class AndroidNotificationPriority {
+    MINIMUM,
+    LOW,
+    DEFAULT,
+    HIGH,
+    MAXIMUM
+}

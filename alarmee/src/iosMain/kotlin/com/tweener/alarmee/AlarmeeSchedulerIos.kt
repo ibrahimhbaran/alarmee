@@ -1,6 +1,7 @@
 package com.tweener.alarmee
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import com.tweener.alarmee.configuration.AlarmeeIosPlatformConfiguration
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
 import com.tweener.common._internal.kotlinextensions.toEpochMilliseconds
@@ -26,9 +27,18 @@ import platform.UserNotifications.UNUserNotificationCenter
  * @author Vivien Mahe
  * @since 06/11/2024
  */
-class AlarmeeSchedulerIos : AlarmeeScheduler() {
 
-    @Composable
+@Composable
+actual fun rememberAlarmeeScheduler(platformConfiguration: AlarmeePlatformConfiguration): AlarmeeScheduler {
+    requirePlatformConfiguration(providedPlatformConfiguration = platformConfiguration, targetPlatformConfiguration = AlarmeeIosPlatformConfiguration::class)
+
+    return remember { AlarmeeSchedulerIos(configuration = platformConfiguration) }
+}
+
+class AlarmeeSchedulerIos(
+    private val configuration: AlarmeeIosPlatformConfiguration = AlarmeeIosPlatformConfiguration,
+) : AlarmeeScheduler() {
+
     override fun scheduleAlarm(alarmee: Alarmee, onSuccess: () -> Unit) {
         val nsDateTime = NSDate.dateWithTimeIntervalSince1970(secs = alarmee.scheduledDateTime.toEpochMilliseconds(timeZone = alarmee.timeZone) / 1000.0)
         val dateComponents = NSCalendar.currentCalendar.components(
@@ -41,7 +51,6 @@ class AlarmeeSchedulerIos : AlarmeeScheduler() {
         configureNotification(alarmee = alarmee, notificationTrigger = trigger, onSuccess = onSuccess)
     }
 
-    @Composable
     override fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: RepeatInterval, onSuccess: () -> Unit) {
         val dateComponents = NSDateComponents()
         dateComponents.calendar = NSCalendar.currentCalendar
@@ -77,7 +86,6 @@ class AlarmeeSchedulerIos : AlarmeeScheduler() {
         configureNotification(alarmee = alarmee, notificationTrigger = trigger, onSuccess = onSuccess)
     }
 
-    @Composable
     override fun cancelAlarm(uuid: String) {
         val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
         notificationCenter.removePendingNotificationRequestsWithIdentifiers(identifiers = listOf(uuid))
@@ -108,10 +116,4 @@ class AlarmeeSchedulerIos : AlarmeeScheduler() {
             }
         }
     }
-}
-
-actual fun createAlarmeeScheduler(platformConfiguration: AlarmeePlatformConfiguration): AlarmeeScheduler {
-    require(platformConfiguration is AlarmeeIosPlatformConfiguration) { "platformConfiguration must be of type ${AlarmeeIosPlatformConfiguration::class.simpleName}" }
-
-    return AlarmeeSchedulerIos()
 }
