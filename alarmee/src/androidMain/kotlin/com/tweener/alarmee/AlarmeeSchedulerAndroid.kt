@@ -2,7 +2,6 @@ package com.tweener.alarmee
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
@@ -10,6 +9,7 @@ import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.NotificationCompat
 import com.tweener.alarmee.channel.AlarmeeNotificationChannel
 import com.tweener.alarmee.channel.NotificationChannelRegister
 import com.tweener.alarmee.configuration.AlarmeeAndroidPlatformConfiguration
@@ -43,7 +43,7 @@ class AlarmeeSchedulerAndroid(
 ) : AlarmeeScheduler() {
 
     override fun scheduleAlarm(alarmee: Alarmee, onSuccess: () -> Unit) {
-        requireChannelIdNotNull(alarmee = alarmee)
+        validateNotificationChannelId(alarmee = alarmee)
 
         val pendingIntent = getPendingIntent(context = context, alarmee = alarmee)
 
@@ -60,7 +60,7 @@ class AlarmeeSchedulerAndroid(
     }
 
     override fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: RepeatInterval, onSuccess: () -> Unit) {
-        requireChannelIdNotNull(alarmee = alarmee)
+        validateNotificationChannelId(alarmee = alarmee)
 
         val pendingIntent = getPendingIntent(context = context, alarmee = alarmee)
 
@@ -115,19 +115,22 @@ class AlarmeeSchedulerAndroid(
 
             configuration.notificationChannels.forEach { channel ->
                 val notificationChannelRegister = NotificationChannelRegister(context = context)
-                notificationChannelRegister.register(id = channel.id, name = channel.name, importance = NotificationManager.IMPORTANCE_HIGH)
+                notificationChannelRegister.register(id = channel.id, name = channel.name, importance = channel.importance)
             }
         }
     }
 
     private fun getPendingIntent(context: Context, alarmee: Alarmee): PendingIntent {
+        val priority = mapPriority(priority = alarmee.androidNotificationConfiguration.priority)
+
         // Create the receiver intent with the alarm parameters
         val receiverIntent = Intent(context, NotificationBroadcastReceiver::class.java).apply {
             action = NotificationBroadcastReceiver.ALARM_ACTION
             putExtra(NotificationBroadcastReceiver.KEY_UUID, alarmee.uuid)
             putExtra(NotificationBroadcastReceiver.KEY_TITLE, alarmee.notificationTitle)
             putExtra(NotificationBroadcastReceiver.KEY_BODY, alarmee.notificationBody)
-            putExtra(NotificationBroadcastReceiver.KEY_CHANNEL_ID, alarmee.androidNotificationChannelId)
+            putExtra(NotificationBroadcastReceiver.KEY_PRIORITY, priority)
+            putExtra(NotificationBroadcastReceiver.KEY_CHANNEL_ID, alarmee.androidNotificationConfiguration.notificationChannelId)
             putExtra(NotificationBroadcastReceiver.KEY_ICON_RES_ID, configuration.notificationIconResId)
         }
 
@@ -141,11 +144,20 @@ class AlarmeeSchedulerAndroid(
     }
 
     /**
-     * Makes sure [Alarmee.androidNotificationChannelId] is not null for devices running on Android 0 and above.
+     * Makes sure the notification channel ID is not null for devices running on Android 0 and above.
      */
-    private fun requireChannelIdNotNull(alarmee: Alarmee) {
+    private fun validateNotificationChannelId(alarmee: Alarmee) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            requireNotNull(alarmee.androidNotificationChannelId) { "androidNotificationChannelId must not be null to schedule an Alarmee." }
+            requireNotNull(alarmee.androidNotificationConfiguration.notificationChannelId) { "androidNotificationConfiguration.notificationChannelId must not be null to schedule an Alarmee." }
         }
     }
+
+    private fun mapPriority(priority: AndroidNotificationPriority): Int =
+        when (priority) {
+            AndroidNotificationPriority.MINIMUM -> NotificationCompat.PRIORITY_MIN
+            AndroidNotificationPriority.LOW -> NotificationCompat.PRIORITY_LOW
+            AndroidNotificationPriority.DEFAULT -> NotificationCompat.PRIORITY_DEFAULT
+            AndroidNotificationPriority.HIGH -> NotificationCompat.PRIORITY_HIGH
+            AndroidNotificationPriority.MAXIMUM -> NotificationCompat.PRIORITY_MAX
+        }
 }
