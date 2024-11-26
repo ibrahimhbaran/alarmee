@@ -66,10 +66,18 @@ In the `commonModule`, you need to use an instance of a subclass of `AlarmeeSche
 In the `androidMain` module, create a `AlarmeeAndroidPlatformConfiguration(...)` instance with the following parameters:
 ```Kotlin
 val platformConfiguration: AlarmeePlatformConfiguration = AlarmeeAndroidPlatformConfiguration(
-    notificationIconResId = R.drawable.ic_notification,  
+    notificationIconResId = R.drawable.ic_notification,
     notificationChannels = listOf(
-        AlarmeeNotificationChannel(id = "dailyNewsChannelId", name = "Daily news notifications"),
-        AlarmeeNotificationChannel(id = "breakingNewsChannelId", name = "Breaking news notifications"),
+        AlarmeeNotificationChannel(
+            id = "dailyNewsChannelId",
+            name = "Daily news notifications",
+            importance = NotificationManager.IMPORTANCE_HIGH
+        ),
+        AlarmeeNotificationChannel(
+            id = "breakingNewsChannelId",
+            name = "Breaking news notifications",
+            importance = NotificationManager.IMPORTANCE_LOW
+        ),
         // List all the notification channels you need here
     )
 )
@@ -97,10 +105,18 @@ Depending on your project configuration, you can create an instance of `AlarmeeS
 <details>
 	<summary>Kotlin Multplatform (without Compose)</summary>
 
-Using `createAlarmeeScheduler(...)` with the configuration created previously:
+- 🤖 Android
+  Create an instance of `AlarmeeSchedulerAndroid` with the configuration created previously:
 ```Kotlin
-val alarmeeScheduler: AlarmeeScheduler = createAlarmeeScheduler(platformConfiguration = platformConfiguration)
+val alarmeeScheduler: AlarmeeScheduler = AlarmeeSchedulerAndroid(context = context, platformConfiguration = platformConfiguration)
 ```
+
+- 🍎 iOS
+  Create an instance of `AlarmeeSchedulerIos` with the configuration created previously:
+```Kotlin
+val alarmeeScheduler: AlarmeeScheduler = AlarmeeSchedulerIos(platformConfiguration = platformConfiguration)
+```
+
 </details>
 
 <details>
@@ -123,7 +139,10 @@ alarmeeScheduler.schedule(
         notificationTitle = "🎉 Congratulations! You've schedule an Alarmee!",
         notificationBody = "This is the notification that will be displayed at the specified date and time.",
         scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 12, hour = 17, minute = 0),
-        androidNotificationChannelId = "dailyNewsChannelId" // The notification channel to post the notification on (Only works for Android, this parameter is ignored on iOS)
+        androidNotificationConfiguration = AndroidNotificationConfiguration( // Required confiuration for Android target only (this parameter is ignored on iOS)
+            priority = AndroidNotificationPriority.HIGH,
+            notificationChannelId = "dailyNewsChannelId",
+        )
     )
 )
 ```
@@ -135,11 +154,14 @@ For instance, to schedule an alarm to repeat every day at 9:30 AM, you can use `
 alarmeeScheduler.schedule(
     alarmee = Alarmee(
         uuid = "myAlarmId",
-        notificationTitle = "🎉 Congratulations! You've schedule an Alarmee!",
-        notificationBody = "This is the notification that will be displayed at the specified date and time.",
+        notificationTitle = "🔁 Congratulations! You've schedule a repeating Alarmee!",
+        notificationBody = "This is the notification that will be displayed every day at 09:30.",
         scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 12, hour = 9, minute = 30), // In this case, year, month and dayOfMonth are ignored
         repeatInterval = RepeatInterval.DAILY, // Will schedule an alarm every day
-        androidNotificationChannelId = "dailyNewsChannelId"
+        androidNotificationConfiguration = AndroidNotificationConfiguration( // Required confiuration for Android target only (this parameter is ignored on iOS)
+            priority = AndroidNotificationPriority.DEFAULT,
+            notificationChannelId = "dailyNewsChannelId",
+        )
     )
 )
 ```
