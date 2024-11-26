@@ -52,13 +52,13 @@ kotlin {
 }
 
 android {
-    namespace = "com.tweener.alarmee.sample"
-    compileSdk = 35
+    namespace = ProjectConfiguration.Alarmee.packageName + ".sample"
+    compileSdk = ProjectConfiguration.Alarmee.compileSDK
 
     defaultConfig {
-        applicationId = "com.tweener.alarmee.sample"
-        minSdk = 24
-        targetSdk = 35
+        applicationId = ProjectConfiguration.Alarmee.packageName + ".sample"
+        minSdk = ProjectConfiguration.Alarmee.minSDK
+        targetSdk = ProjectConfiguration.Alarmee.compileSDK
         versionCode = 1
         versionName = "1.0"
     }
