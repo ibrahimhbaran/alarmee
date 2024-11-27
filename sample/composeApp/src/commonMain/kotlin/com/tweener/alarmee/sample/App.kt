@@ -23,8 +23,12 @@ import com.tweener.alarmee.AndroidNotificationPriority
 import com.tweener.alarmee.RepeatInterval
 import com.tweener.alarmee.rememberAlarmeeScheduler
 import com.tweener.alarmee.sample.ui.theme.AlarmeeTheme
+import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.Month
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun App() {
@@ -38,15 +42,19 @@ fun App() {
                 verticalArrangement = Arrangement.spacedBy(space = 16.dp, alignment = Alignment.CenterVertically),
             ) {
                 Button(onClick = {
+                    val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+                    val time = LocalTime(hour = now.hour, minute = now.minute + 0, second = now.second + 5)
+                    val date = LocalDateTime(year = now.year, month = now.month, dayOfMonth = now.dayOfMonth, hour = now.hour, minute = now.minute, second = now.second + 5)
+
                     alarmeeScheduler.schedule(
                         alarmee = Alarmee(
                             uuid = "myOneOffAlarmId",
                             notificationTitle = "🎉 Congratulations! You've schedule a one-off Alarmee!",
                             notificationBody = "This is the notification that will be displayed at the specified date and time.",
-                            scheduledDateTime = LocalDateTime(year = 2024, month = Month.NOVEMBER, dayOfMonth = 26, hour = 11, minute = 36),
+                            scheduledDateTime = date, // LocalDateTime(year = 2024, month = Month.NOVEMBER, dayOfMonth = 27, hour = 11, minute = 27),
                             androidNotificationConfiguration = AndroidNotificationConfiguration(
                                 priority = AndroidNotificationPriority.DEFAULT,
-                                notificationChannelId = "dailyNewsChannelId",
+                                channelId = "dailyNewsChannelId",
                             ),
                         )
                     )
@@ -62,7 +70,7 @@ fun App() {
                             repeatInterval = RepeatInterval.DAILY,
                             androidNotificationConfiguration = AndroidNotificationConfiguration(
                                 priority = AndroidNotificationPriority.MAXIMUM,
-                                notificationChannelId = "breakingNewsChannelId",
+                                channelId = "breakingNewsChannelId",
                             ),
                         )
                     )

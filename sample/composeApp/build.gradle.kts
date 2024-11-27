@@ -18,7 +18,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "shared"
+            baseName = "composeApp"
             isStatic = true
 
             // Add here any extra framework dependencies
