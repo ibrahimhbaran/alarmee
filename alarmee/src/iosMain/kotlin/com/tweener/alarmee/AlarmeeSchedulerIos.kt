@@ -11,6 +11,7 @@ import platform.Foundation.NSCalendarUnitDay
 import platform.Foundation.NSCalendarUnitHour
 import platform.Foundation.NSCalendarUnitMinute
 import platform.Foundation.NSCalendarUnitMonth
+import platform.Foundation.NSCalendarUnitSecond
 import platform.Foundation.NSCalendarUnitYear
 import platform.Foundation.NSDate
 import platform.Foundation.NSDateComponents
@@ -21,6 +22,7 @@ import platform.UserNotifications.UNAuthorizationOptionSound
 import platform.UserNotifications.UNCalendarNotificationTrigger
 import platform.UserNotifications.UNMutableNotificationContent
 import platform.UserNotifications.UNNotificationRequest
+import platform.UserNotifications.UNNotificationTrigger
 import platform.UserNotifications.UNUserNotificationCenter
 
 /**
@@ -42,7 +44,7 @@ class AlarmeeSchedulerIos(
     override fun scheduleAlarm(alarmee: Alarmee, onSuccess: () -> Unit) {
         val nsDateTime = NSDate.dateWithTimeIntervalSince1970(secs = alarmee.scheduledDateTime.toEpochMilliseconds(timeZone = alarmee.timeZone) / 1000.0)
         val dateComponents = NSCalendar.currentCalendar.components(
-            unitFlags = NSCalendarUnitYear or NSCalendarUnitMonth or NSCalendarUnitDay or NSCalendarUnitHour or NSCalendarUnitMinute,
+            unitFlags = NSCalendarUnitYear or NSCalendarUnitMonth or NSCalendarUnitDay or NSCalendarUnitHour or NSCalendarUnitMinute or NSCalendarUnitSecond,
             fromDate = nsDateTime,
         )
 
@@ -91,7 +93,7 @@ class AlarmeeSchedulerIos(
         notificationCenter.removePendingNotificationRequestsWithIdentifiers(identifiers = listOf(uuid))
     }
 
-    private fun configureNotification(alarmee: Alarmee, notificationTrigger: UNCalendarNotificationTrigger, onSuccess: () -> Unit) {
+    private fun configureNotification(alarmee: Alarmee, notificationTrigger: UNNotificationTrigger, onSuccess: () -> Unit) {
         val content = UNMutableNotificationContent().apply {
             setTitle(alarmee.notificationTitle)
             setBody(alarmee.notificationBody)
