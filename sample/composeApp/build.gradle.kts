@@ -73,15 +73,9 @@ android {
     compileOptions {
         sourceCompatibility = ProjectConfiguration.Compiler.javaCompatibility
         targetCompatibility = ProjectConfiguration.Compiler.javaCompatibility
-
-        isCoreLibraryDesugaringEnabled = true
     }
 
     buildFeatures {
         compose = true
-    }
-
-    dependencies {
-        coreLibraryDesugaring(libs.android.desugarjdklibs)
     }
 }

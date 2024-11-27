@@ -44,12 +44,10 @@ class AlarmeeSchedulerAndroid(
 ) : AlarmeeScheduler() {
 
     override fun scheduleAlarm(alarmee: Alarmee, onSuccess: () -> Unit) {
+        createNotificationChannels(context = context)
         validateNotificationChannelId(alarmee = alarmee)
 
         val pendingIntent = getPendingIntent(context = context, alarmee = alarmee)
-
-        // Create channels
-        createNotificationChannels(context = context)
 
         // Schedule the alarm
         context.getAlarmManager()?.let { alarmManager ->
@@ -61,12 +59,10 @@ class AlarmeeSchedulerAndroid(
     }
 
     override fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: RepeatInterval, onSuccess: () -> Unit) {
+        createNotificationChannels(context = context)
         validateNotificationChannelId(alarmee = alarmee)
 
         val pendingIntent = getPendingIntent(context = context, alarmee = alarmee)
-
-        // Create channels
-        createNotificationChannels(context = context)
 
         // Schedule the alarm according to the repeat interval
         val intervalMillis = when (repeatInterval) {
@@ -121,6 +117,22 @@ class AlarmeeSchedulerAndroid(
         }
     }
 
+    /**
+     * Makes sure the notification channel ID exists (only for devices running on Android 0 and above).
+     */
+    private fun validateNotificationChannelId(alarmee: Alarmee) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Make sure channelId is not null
+            requireNotNull(alarmee.androidNotificationConfiguration.channelId) { "androidNotificationConfiguration.channelId must not be null to schedule an Alarmee." }
+
+            // Make sure channel exists
+            context.getNotificationManager()?.let { notificationManager ->
+                val channelExists = notificationManager.notificationChannels.any { it.id == alarmee.androidNotificationConfiguration.channelId }
+                require(channelExists) { "The Alarmee is set with a notification channel (ID: ${alarmee.androidNotificationConfiguration.channelId}) that doest not exist." }
+            }
+        }
+    }
+
     private fun getPendingIntent(context: Context, alarmee: Alarmee): PendingIntent {
         val priority = mapPriority(priority = alarmee.androidNotificationConfiguration.priority)
 
@@ -142,22 +154,6 @@ class AlarmeeSchedulerAndroid(
             receiverIntent,
             PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-    }
-
-    /**
-     * Makes sure the notification channel ID exists (only for devices running on Android 0 and above).
-     */
-    private fun validateNotificationChannelId(alarmee: Alarmee) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Make sure channelId is not null
-            requireNotNull(alarmee.androidNotificationConfiguration.channelId) { "androidNotificationConfiguration.channelId must not be null to schedule an Alarmee." }
-
-            // Make sure channel exists
-            context.getNotificationManager()?.let { notificationManager ->
-                val channelExists = notificationManager.notificationChannels.none { it.id == alarmee.androidNotificationConfiguration.channelId }
-                require(channelExists) { "The Alarmee is set with a notification channel (ID: ${alarmee.androidNotificationConfiguration.channelId}) that doest not exist." }
-            }
-        }
     }
 
     private fun mapPriority(priority: AndroidNotificationPriority): Int =

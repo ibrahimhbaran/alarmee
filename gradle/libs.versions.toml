@@ -8,10 +8,9 @@ coroutines = "1.9.0"
 composeMultiplatform = "1.7.0"
 
 # Tweener
-tweenerBom = "2.1.2"
+tweenerBom = "2.1.3"
 
 # Android
-androidDesugarJdkLibs = "2.1.3"
 androidActivity = "1.9.3"
 
 [libraries]
@@ -25,7 +24,6 @@ tweener-common = { group = "io.github.tweener", name = "kmp-common" }
 kotlin-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 
 # Android
-android-desugarjdklibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
 android-activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidActivity" }
 android-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidActivity" }
 
