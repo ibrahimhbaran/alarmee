@@ -77,6 +77,7 @@ abstract class AlarmeeScheduler {
 
     /**
      * Adjust the scheduled date to tomorrow if it is in the past.
+     * // TODO Update this logic to adjust date to the next "occurrence" (ie. if the alarm should repeat every hour, adjust time to the now + 1 hour)
      */
     private fun adjustDateInFuture(alarmee: Alarmee): LocalDateTime {
         val now = LocalDateTime.now(timeZone = alarmee.timeZone)
@@ -84,6 +85,7 @@ abstract class AlarmeeScheduler {
         var scheduledDateTime = alarmee.scheduledDateTime
         if (scheduledDateTime <= now) {
             scheduledDateTime = now.date.plus(1, DateTimeUnit.DAY).atTime(time = alarmee.scheduledDateTime.time)
+            println("The specified date & time (alarmee.scheduledDateTime) is in the past and has been adjusted to tomorrow: $scheduledDateTime")
         }
 
         return scheduledDateTime
