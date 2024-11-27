@@ -141,7 +141,7 @@ alarmeeScheduler.schedule(
         scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 12, hour = 17, minute = 0),
         androidNotificationConfiguration = AndroidNotificationConfiguration( // Required confiuration for Android target only (this parameter is ignored on iOS)
             priority = AndroidNotificationPriority.HIGH,
-            notificationChannelId = "dailyNewsChannelId",
+            channelId = "dailyNewsChannelId",
         )
     )
 )
@@ -160,7 +160,7 @@ alarmeeScheduler.schedule(
         repeatInterval = RepeatInterval.DAILY, // Will schedule an alarm every day
         androidNotificationConfiguration = AndroidNotificationConfiguration( // Required confiuration for Android target only (this parameter is ignored on iOS)
             priority = AndroidNotificationPriority.DEFAULT,
-            notificationChannelId = "dailyNewsChannelId",
+            channelId = "dailyNewsChannelId",
         )
     )
 )

@@ -23,11 +23,10 @@ class NotificationChannelRegister(
         description: String? = null
     ) {
         context.getNotificationManager()?.let { notificationManager ->
-            val channelDoesNotExists = notificationManager.notificationChannels.none { it.id == id }
+            val channelDoesNotExist = notificationManager.notificationChannels.none { it.id == id }
 
             // Only create channel if it does not exists yet
-            if (channelDoesNotExists) {
-                notificationManager.getNotificationChannel(id)
+            if (channelDoesNotExist) {
                 val channel = NotificationChannel(id, name, importance).apply { description?.let { this.description = description } }
                 notificationManager.createNotificationChannel(channel)
 

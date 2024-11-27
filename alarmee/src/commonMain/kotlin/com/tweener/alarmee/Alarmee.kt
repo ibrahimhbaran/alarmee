@@ -1,5 +1,10 @@
 package com.tweener.alarmee
 
+import com.tweener.alarmee.AndroidNotificationPriority.DEFAULT
+import com.tweener.alarmee.AndroidNotificationPriority.HIGH
+import com.tweener.alarmee.AndroidNotificationPriority.LOW
+import com.tweener.alarmee.AndroidNotificationPriority.MAXIMUM
+import com.tweener.alarmee.AndroidNotificationPriority.MINIMUM
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 
@@ -12,7 +17,7 @@ import kotlinx.datetime.TimeZone
  * @property scheduledDateTime The specific date and time when the alarm is scheduled to trigger.
  * @property timeZone The time zone in which the alarm should be scheduled. By default, this is set to the system's current time zone.
  * @property repeatInterval The optional interval at which the alarm should repeat (e.g., hourly, daily, weekly). If `null`, the alarm will not repeat.
- * @property androidNotificationChannelId The notification channel to post the notification on (Only works for Android, this parameter is ignored on iOS).
+ * @property androidNotificationConfiguration Configuration specific to Android notifications, including channel ID and priority.
  *
  * @author Vivien Mahe
  * @since 06/11/2024
@@ -27,11 +32,26 @@ data class Alarmee(
     val androidNotificationConfiguration: AndroidNotificationConfiguration,
 )
 
+/**
+ * Data class representing Android-specific configuration for notifications.
+ *
+ * @property priority The priority level of the notification (e.g., low, default, high). Determines how prominently the notification is displayed.
+ * @property channelId The notification channel to post the notification on. Required for Android 8.0 (API level 26) and above.
+ */
 data class AndroidNotificationConfiguration(
     val priority: AndroidNotificationPriority = AndroidNotificationPriority.DEFAULT,
-    val notificationChannelId: String? = null,
+    val channelId: String? = null,
 )
 
+/**
+ * Enum representing the priority levels for Android notifications.
+ *
+ * @property MINIMUM Lowest priority for notifications, used for less prominent alerts.
+ * @property LOW Lower priority for notifications that require minimal attention.
+ * @property DEFAULT Default priority level for most notifications.
+ * @property HIGH Higher priority for important notifications.
+ * @property MAXIMUM Highest priority for urgent notifications that demand immediate attention.
+ */
 enum class AndroidNotificationPriority {
     MINIMUM,
     LOW,

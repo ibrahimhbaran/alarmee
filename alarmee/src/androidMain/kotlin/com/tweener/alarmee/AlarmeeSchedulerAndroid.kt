@@ -15,6 +15,7 @@ import com.tweener.alarmee.channel.NotificationChannelRegister
 import com.tweener.alarmee.configuration.AlarmeeAndroidPlatformConfiguration
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
 import com.tweener.common._internal.kotlinextensions.getAlarmManager
+import com.tweener.common._internal.kotlinextensions.getNotificationManager
 import com.tweener.common._internal.kotlinextensions.toEpochMilliseconds
 
 /**
@@ -130,7 +131,7 @@ class AlarmeeSchedulerAndroid(
             putExtra(NotificationBroadcastReceiver.KEY_TITLE, alarmee.notificationTitle)
             putExtra(NotificationBroadcastReceiver.KEY_BODY, alarmee.notificationBody)
             putExtra(NotificationBroadcastReceiver.KEY_PRIORITY, priority)
-            putExtra(NotificationBroadcastReceiver.KEY_CHANNEL_ID, alarmee.androidNotificationConfiguration.notificationChannelId)
+            putExtra(NotificationBroadcastReceiver.KEY_CHANNEL_ID, alarmee.androidNotificationConfiguration.channelId)
             putExtra(NotificationBroadcastReceiver.KEY_ICON_RES_ID, configuration.notificationIconResId)
         }
 
@@ -144,11 +145,18 @@ class AlarmeeSchedulerAndroid(
     }
 
     /**
-     * Makes sure the notification channel ID is not null for devices running on Android 0 and above.
+     * Makes sure the notification channel ID exists (only for devices running on Android 0 and above).
      */
     private fun validateNotificationChannelId(alarmee: Alarmee) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            requireNotNull(alarmee.androidNotificationConfiguration.notificationChannelId) { "androidNotificationConfiguration.notificationChannelId must not be null to schedule an Alarmee." }
+            // Make sure channelId is not null
+            requireNotNull(alarmee.androidNotificationConfiguration.channelId) { "androidNotificationConfiguration.channelId must not be null to schedule an Alarmee." }
+
+            // Make sure channel exists
+            context.getNotificationManager()?.let { notificationManager ->
+                val channelExists = notificationManager.notificationChannels.none { it.id == alarmee.androidNotificationConfiguration.channelId }
+                require(channelExists) { "The Alarmee is set with a notification channel (ID: ${alarmee.androidNotificationConfiguration.channelId}) that doest not exist." }
+            }
         }
     }
 
