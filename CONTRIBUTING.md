@@ -23,7 +23,7 @@ We love your input! We want to make contributing to this project as easy and tra
 
 Pull requests are the best way to propose changes to the codebase. We actively welcome your pull requests:
 
-1. Fork the repo and create your branch from `develop`.
+1. Fork the repo and create your branch from `main`.
 2. If you've changed APIs, update the documentation.
 3. Join any visual assets (images, videos, GIFs) to showcase your work.
 4. Issue that pull request!
