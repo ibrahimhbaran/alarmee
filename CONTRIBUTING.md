@@ -1,4 +1,4 @@
-# How to contribute to C·ZAN
+# How to contribute to Alarmee
 
 We love your input! We want to make contributing to this project as easy and transparent as possible, whether it's:
 
