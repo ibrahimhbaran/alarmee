@@ -14,13 +14,26 @@
 
 ---
 
-<h3>A Kotlin/Compose Multiplatform library for effortless alarm and local notification scheduling on both Android and iOS.</h3>
+# Alarmee
+
+**Alarmee** is a Kotlin/Compose Multiplatform llibrary designed to simplify scheduling alarms and notifications on both Android and iOS platforms. With Alarmee, you can schedule one-time or repeating alarms and display platform-specific notifications seamlessly.
+
+<br>
 
 Be sure to show your support by starring ⭐️ this repository, and feel free to [contribute](#-contributing) if you're interested!
 
-## ⚙️ Setup
+---
 
-### Installation
+## 🌟 Features
+
+- 📅 **One-off alarm**: Schedule an alarm to trigger at a specific date and time.
+- 🔁 **Repeating alarm**: Schedule recurring alarms with intervals: hourly, daily, weekly, monthly, or yearly.
+- **Extensible Configuration**: Customize alarms and notifications with platform-specific settings.
+
+---
+
+## 🛠️ Installation
+
 In your `build.gradle.kts` file, add Maven Central to your repositories:
 ```Groovy
 repositories {
@@ -57,7 +70,9 @@ dependencies {
 
 The latest version is: [![Maven Central Version](https://img.shields.io/maven-central/v/io.github.tweener/alarmee?color=orange)](https://central.sonatype.com/artifact/io.github.tweener/alarmee)
 
-### Platform configurations
+---
+
+## 🔧 Configuration
 
 In the `commonModule`, you need to use an instance of a subclass of `AlarmeeScheduler`. Each platform will create the corresponding subclass of the `AlarmeeScheduler`. This can be easily done with dependency injection.
 
@@ -94,13 +109,16 @@ val platformConfiguration: AlarmeePlatformConfiguration = AlarmeeIosPlatformConf
 ```
 </details>
 
-### Usage
-#### Notifications permission
-Before using Alarmee, make sure the Notifications permission is granted on the target platform (Android [official documentation](https://developer.android.com/develop/ui/views/notifications/notification-permission), iOS [official documentation](https://developer.apple.com/documentation/usernotifications/asking-permission-to-use-notifications)).
+---
 
-Alternativally, you can use [`moko-permissions`](https://github.com/icerockdev/moko-permissions) to easily handle permissions for you.
+## 🧑‍💻 Usage
 
-#### Create an instance of AlarmeeScheduler
+> [!IMPORTANT]
+> Before using Alarmee, make sure the Notifications permission is granted on the target platform (Android [official documentation](https://developer.android.com/develop/ui/views/notifications/notification-permission), iOS [official documentation](https://developer.apple.com/documentation/usernotifications/asking-permission-to-use-notifications)).
+> 
+> Alternativally, you can use [`moko-permissions`](https://github.com/icerockdev/moko-permissions) to easily handle permissions for you.
+
+### 1. Create an instance of AlarmeeScheduler
 Depending on your project configuration, you can create an instance of `AlarmeeScheduler` in two different ways:
 
 <details>
@@ -131,7 +149,7 @@ val alarmeeScheduler: AlarmeeScheduler = rememberAlarmeeScheduler(platformConfig
 ```
 </details>
 
-#### Scheduling an alarm
+### 2. Scheduling a one-off alarm
 You can schedule an alarm to be triggered at a specific time of the day, using `Alarmee#schedule(...)`. When the alarm is triggered, a notification will be displayed.
 
 For instance, to schedule an alarm on January 12th, 2025, at 5 PM:
@@ -150,6 +168,7 @@ alarmeeScheduler.schedule(
 )
 ```
 
+### 3. Scheduling a repeating alarm
 You can specify a [`RepeatInterval`](https://github.com/Tweener/alarmee/blob/main/alarmee/src/commonMain/kotlin/com/tweener/alarmee/RepeatInterval.kt) parameter, which allows scheduling an alarm to repeat hourly, daily, weekly, monthly, or yearly, based on the specified scheduledDateTime.
 
 For instance, to schedule an alarm to repeat every day at 9:30 AM, you can use `RepeatInterval.DAILY`:
@@ -169,20 +188,26 @@ alarmeeScheduler.schedule(
 )
 ```
 
-#### Cancelling an alarm
+### 4. Cancelling an alarm
 An alarm can be cancelled using its uuid, using `Alarmee#cancel(...)`. If an alarm with the specified uuid is found, it will be canceled, preventing any future notifications from being triggered for that alarm.
 ```Kotlin
 alarmeeScheduler.cancel(uuid = "myAlarmId")
 ```
 
+---
+
 ## 👨‍💻 Contributing
 
 We love your input and welcome any contributions! Please read our [contribution guidelines](https://github.com/Tweener/alarmee/blob/master/CONTRIBUTING.md) before submitting a pull request.
+
+---
 
 ## 🙏 Credits
 
 - Logo by [Freeicons](https://freeicons.io/essential-collection/alarm-icon-icon-2)
 
-## 🪪 Licence
+---
+
+## 📜 Licence
 
 Alarmee is licensed under the [Apache-2.0](https://github.com/Tweener/alarmee?tab=Apache-2.0-1-ov-file#readme).
