@@ -107,12 +107,14 @@ Depending on your project configuration, you can create an instance of `AlarmeeS
 	<summary>Kotlin Multplatform (without Compose)</summary>
 
 - 🤖 Android
+
   Create an instance of `AlarmeeSchedulerAndroid` with the configuration created previously:
 ```Kotlin
 val alarmeeScheduler: AlarmeeScheduler = AlarmeeSchedulerAndroid(context = context, platformConfiguration = platformConfiguration)
 ```
 
 - 🍎 iOS
+
   Create an instance of `AlarmeeSchedulerIos` with the configuration created previously:
 ```Kotlin
 val alarmeeScheduler: AlarmeeScheduler = AlarmeeSchedulerIos(platformConfiguration = platformConfiguration)
