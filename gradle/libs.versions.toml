@@ -29,9 +29,8 @@ android-activity-compose = { group = "androidx.activity", name = "activity-compo
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-android-library = { id = "com.android.library", version.ref = "gradle" }
 android-application = { id = "com.android.application", version.ref = "gradle" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "gradle" }
 dependency-versions = { id = "com.github.ben-manes.versions", version.ref = "dependencyVersionsPlugin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 nexus-sonatype = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexusSonatype" }
