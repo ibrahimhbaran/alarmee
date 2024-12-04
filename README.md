@@ -104,7 +104,7 @@ Alternativally, you can use [`moko-permissions`](https://github.com/icerockdev/m
 Depending on your project configuration, you can create an instance of `AlarmeeScheduler` in two different ways:
 
 <details>
-	<summary>Kotlin Multplatform (without Compose)</summary>
+	<summary>➡️ Kotlin Multplatform (without Compose)</summary>
 
 - 🤖 Android
 
@@ -123,7 +123,7 @@ val alarmeeScheduler: AlarmeeScheduler = AlarmeeSchedulerIos(platformConfigurati
 </details>
 
 <details>
-	<summary>Compose Multplatform</summary>
+	<summary>➡️ Compose Multplatform</summary>
 
 Using `rememberAlarmeeScheduler(...)` with the configuration created previously:
 ```Kotlin
