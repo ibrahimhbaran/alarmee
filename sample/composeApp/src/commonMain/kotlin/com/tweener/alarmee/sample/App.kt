@@ -64,7 +64,7 @@ fun App() {
                             uuid = "myRepeatingAlarmId",
                             notificationTitle = "🔁 Congratulations! You've schedule a repeating Alarmee!",
                             notificationBody = "This is the notification that will be displayed every day at 09:36.",
-                            scheduledDateTime = LocalDateTime(year = 2024, month = Month.NOVEMBER, dayOfMonth = 26, hour = 11, minute = 36),
+                            scheduledDateTime = LocalDateTime(year = 2024, month = Month.DECEMBER, dayOfMonth = 26, hour = 9, minute = 36),
                             repeatInterval = RepeatInterval.DAILY,
                             androidNotificationConfiguration = AndroidNotificationConfiguration(
                                 priority = AndroidNotificationPriority.MAXIMUM,
