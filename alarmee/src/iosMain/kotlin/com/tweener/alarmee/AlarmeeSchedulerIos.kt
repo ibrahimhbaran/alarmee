@@ -57,6 +57,7 @@ class AlarmeeSchedulerIos(
         val dateComponents = NSDateComponents()
         dateComponents.calendar = NSCalendar.currentCalendar
 
+        dateComponents.second = alarmee.scheduledDateTime.second.toLong()
         dateComponents.minute = alarmee.scheduledDateTime.minute.toLong()
 
         when (repeatInterval) {

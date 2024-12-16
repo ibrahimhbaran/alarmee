@@ -39,7 +39,7 @@ data class Alarmee(
  * @property channelId The notification channel to post the notification on. Required for Android 8.0 (API level 26) and above.
  */
 data class AndroidNotificationConfiguration(
-    val priority: AndroidNotificationPriority = AndroidNotificationPriority.DEFAULT,
+    val priority: AndroidNotificationPriority = DEFAULT,
     val channelId: String? = null,
 )
 
