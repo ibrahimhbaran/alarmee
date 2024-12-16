@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.3.4] - December 16, 2024
+- 🍎 On iOS, add granularity for seconds when scheduling a repeating Alarmee.
+- Sample: Update iOS sample to show notifications when the app is in foreground (See [documentation](https://developer.apple.com/documentation/usernotifications/scheduling-a-notification-locally-from-your-app#overview)).
+
 ## [1.3.3] - November 29, 2024
 - Added support for JVM, JS, and WasmJS targets.
 > [!WARNING]
