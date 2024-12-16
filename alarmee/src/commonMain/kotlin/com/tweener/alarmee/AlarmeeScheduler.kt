@@ -3,10 +3,9 @@ package com.tweener.alarmee
 import androidx.compose.runtime.Composable
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
 import com.tweener.common._internal.kotlinextensions.now
+import com.tweener.common._internal.kotlinextensions.plus
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.atTime
-import kotlinx.datetime.plus
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import kotlin.reflect.KClass
@@ -76,19 +75,39 @@ abstract class AlarmeeScheduler {
     internal abstract fun cancelAlarm(uuid: String)
 
     /**
-     * Adjust the scheduled date to tomorrow if it is in the past.
-     * // TODO Update this logic to adjust date to the next "occurrence" (ie. if the alarm should repeat every hour, adjust time to the now + 1 hour)
+     * Adjusts the scheduled date and time to the future if it's in the past.
+     * - For one-off alarms, adjusts to the next day.
+     * - For repeating alarms, adjusts to the next valid occurrence based on the repeat interval.
+     *
+     * @param alarmee The alarm configuration containing the scheduled date and repeat interval.
+     * @return The adjusted date and time in the future.
      */
     private fun adjustDateInFuture(alarmee: Alarmee): LocalDateTime {
         val now = LocalDateTime.now(timeZone = alarmee.timeZone)
 
-        var scheduledDateTime = alarmee.scheduledDateTime
-        if (scheduledDateTime <= now) {
-            scheduledDateTime = now.date.plus(1, DateTimeUnit.DAY).atTime(time = alarmee.scheduledDateTime.time)
-            println("The specified date & time (alarmee.scheduledDateTime) is in the past and has been adjusted to tomorrow: $scheduledDateTime")
-        }
+        return if (alarmee.scheduledDateTime <= now) {
+            val adjustedDateTime = if (alarmee.repeatInterval == null) {
+                // One-off alarm: adjust to tomorrow
+                now.plus(1, DateTimeUnit.DAY, timeZone = alarmee.timeZone)
+            } else {
+                // Repeating alarm: adjust to the next valid occurrence
+                val dateTimeUnit = when (alarmee.repeatInterval) {
+                    RepeatInterval.HOURLY -> DateTimeUnit.HOUR
+                    RepeatInterval.DAILY -> DateTimeUnit.DAY
+                    RepeatInterval.WEEKLY -> DateTimeUnit.WEEK
+                    RepeatInterval.MONTHLY -> DateTimeUnit.MONTH
+                    RepeatInterval.YEARLY -> DateTimeUnit.YEAR
+                }
 
-        return scheduledDateTime
+                now.plus(1, dateTimeUnit, timeZone = alarmee.timeZone)
+            }
+
+            println("The scheduled date and time (${alarmee.scheduledDateTime}) was in the past. It has been adjusted to the future: $adjustedDateTime")
+
+            adjustedDateTime
+        } else {
+            alarmee.scheduledDateTime
+        }
     }
 }
 
