@@ -23,9 +23,9 @@ import com.tweener.alarmee.AndroidNotificationPriority
 import com.tweener.alarmee.RepeatInterval
 import com.tweener.alarmee.rememberAlarmeeScheduler
 import com.tweener.alarmee.sample.ui.theme.AlarmeeTheme
-import com.tweener.common._internal.kotlinextensions.fromEpochMilliseconds
-import com.tweener.common._internal.kotlinextensions.now
-import com.tweener.common._internal.kotlinextensions.toEpochMilliseconds
+import com.tweener.kmpkit.kotlinextensions.fromEpochMilliseconds
+import com.tweener.kmpkit.kotlinextensions.now
+import com.tweener.kmpkit.kotlinextensions.toEpochMilliseconds
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
 import kotlin.time.Duration.Companion.minutes

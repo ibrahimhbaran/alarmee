@@ -32,10 +32,6 @@ kotlin {
         commonMain.dependencies {
             api(project(":alarmee"))
 
-            // Tweener
-            implementation(project.dependencies.platform(libs.tweener.bom))
-            implementation(libs.tweener.common)
-
             // Compose
             implementation(compose.runtime)
             implementation(compose.foundation)

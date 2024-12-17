@@ -14,9 +14,9 @@ import com.tweener.alarmee.channel.AlarmeeNotificationChannel
 import com.tweener.alarmee.channel.NotificationChannelRegister
 import com.tweener.alarmee.configuration.AlarmeeAndroidPlatformConfiguration
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
-import com.tweener.common._internal.kotlinextensions.getAlarmManager
-import com.tweener.common._internal.kotlinextensions.getNotificationManager
-import com.tweener.common._internal.kotlinextensions.toEpochMilliseconds
+import com.tweener.kmpkit.kotlinextensions.getAlarmManager
+import com.tweener.kmpkit.kotlinextensions.getNotificationManager
+import com.tweener.kmpkit.kotlinextensions.toEpochMilliseconds
 
 /**
  * @author Vivien Mahe

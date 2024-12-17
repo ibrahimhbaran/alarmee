@@ -2,8 +2,8 @@ package com.tweener.alarmee
 
 import androidx.compose.runtime.Composable
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
-import com.tweener.common._internal.kotlinextensions.now
-import com.tweener.common._internal.kotlinextensions.plus
+import com.tweener.kmpkit.kotlinextensions.now
+import com.tweener.kmpkit.kotlinextensions.plus
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDateTime
 import kotlin.contracts.ExperimentalContracts
