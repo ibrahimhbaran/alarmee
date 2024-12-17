@@ -5,10 +5,10 @@ dependencyVersionsPlugin = "0.51.0"
 nexusSonatype = "2.0.0"
 dokka = "1.9.20"
 coroutines = "1.9.0"
-composeMultiplatform = "1.7.0"
+composeMultiplatform = "1.7.1"
 
 # Tweener
-tweenerBom = "2.2.1"
+tweenerBom = "2.2.2"
 
 # Android
 androidActivity = "1.9.3"

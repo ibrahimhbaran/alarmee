@@ -1,13 +1,19 @@
 package com.tweener.alarmee
 
+import kotlin.time.Duration
+
 /**
+ * Represents the repeat interval for an alarm.
+ * It provides predefined intervals (e.g., hourly, daily) and supports custom intervals.
+ *
  * @author Vivien Mahe
  * @since 18/11/2024
  */
-enum class RepeatInterval {
-    HOURLY,
-    DAILY,
-    WEEKLY,
-    MONTHLY,
-    YEARLY;
+sealed class RepeatInterval {
+    data object Hourly : RepeatInterval()
+    data object Daily : RepeatInterval()
+    data object Weekly : RepeatInterval()
+    data object Monthly : RepeatInterval()
+    data object Yearly : RepeatInterval()
+    data class Custom(val duration: Duration) : RepeatInterval()
 }

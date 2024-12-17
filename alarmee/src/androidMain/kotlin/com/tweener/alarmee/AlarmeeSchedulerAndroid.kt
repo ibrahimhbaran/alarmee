@@ -66,11 +66,12 @@ class AlarmeeSchedulerAndroid(
 
         // Schedule the alarm according to the repeat interval
         val intervalMillis = when (repeatInterval) {
-            RepeatInterval.HOURLY -> AlarmManager.INTERVAL_HOUR
-            RepeatInterval.DAILY -> AlarmManager.INTERVAL_DAY
-            RepeatInterval.WEEKLY -> AlarmManager.INTERVAL_DAY * 7
-            RepeatInterval.MONTHLY -> AlarmManager.INTERVAL_DAY * 30
-            RepeatInterval.YEARLY -> AlarmManager.INTERVAL_DAY * 30 * 12
+            is RepeatInterval.Hourly -> AlarmManager.INTERVAL_HOUR
+            is RepeatInterval.Daily -> AlarmManager.INTERVAL_DAY
+            is RepeatInterval.Weekly -> AlarmManager.INTERVAL_DAY * 7
+            is RepeatInterval.Monthly -> AlarmManager.INTERVAL_DAY * 30
+            is RepeatInterval.Yearly -> AlarmManager.INTERVAL_DAY * 30 * 12
+            is RepeatInterval.Custom -> repeatInterval.duration.inWholeMilliseconds
         }
 
         context.getAlarmManager()?.let { alarmManager ->

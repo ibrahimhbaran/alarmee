@@ -5,6 +5,8 @@ import androidx.compose.runtime.remember
 import com.tweener.alarmee.configuration.AlarmeeIosPlatformConfiguration
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
 import com.tweener.common._internal.kotlinextensions.toEpochMilliseconds
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.isoDayNumber
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSCalendarUnitDay
@@ -23,6 +25,7 @@ import platform.UserNotifications.UNCalendarNotificationTrigger
 import platform.UserNotifications.UNMutableNotificationContent
 import platform.UserNotifications.UNNotificationRequest
 import platform.UserNotifications.UNNotificationTrigger
+import platform.UserNotifications.UNTimeIntervalNotificationTrigger
 import platform.UserNotifications.UNUserNotificationCenter
 
 /**
@@ -42,65 +45,81 @@ class AlarmeeSchedulerIos(
 ) : AlarmeeScheduler() {
 
     override fun scheduleAlarm(alarmee: Alarmee, onSuccess: () -> Unit) {
-        val nsDateTime = NSDate.dateWithTimeIntervalSince1970(secs = alarmee.scheduledDateTime.toEpochMilliseconds(timeZone = alarmee.timeZone) / 1000.0)
-        val dateComponents = NSCalendar.currentCalendar.components(
-            unitFlags = NSCalendarUnitYear or NSCalendarUnitMonth or NSCalendarUnitDay or NSCalendarUnitHour or NSCalendarUnitMinute or NSCalendarUnitSecond,
-            fromDate = nsDateTime,
-        )
+        val trigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = alarmee.scheduledDateTime.toNSDateComponents(), repeats = false)
 
-        val trigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = dateComponents, repeats = false)
-
-        configureNotification(alarmee = alarmee, notificationTrigger = trigger, onSuccess = onSuccess)
+        configureNotification(uuid = alarmee.uuid, alarmee = alarmee, notificationTrigger = trigger, onSuccess = onSuccess)
     }
 
     override fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: RepeatInterval, onSuccess: () -> Unit) {
-        val dateComponents = NSDateComponents()
-        dateComponents.calendar = NSCalendar.currentCalendar
+        // Schedule the first notification at the start date
+        val firstTrigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = alarmee.scheduledDateTime.toNSDateComponents(), repeats = false)
 
-        dateComponents.second = alarmee.scheduledDateTime.second.toLong()
-        dateComponents.minute = alarmee.scheduledDateTime.minute.toLong()
+        // Create a specific uuid for the one-off notification, so it is different from the one for the repeating notification.
+        // Two notifications with the same identifier will overwrite each other, therefore, the repeating notification overwrites the one-off notification before the first one has a chance to trigger.
+        val firstRepeatingUuid = getFirstRepeatingNotificationUuid(uuid = alarmee.uuid)
 
-        when (repeatInterval) {
-            RepeatInterval.HOURLY -> Unit // No need to set specific date or hour; repeats every hour
+        configureNotification(
+            uuid = firstRepeatingUuid,
+            alarmee = alarmee,
+            notificationTrigger = firstTrigger,
+            onSuccess = {
+                // Schedule subsequent notifications at the repeat interval
+                val repeatTrigger = if (repeatInterval is RepeatInterval.Custom) {
+                    UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(timeInterval = repeatInterval.duration.inWholeMilliseconds / 1000.0, repeats = true)
+                } else {
+                    val dateComponents = NSDateComponents()
+                    dateComponents.calendar = NSCalendar.currentCalendar
 
-            RepeatInterval.DAILY -> {
-                dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
+                    dateComponents.second = alarmee.scheduledDateTime.second.toLong()
+                    dateComponents.minute = alarmee.scheduledDateTime.minute.toLong()
+
+                    when (repeatInterval) {
+                        is RepeatInterval.Custom -> Unit // Nothing to do, already handled before
+                        is RepeatInterval.Hourly -> Unit // No need to set specific date or hour; repeats every hour
+
+                        is RepeatInterval.Daily -> {
+                            dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
+                        }
+
+                        is RepeatInterval.Weekly -> {
+                            dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
+                            dateComponents.weekday = alarmee.scheduledDateTime.dayOfWeek.isoDayNumber.toLong()
+                        }
+
+                        is RepeatInterval.Monthly -> {
+                            dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
+                            dateComponents.day = alarmee.scheduledDateTime.dayOfMonth.toLong()
+                        }
+
+                        is RepeatInterval.Yearly -> {
+                            dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
+                            dateComponents.day = alarmee.scheduledDateTime.dayOfMonth.toLong()
+                            dateComponents.month = alarmee.scheduledDateTime.monthNumber.toLong()
+                        }
+                    }
+
+                    UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = dateComponents, repeats = true)
+                }
+
+                configureNotification(uuid = alarmee.uuid, alarmee = alarmee, notificationTrigger = repeatTrigger, onSuccess = {})
+
+                onSuccess()
             }
-
-            RepeatInterval.WEEKLY -> {
-                dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
-                dateComponents.weekday = alarmee.scheduledDateTime.dayOfWeek.isoDayNumber.toLong()
-            }
-
-            RepeatInterval.MONTHLY -> {
-                dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
-                dateComponents.day = alarmee.scheduledDateTime.dayOfMonth.toLong()
-            }
-
-            RepeatInterval.YEARLY -> {
-                dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
-                dateComponents.day = alarmee.scheduledDateTime.dayOfMonth.toLong()
-                dateComponents.month = alarmee.scheduledDateTime.monthNumber.toLong()
-            }
-        }
-
-        val trigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = dateComponents, repeats = true)
-
-        configureNotification(alarmee = alarmee, notificationTrigger = trigger, onSuccess = onSuccess)
+        )
     }
 
     override fun cancelAlarm(uuid: String) {
         val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
-        notificationCenter.removePendingNotificationRequestsWithIdentifiers(identifiers = listOf(uuid))
+        notificationCenter.removePendingNotificationRequestsWithIdentifiers(identifiers = listOf(uuid, getFirstRepeatingNotificationUuid(uuid = uuid)))
     }
 
-    private fun configureNotification(alarmee: Alarmee, notificationTrigger: UNNotificationTrigger, onSuccess: () -> Unit) {
+    private fun configureNotification(uuid: String, alarmee: Alarmee, notificationTrigger: UNNotificationTrigger, onSuccess: () -> Unit) {
         val content = UNMutableNotificationContent().apply {
             setTitle(alarmee.notificationTitle)
             setBody(alarmee.notificationBody)
         }
 
-        val request = UNNotificationRequest.requestWithIdentifier(identifier = alarmee.uuid, content = content, trigger = notificationTrigger)
+        val request = UNNotificationRequest.requestWithIdentifier(identifier = uuid, content = content, trigger = notificationTrigger)
 
         val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
         notificationCenter.requestAuthorizationWithOptions(options = UNAuthorizationOptionAlert or UNAuthorizationOptionSound or UNAuthorizationOptionBadge) { granted, authorizationError ->
@@ -119,4 +138,15 @@ class AlarmeeSchedulerIos(
             }
         }
     }
+
+    private fun LocalDateTime.toNSDateComponents(timeZone: TimeZone = TimeZone.currentSystemDefault()): NSDateComponents {
+        val nsDateTime = NSDate.dateWithTimeIntervalSince1970(secs = this.toEpochMilliseconds(timeZone = timeZone) / 1000.0)
+
+        return NSCalendar.currentCalendar.components(
+            unitFlags = NSCalendarUnitYear or NSCalendarUnitMonth or NSCalendarUnitDay or NSCalendarUnitHour or NSCalendarUnitMinute or NSCalendarUnitSecond,
+            fromDate = nsDateTime,
+        )
+    }
+
+    private fun getFirstRepeatingNotificationUuid(uuid: String) = "${uuid}_${uuid}"
 }

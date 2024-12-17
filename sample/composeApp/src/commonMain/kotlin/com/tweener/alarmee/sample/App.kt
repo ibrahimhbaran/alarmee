@@ -28,6 +28,7 @@ import com.tweener.common._internal.kotlinextensions.now
 import com.tweener.common._internal.kotlinextensions.toEpochMilliseconds
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
+import kotlin.time.Duration.Companion.minutes
 
 @Composable
 fun App() {
@@ -62,17 +63,36 @@ fun App() {
                     alarmeeScheduler.schedule(
                         alarmee = Alarmee(
                             uuid = "myRepeatingAlarmId",
-                            notificationTitle = "🔁 Congratulations! You've schedule a repeating Alarmee!",
-                            notificationBody = "This is the notification that will be displayed every day at 09:36.",
+                            notificationTitle = "🔁 Congratulations! You've schedule a daily repeating Alarmee!",
+                            notificationBody = "This notification will be displayed on December 26th, 2024, at 09:36 and will repeat every day at 09:36.",
                             scheduledDateTime = LocalDateTime(year = 2024, month = Month.DECEMBER, dayOfMonth = 26, hour = 9, minute = 36),
-                            repeatInterval = RepeatInterval.DAILY,
+                            repeatInterval = RepeatInterval.Daily,
+                            androidNotificationConfiguration = AndroidNotificationConfiguration(
+                                priority = AndroidNotificationPriority.HIGH,
+                                channelId = "breakingNewsChannelId",
+                            ),
+                        )
+                    )
+                }) { Text("Set a daily repeating Alarmee") }
+
+                Button(onClick = {
+                    val now = LocalDateTime.now()
+                    val alarmeeDateTime = (now.toEpochMilliseconds() + 5 * 1000).fromEpochMilliseconds() // 5 seconds from now
+
+                    alarmeeScheduler.schedule(
+                        alarmee = Alarmee(
+                            uuid = "myRepeatingAlarmId",
+                            notificationTitle = "🔁 Congratulations! You've schedule a custom repeating Alarmee!",
+                            notificationBody = "This is the notification that will be displayed in 5 seconds and then every 15 minutes.",
+                            scheduledDateTime = alarmeeDateTime,
+                            repeatInterval = RepeatInterval.Custom(duration = 15.minutes),
                             androidNotificationConfiguration = AndroidNotificationConfiguration(
                                 priority = AndroidNotificationPriority.MAXIMUM,
                                 channelId = "breakingNewsChannelId",
                             ),
                         )
                     )
-                }) { Text("Set a repeating Alarmee") }
+                }) { Text("Set a custom repeating Alarmee") }
             }
         }
     }

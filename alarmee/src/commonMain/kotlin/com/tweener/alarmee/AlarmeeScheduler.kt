@@ -33,7 +33,8 @@ abstract class AlarmeeScheduler {
      * @param alarmee The [Alarmee] object containing the configuration for the alarm.
      */
     fun schedule(alarmee: Alarmee) {
-        // Schedule an alarm with the correct calculated time
+        validateAlarmee(alarmee = alarmee)
+
         val scheduledDateTime = adjustDateInFuture(alarmee)
         val updatedAlarmee = alarmee.copy(scheduledDateTime = scheduledDateTime)
 
@@ -41,11 +42,12 @@ abstract class AlarmeeScheduler {
             ?.let { repeatInterval ->
                 scheduleRepeatingAlarm(alarmee = updatedAlarmee, repeatInterval = repeatInterval) {
                     val message = when (repeatInterval) {
-                        RepeatInterval.HOURLY -> "every hour at minute: ${scheduledDateTime.minute}"
-                        RepeatInterval.DAILY -> "every day at ${scheduledDateTime.time}"
-                        RepeatInterval.WEEKLY -> "every week on ${scheduledDateTime.dayOfWeek} at ${scheduledDateTime.time}"
-                        RepeatInterval.MONTHLY -> "every month on day ${scheduledDateTime.dayOfMonth} at ${scheduledDateTime.time}"
-                        RepeatInterval.YEARLY -> "every year on the ${scheduledDateTime.month}/${scheduledDateTime.dayOfMonth} at ${scheduledDateTime.time}"
+                        is RepeatInterval.Hourly -> "every hour at minute: ${scheduledDateTime.minute}"
+                        is RepeatInterval.Daily -> "every day at ${scheduledDateTime.time}"
+                        is RepeatInterval.Weekly -> "every week on ${scheduledDateTime.dayOfWeek} at ${scheduledDateTime.time}"
+                        is RepeatInterval.Monthly -> "every month on day ${scheduledDateTime.dayOfMonth} at ${scheduledDateTime.time}"
+                        is RepeatInterval.Yearly -> "every year on the ${scheduledDateTime.month}/${scheduledDateTime.dayOfMonth} at ${scheduledDateTime.time}"
+                        is RepeatInterval.Custom -> "every ${repeatInterval.duration} from ${scheduledDateTime.time}"
                     }
 
                     println("Notification with title '${updatedAlarmee.notificationTitle}' scheduled $message.")
@@ -74,6 +76,12 @@ abstract class AlarmeeScheduler {
 
     internal abstract fun cancelAlarm(uuid: String)
 
+    private fun validateAlarmee(alarmee: Alarmee) {
+        if (alarmee.repeatInterval is RepeatInterval.Custom) {
+            require(alarmee.repeatInterval.duration.isPositive()) { "Custom repeat interval duration must be greater than zero." }
+        }
+    }
+
     /**
      * Adjusts the scheduled date and time to the future if it's in the past.
      * - For one-off alarms, adjusts to the next day.
@@ -91,15 +99,14 @@ abstract class AlarmeeScheduler {
                 now.plus(1, DateTimeUnit.DAY, timeZone = alarmee.timeZone)
             } else {
                 // Repeating alarm: adjust to the next valid occurrence
-                val dateTimeUnit = when (alarmee.repeatInterval) {
-                    RepeatInterval.HOURLY -> DateTimeUnit.HOUR
-                    RepeatInterval.DAILY -> DateTimeUnit.DAY
-                    RepeatInterval.WEEKLY -> DateTimeUnit.WEEK
-                    RepeatInterval.MONTHLY -> DateTimeUnit.MONTH
-                    RepeatInterval.YEARLY -> DateTimeUnit.YEAR
+                when (alarmee.repeatInterval) {
+                    is RepeatInterval.Hourly -> now.plus(value = 1, unit = DateTimeUnit.HOUR, timeZone = alarmee.timeZone)
+                    is RepeatInterval.Daily -> now.plus(value = 1, unit = DateTimeUnit.DAY, timeZone = alarmee.timeZone)
+                    is RepeatInterval.Weekly -> now.plus(value = 1, unit = DateTimeUnit.WEEK, timeZone = alarmee.timeZone)
+                    is RepeatInterval.Monthly -> now.plus(value = 1, unit = DateTimeUnit.MONTH, timeZone = alarmee.timeZone)
+                    is RepeatInterval.Yearly -> now.plus(value = 1, unit = DateTimeUnit.YEAR, timeZone = alarmee.timeZone)
+                    is RepeatInterval.Custom -> now.plus(duration = alarmee.repeatInterval.duration, timeZone = alarmee.timeZone)
                 }
-
-                now.plus(1, dateTimeUnit, timeZone = alarmee.timeZone)
             }
 
             println("The scheduled date and time (${alarmee.scheduledDateTime}) was in the past. It has been adjusted to the future: $adjustedDateTime")
