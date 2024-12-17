@@ -169,20 +169,41 @@ alarmeeScheduler.schedule(
 ```
 
 ### 3. Scheduling a repeating alarm
-You can specify a [`RepeatInterval`](https://github.com/Tweener/alarmee/blob/main/alarmee/src/commonMain/kotlin/com/tweener/alarmee/RepeatInterval.kt) parameter, which allows scheduling an alarm to repeat hourly, daily, weekly, monthly, or yearly, based on the specified scheduledDateTime.
+You can specify a [`RepeatInterval`](https://github.com/Tweener/alarmee/blob/main/alarmee/src/commonMain/kotlin/com/tweener/alarmee/RepeatInterval.kt) parameter, which allows scheduling an alarm to repeat hourly, daily, weekly, monthly, yearly or custom, based on the specified scheduledDateTime.
 
-For instance, to schedule an alarm to repeat every day at 9:30 AM, you can use `RepeatInterval.DAILY`:
+#### Fixed repeat interval
+You can use a fixed repeat interval to schedule an Alarmee every hour, day, week, month, or year.
+For instance, to schedule an alarm to start on January 12th, 2025, and repeat every day at 9:30 AM, you can use `RepeatInterval.Daily`:
 ```Kotlin
 alarmeeScheduler.schedule(
     alarmee = Alarmee(
         uuid = "myAlarmId",
-        notificationTitle = "🔁 Congratulations! You've schedule a repeating Alarmee!",
-        notificationBody = "This is the notification that will be displayed every day at 09:30.",
-        scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 12, hour = 9, minute = 30), // In this case, year, month and dayOfMonth are ignored
-        repeatInterval = RepeatInterval.DAILY, // Will schedule an alarm every day
+        notificationTitle = "🔁 Congratulations! You've schedule a daily repeating Alarmee!",
+        notificationBody = "This notification will be displayed on January 12th, 2025, and will repeat every day at 09:30.",
+        scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 12, hour = 9, minute = 30),
+        repeatInterval = RepeatInterval.Daily, // Will repeat every day
         androidNotificationConfiguration = AndroidNotificationConfiguration( // Required confiuration for Android target only (this parameter is ignored on iOS)
             priority = AndroidNotificationPriority.DEFAULT,
             channelId = "dailyNewsChannelId",
+        )
+    )
+)
+```
+
+#### Custom repeat interval
+You can also set a custom repeat interval using `RepeatInterval.Custom(duration)` to schedule an Alarmee at a specified duration interval.
+For example, to schedule an alarm to start on January 1st, 2025, at 9:30 AM, and repeat every 15 minutes, you can use `RepeatInterval.Custom(duration = 15.minutes)`:
+```Kotlin
+alarmeeScheduler.schedule(
+    alarmee = Alarmee(
+        uuid = "myAlarmId",
+        notificationTitle = "🔁 Congratulations! You've schedule a custom repeating Alarmee!",
+        notificationBody = "This notification will be displayed on January 1st, 2025, at 9:30 AM and will repeat every 15 minutes",
+        scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 1, hour = 9, minute = 30),
+        repeatInterval = RepeatInterval.Custom(duration = 15.minutes), // Will repeat every 15 minutes
+        androidNotificationConfiguration = AndroidNotificationConfiguration( // Required confiuration for Android target only (this parameter is ignored on iOS)
+            priority = AndroidNotificationPriority.DEFAULT,
+            channelId = "otherChannelId",
         )
     )
 )
