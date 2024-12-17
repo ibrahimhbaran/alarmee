@@ -160,7 +160,7 @@ alarmeeScheduler.schedule(
         notificationTitle = "🎉 Congratulations! You've schedule an Alarmee!",
         notificationBody = "This is the notification that will be displayed at the specified date and time.",
         scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 12, hour = 17, minute = 0),
-        androidNotificationConfiguration = AndroidNotificationConfiguration( // Required confiuration for Android target only (this parameter is ignored on iOS)
+        androidNotificationConfiguration = AndroidNotificationConfiguration( // Required configuration for Android target only (this parameter is ignored on iOS)
             priority = AndroidNotificationPriority.HIGH,
             channelId = "dailyNewsChannelId",
         )
@@ -182,7 +182,7 @@ alarmeeScheduler.schedule(
         notificationBody = "This notification will be displayed on January 12th, 2025, and will repeat every day at 09:30.",
         scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 12, hour = 9, minute = 30),
         repeatInterval = RepeatInterval.Daily, // Will repeat every day
-        androidNotificationConfiguration = AndroidNotificationConfiguration( // Required confiuration for Android target only (this parameter is ignored on iOS)
+        androidNotificationConfiguration = AndroidNotificationConfiguration( // Required configuration for Android target only (this parameter is ignored on iOS)
             priority = AndroidNotificationPriority.DEFAULT,
             channelId = "dailyNewsChannelId",
         )
@@ -201,7 +201,7 @@ alarmeeScheduler.schedule(
         notificationBody = "This notification will be displayed on January 1st, 2025, at 9:30 AM and will repeat every 15 minutes",
         scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 1, hour = 9, minute = 30),
         repeatInterval = RepeatInterval.Custom(duration = 15.minutes), // Will repeat every 15 minutes
-        androidNotificationConfiguration = AndroidNotificationConfiguration( // Required confiuration for Android target only (this parameter is ignored on iOS)
+        androidNotificationConfiguration = AndroidNotificationConfiguration( // Required configuration for Android target only (this parameter is ignored on iOS)
             priority = AndroidNotificationPriority.DEFAULT,
             channelId = "otherChannelId",
         )
