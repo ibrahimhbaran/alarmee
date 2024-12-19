@@ -27,7 +27,7 @@ Be sure to show your support by starring ⭐️ this repository, and feel free t
 ## 🌟 Features
 
 - 📅 **One-off alarm**: Schedule an alarm to trigger at a specific date and time.
-- 🔁 **Repeating alarm**: Schedule recurring alarms with intervals: hourly, daily, weekly, monthly, or yearly.
+- 🔁 **Repeating alarm**: Schedule recurring alarms with intervals: hourly, daily, weekly, monthly, yearly or custom (providing a duration).
 - **Extensible Configuration**: Customize alarms and notifications with platform-specific settings.
 
 ---
