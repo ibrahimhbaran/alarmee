@@ -32,6 +32,8 @@ kotlin {
         commonMain.dependencies {
             api(project(":alarmee"))
 
+            implementation(libs.tweener.kmpkit)
+
             // Compose
             implementation(compose.runtime)
             implementation(compose.foundation)
