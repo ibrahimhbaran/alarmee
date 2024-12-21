@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.4.1] - December 21, 2024
+- 🤖 On Android, you can now customize the notification icon color and drawable for all notifications in your app or on a per-notification basis.
+
 ## [1.4.0] - December 17, 2024
 - It is now possible to schedule a repeating Alarmee with a specific `Duration` interval, using [RepeatInterval.Custom](https://github.com/Tweener/alarmee/blob/main/alarmee/src/commonMain/kotlin/com/tweener/alarmee/RepeatInterval.kt#L18). See [sample](https://github.com/Tweener/alarmee/blob/main/sample/composeApp/src/commonMain/kotlin/com/tweener/alarmee/sample/App.kt#L78-L95).
 - **`[BREAKING]`** `RepeatInterval` is now a sealed class instead of an enum class.
