@@ -83,6 +83,7 @@ In the `androidMain` module, create a `AlarmeeAndroidPlatformConfiguration(...)`
 ```Kotlin
 val platformConfiguration: AlarmeePlatformConfiguration = AlarmeeAndroidPlatformConfiguration(
     notificationIconResId = R.drawable.ic_notification,
+    notificationIconColor = androidx.compose.ui.graphics.Color.Red, // Defaults to Color.Transparent is not specified
     notificationChannels = listOf(
         AlarmeeNotificationChannel(
             id = "dailyNewsChannelId",
@@ -92,7 +93,7 @@ val platformConfiguration: AlarmeePlatformConfiguration = AlarmeeAndroidPlatform
         AlarmeeNotificationChannel(
             id = "breakingNewsChannelId",
             name = "Breaking news notifications",
-            importance = NotificationManager.IMPORTANCE_LOW
+            importance = NotificationManager.IMPORTANCE_LOW,
         ),
         // List all the notification channels you need here
     )
@@ -214,6 +215,35 @@ An alarm can be cancelled using its uuid, using `Alarmee#cancel(...)`. If an ala
 ```Kotlin
 alarmeeScheduler.cancel(uuid = "myAlarmId")
 ```
+
+### 5. Notification customization
+#### 🤖 Android-specific customization
+
+* **Global icon customization**: You can set a default notification icon color and drawable for all notifications for your app.
+```Kotlin
+AlarmeeAndroidPlatformConfiguration(
+    notificationIconResId = R.drawable.ic_notification,
+    notificationIconColor = Color.Yellow,
+    // ...
+)
+```
+
+* Per-alarm icon customization: Override the global defaults by specifying the icon color and drawable for individual notifications.
+```Kotlin
+alarmeeScheduler.schedule(
+    alarmee = Alarmee(
+        androidNotificationConfiguration = AndroidNotificationConfiguration(
+            notificationIconResId = R.drawable.ic_another_notification,
+            notificationIconColor = Color.Red,
+            // ...
+        ),
+        // ...
+    )
+)
+```
+
+#### 🍎 iOS-specific customization
+On iOS, customizing icon colors and drawables is not supported.
 
 ---
 
