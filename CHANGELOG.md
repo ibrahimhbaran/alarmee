@@ -1,6 +1,7 @@
 # Changelog
 
 ## [1.4.1] - December 21, 2024
+- Use KMPKit library instead of deprecated kmp-common.
 - 🤖 On Android, you can now customize the notification icon color and drawable for all notifications in your app or on a per-notification basis.
 
 ## [1.4.0] - December 17, 2024
