@@ -1,5 +1,6 @@
 package com.tweener.alarmee
 
+import androidx.compose.ui.graphics.Color
 import com.tweener.alarmee.AndroidNotificationPriority.DEFAULT
 import com.tweener.alarmee.AndroidNotificationPriority.HIGH
 import com.tweener.alarmee.AndroidNotificationPriority.LOW
@@ -41,6 +42,8 @@ data class Alarmee(
 data class AndroidNotificationConfiguration(
     val priority: AndroidNotificationPriority = DEFAULT,
     val channelId: String? = null,
+    val notificationIconResId: Int? = null,
+    val notificationIconColor: Color? = null,
 )
 
 /**

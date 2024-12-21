@@ -1,5 +1,6 @@
 package com.tweener.alarmee.configuration
 
+import androidx.compose.ui.graphics.Color
 import com.tweener.alarmee.channel.AlarmeeNotificationChannel
 
 /**
@@ -8,5 +9,6 @@ import com.tweener.alarmee.channel.AlarmeeNotificationChannel
  */
 data class AlarmeeAndroidPlatformConfiguration(
     val notificationIconResId: Int,
+    val notificationIconColor: Color = Color.Transparent,
     val notificationChannels: List<AlarmeeNotificationChannel>,
 ) : AlarmeePlatformConfiguration

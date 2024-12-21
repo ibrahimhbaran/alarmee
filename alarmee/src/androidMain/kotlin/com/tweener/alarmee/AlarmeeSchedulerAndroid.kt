@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.NotificationCompat
 import com.tweener.alarmee.channel.AlarmeeNotificationChannel
@@ -137,6 +138,10 @@ class AlarmeeSchedulerAndroid(
     private fun getPendingIntent(context: Context, alarmee: Alarmee): PendingIntent {
         val priority = mapPriority(priority = alarmee.androidNotificationConfiguration.priority)
 
+        // If the alarmee doesn't have a specific icon or color, use the default configuration
+        val notificationResId = alarmee.androidNotificationConfiguration.notificationIconResId ?: configuration.notificationIconResId
+        val notificationIconColor = alarmee.androidNotificationConfiguration.notificationIconColor ?: configuration.notificationIconColor
+
         // Create the receiver intent with the alarm parameters
         val receiverIntent = Intent(context, NotificationBroadcastReceiver::class.java).apply {
             action = NotificationBroadcastReceiver.ALARM_ACTION
@@ -145,7 +150,8 @@ class AlarmeeSchedulerAndroid(
             putExtra(NotificationBroadcastReceiver.KEY_BODY, alarmee.notificationBody)
             putExtra(NotificationBroadcastReceiver.KEY_PRIORITY, priority)
             putExtra(NotificationBroadcastReceiver.KEY_CHANNEL_ID, alarmee.androidNotificationConfiguration.channelId)
-            putExtra(NotificationBroadcastReceiver.KEY_ICON_RES_ID, configuration.notificationIconResId)
+            putExtra(NotificationBroadcastReceiver.KEY_ICON_RES_ID, notificationResId)
+            putExtra(NotificationBroadcastReceiver.KEY_ICON_COLOR, notificationIconColor.toArgb())
         }
 
         // Create the broadcast pending intent
