@@ -32,4 +32,22 @@ class AlarmeeSchedulerWasmJs(
     override fun cancelAlarm(uuid: String) {
         TODO("Not yet implemented")
     }
+
+    override fun pushNotificationNow(uuid: String, title: String, body: String, channelId: String, priority: AndroidNotificationPriority) {
+        if (!("Notification" in js("window"))) {
+            println("This browser does not support notifications.")
+            return
+        }
+
+        val permission = js("Notification.permission").toString()
+        if (permission == "granted") {
+            val notification = js("new Notification(title, { body: body })")
+        } else if (permission != "denied") {
+            js("Notification.requestPermission()").then { result ->
+                if (result == "granted") {
+                    val notification = js("new Notification(title, { body: body })")
+                }
+            }
+        }
+    }
 }

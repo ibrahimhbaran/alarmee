@@ -93,6 +93,16 @@ fun App() {
                         )
                     )
                 }) { Text("Set a custom repeating Alarmee") }
+
+                Button(onClick = {
+                    alarmeeScheduler.pushNotificationNow(
+                        uuid = "immediateNotificationId",
+                        title = "🚀 Immediate Notification",
+                        body = "This is an immediate notification pushed without any schedule.",
+                        channelId = "immediateChannelId",
+                        priority = AndroidNotificationPriority.HIGH
+                    )
+                }) { Text("Push Notification Now") }
             }
         }
     }
