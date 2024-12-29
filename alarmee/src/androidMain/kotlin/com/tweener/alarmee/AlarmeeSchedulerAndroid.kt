@@ -107,7 +107,7 @@ class AlarmeeSchedulerAndroid(
         }
     }
 
-    fun pushNotificationNow(uuid: String, title: String, body: String, channelId: String, priority: AndroidNotificationPriority) {
+    override fun pushNotificationNow(uuid: String, title: String, body: String, channelId: String, priority: AndroidNotificationPriority) {
         createNotificationChannels(context = context)
         validateNotificationChannelId(channelId = channelId)
 

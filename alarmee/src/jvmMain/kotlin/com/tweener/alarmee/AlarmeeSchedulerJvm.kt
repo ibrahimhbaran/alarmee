@@ -36,16 +36,6 @@ class AlarmeeSchedulerJvm(
     }
 
     override fun pushNotificationNow(uuid: String, title: String, body: String, channelId: String, priority: AndroidNotificationPriority) {
-        if (SystemTray.isSupported()) {
-            val tray = SystemTray.getSystemTray()
-            val image = Toolkit.getDefaultToolkit().createImage("icon.png")
-            val trayIcon = TrayIcon(image, "Tray Demo")
-            trayIcon.isImageAutoSize = true
-            trayIcon.toolTip = "System tray icon demo"
-            trayIcon.displayMessage(title, body, MessageType.INFO)
-            tray.add(trayIcon)
-        } else {
-            println("System tray not supported!")
-        }
+        TODO("Not yet implemented")
     }
 }
