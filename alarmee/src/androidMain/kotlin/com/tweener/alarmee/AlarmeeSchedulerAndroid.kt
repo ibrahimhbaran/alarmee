@@ -107,6 +107,29 @@ class AlarmeeSchedulerAndroid(
         }
     }
 
+    fun pushNotificationNow(uuid: String, title: String, body: String, channelId: String, priority: AndroidNotificationPriority) {
+        createNotificationChannels(context = context)
+        validateNotificationChannelId(channelId = channelId)
+
+        val notification = NotificationCompat.Builder(context, channelId)
+            .apply {
+                setSmallIcon(configuration.notificationIconResId)
+                setContentTitle(title)
+                setContentText(body)
+                setPriority(mapPriority(priority))
+                setAutoCancel(true)
+            }
+            .build()
+
+        context.getNotificationManager()?.let { notificationManager ->
+            if (notificationManager.areNotificationsEnabled()) {
+                notificationManager.notify(uuid.hashCode(), notification)
+            } else {
+                println("Notifications permission is not granted! Can't show the notification.")
+            }
+        }
+    }
+
     private fun createNotificationChannels(context: Context) {
         // Create a notification channel for Android O and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -131,6 +154,16 @@ class AlarmeeSchedulerAndroid(
             context.getNotificationManager()?.let { notificationManager ->
                 val channelExists = notificationManager.notificationChannels.any { it.id == alarmee.androidNotificationConfiguration.channelId }
                 require(channelExists) { "The Alarmee is set with a notification channel (ID: ${alarmee.androidNotificationConfiguration.channelId}) that doest not exist." }
+            }
+        }
+    }
+
+    private fun validateNotificationChannelId(channelId: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Make sure channel exists
+            context.getNotificationManager()?.let { notificationManager ->
+                val channelExists = notificationManager.notificationChannels.any { it.id == channelId }
+                require(channelExists) { "The notification channel (ID: $channelId) does not exist." }
             }
         }
     }
