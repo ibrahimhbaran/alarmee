@@ -33,7 +33,7 @@ class AlarmeeSchedulerJs(
         TODO("Not yet implemented")
     }
 
-    override fun pushNotificationNow(uuid: String, title: String, body: String, channelId: String, priority: AndroidNotificationPriority) {
+    override fun pushNotificationNow(alarmee: Alarmee, onSuccess: () -> Unit) {
         TODO("Not yet implemented")
     }
 }

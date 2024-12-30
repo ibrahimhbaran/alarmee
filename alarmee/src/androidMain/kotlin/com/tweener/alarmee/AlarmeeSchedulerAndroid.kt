@@ -52,7 +52,7 @@ class AlarmeeSchedulerAndroid(
 
         // Schedule the alarm
         context.getAlarmManager()?.let { alarmManager ->
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmee.scheduledDateTime.toEpochMilliseconds(timeZone = alarmee.timeZone), pendingIntent)
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmee.scheduledDateTime!!.toEpochMilliseconds(timeZone = alarmee.timeZone), pendingIntent)
 
             // Notification scheduled successfully
             onSuccess()
@@ -76,7 +76,7 @@ class AlarmeeSchedulerAndroid(
         }
 
         context.getAlarmManager()?.let { alarmManager ->
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmee.scheduledDateTime.toEpochMilliseconds(timeZone = alarmee.timeZone), intervalMillis, pendingIntent)
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmee.scheduledDateTime!!.toEpochMilliseconds(timeZone = alarmee.timeZone), intervalMillis, pendingIntent)
 
             // Notification scheduled successfully
             onSuccess()
@@ -107,23 +107,31 @@ class AlarmeeSchedulerAndroid(
         }
     }
 
-    override fun pushNotificationNow(uuid: String, title: String, body: String, channelId: String, priority: AndroidNotificationPriority) {
+    override fun pushNotificationNow(alarmee: Alarmee, onSuccess: () -> Unit) {
         createNotificationChannels(context = context)
-        validateNotificationChannelId(channelId = channelId)
+        validateNotificationChannelId(alarmee)
 
-        val notification = NotificationCompat.Builder(context, channelId)
-            .apply {
-                setSmallIcon(configuration.notificationIconResId)
-                setContentTitle(title)
-                setContentText(body)
-                setPriority(mapPriority(priority))
-                setAutoCancel(true)
-            }
-            .build()
+        val notification = alarmee.androidNotificationConfiguration.channelId?.let {
+            NotificationCompat.Builder(
+                context,
+                it
+            )
+                .apply {
+                    setSmallIcon(configuration.notificationIconResId)
+                    setContentTitle(alarmee.notificationTitle)
+                    setContentText(alarmee.notificationBody)
+                    setPriority(mapPriority(alarmee.androidNotificationConfiguration.priority))
+                    setAutoCancel(true)
+                }
+                .build()
+        }
 
         context.getNotificationManager()?.let { notificationManager ->
             if (notificationManager.areNotificationsEnabled()) {
-                notificationManager.notify(uuid.hashCode(), notification)
+                notificationManager.notify(alarmee.uuid.hashCode(), notification)
+
+                // Notification sent
+                onSuccess()
             } else {
                 println("Notifications permission is not granted! Can't show the notification.")
             }
@@ -154,16 +162,6 @@ class AlarmeeSchedulerAndroid(
             context.getNotificationManager()?.let { notificationManager ->
                 val channelExists = notificationManager.notificationChannels.any { it.id == alarmee.androidNotificationConfiguration.channelId }
                 require(channelExists) { "The Alarmee is set with a notification channel (ID: ${alarmee.androidNotificationConfiguration.channelId}) that doest not exist." }
-            }
-        }
-    }
-
-    private fun validateNotificationChannelId(channelId: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Make sure channel exists
-            context.getNotificationManager()?.let { notificationManager ->
-                val channelExists = notificationManager.notificationChannels.any { it.id == channelId }
-                require(channelExists) { "The notification channel (ID: $channelId) does not exist." }
             }
         }
     }

@@ -25,6 +25,7 @@ import platform.UserNotifications.UNCalendarNotificationTrigger
 import platform.UserNotifications.UNMutableNotificationContent
 import platform.UserNotifications.UNNotificationRequest
 import platform.UserNotifications.UNNotificationTrigger
+import platform.UserNotifications.UNPushNotificationTrigger
 import platform.UserNotifications.UNTimeIntervalNotificationTrigger
 import platform.UserNotifications.UNUserNotificationCenter
 
@@ -45,14 +46,14 @@ class AlarmeeSchedulerIos(
 ) : AlarmeeScheduler() {
 
     override fun scheduleAlarm(alarmee: Alarmee, onSuccess: () -> Unit) {
-        val trigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = alarmee.scheduledDateTime.toNSDateComponents(), repeats = false)
+        val trigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = alarmee.scheduledDateTime!!.toNSDateComponents(), repeats = false)
 
         configureNotification(uuid = alarmee.uuid, alarmee = alarmee, notificationTrigger = trigger, onSuccess = onSuccess)
     }
 
     override fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: RepeatInterval, onSuccess: () -> Unit) {
         // Schedule the first notification at the start date
-        val firstTrigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = alarmee.scheduledDateTime.toNSDateComponents(), repeats = false)
+        val firstTrigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = alarmee.scheduledDateTime!!.toNSDateComponents(), repeats = false)
 
         // Create a specific uuid for the one-off notification, so it is different from the one for the repeating notification.
         // Two notifications with the same identifier will overwrite each other, therefore, the repeating notification overwrites the one-off notification before the first one has a chance to trigger.
@@ -113,29 +114,15 @@ class AlarmeeSchedulerIos(
         notificationCenter.removePendingNotificationRequestsWithIdentifiers(identifiers = listOf(uuid, getFirstRepeatingNotificationUuid(uuid = uuid)))
     }
 
-    override fun pushNotificationNow(uuid: String, title: String, body: String, channelId: String, priority: AndroidNotificationPriority) {
-        val content = UNMutableNotificationContent().apply {
-            setTitle(title)
-            setBody(body)
-        }
+    override fun pushNotificationNow(alarmee: Alarmee, onSuccess: () -> Unit) {
+        val trigger = UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(1.0, false)
 
-        val trigger = UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(1.0, repeats = false)
-
-        val request = UNNotificationRequest.requestWithIdentifier(identifier = uuid, content = content, trigger = trigger)
-
-        val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
-        notificationCenter.requestAuthorizationWithOptions(options = UNAuthorizationOptionAlert or UNAuthorizationOptionSound or UNAuthorizationOptionBadge) { granted, authorizationError ->
-            if (granted) {
-                // Schedule the notification
-                notificationCenter.addNotificationRequest(request) { requestError ->
-                    if (requestError != null) {
-                        println("Scheduling notification on iOS failed with error: $requestError")
-                    }
-                }
-            } else if (authorizationError != null) {
-                println("Error requesting notification permission: $authorizationError")
-            }
-        }
+        configureNotification(
+            uuid = alarmee.uuid,
+            alarmee = alarmee,
+            notificationTrigger = trigger,
+            onSuccess = onSuccess
+        )
     }
 
     private fun configureNotification(uuid: String, alarmee: Alarmee, notificationTrigger: UNNotificationTrigger, onSuccess: () -> Unit) {
