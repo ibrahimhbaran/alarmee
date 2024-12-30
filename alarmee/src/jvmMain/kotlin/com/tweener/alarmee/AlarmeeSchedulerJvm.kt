@@ -4,8 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
 import com.tweener.alarmee.configuration.AlarmeeJvmPlatformConfiguration
-import java.awt.*
-import java.awt.TrayIcon.MessageType
 
 /**
  * @author Vivien Mahe
