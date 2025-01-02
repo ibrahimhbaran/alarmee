@@ -45,14 +45,14 @@ class AlarmeeSchedulerIos(
 ) : AlarmeeScheduler() {
 
     override fun scheduleAlarm(alarmee: Alarmee, onSuccess: () -> Unit) {
-        val trigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = alarmee.scheduledDateTime.toNSDateComponents(), repeats = false)
+        val trigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = alarmee.scheduledDateTime.toNSDateComponents(timeZone = alarmee.timeZone), repeats = false)
 
-        configureNotification(uuid = alarmee.uuid, alarmee = alarmee, notificationTrigger = trigger, onSuccess = onSuccess)
+        configureNotification(uuid = alarmee.uuid, alarmee = alarmee, notificationTrigger = trigger, onScheduleSuccess = onSuccess)
     }
 
     override fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: RepeatInterval, onSuccess: () -> Unit) {
         // Schedule the first notification at the start date
-        val firstTrigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = alarmee.scheduledDateTime.toNSDateComponents(), repeats = false)
+        val firstTrigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = alarmee.scheduledDateTime.toNSDateComponents(timeZone = alarmee.timeZone), repeats = false)
 
         // Create a specific uuid for the one-off notification, so it is different from the one for the repeating notification.
         // Two notifications with the same identifier will overwrite each other, therefore, the repeating notification overwrites the one-off notification before the first one has a chance to trigger.
@@ -62,7 +62,7 @@ class AlarmeeSchedulerIos(
             uuid = firstRepeatingUuid,
             alarmee = alarmee,
             notificationTrigger = firstTrigger,
-            onSuccess = {
+            onScheduleSuccess = {
                 // Schedule subsequent notifications at the repeat interval
                 val repeatTrigger = if (repeatInterval is RepeatInterval.Custom) {
                     UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(timeInterval = repeatInterval.duration.inWholeMilliseconds / 1000.0, repeats = true)
@@ -101,7 +101,7 @@ class AlarmeeSchedulerIos(
                     UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = dateComponents, repeats = true)
                 }
 
-                configureNotification(uuid = alarmee.uuid, alarmee = alarmee, notificationTrigger = repeatTrigger, onSuccess = {})
+                configureNotification(uuid = alarmee.uuid, alarmee = alarmee, notificationTrigger = repeatTrigger, onScheduleSuccess = {})
 
                 onSuccess()
             }
@@ -113,7 +113,7 @@ class AlarmeeSchedulerIos(
         notificationCenter.removePendingNotificationRequestsWithIdentifiers(identifiers = listOf(uuid, getFirstRepeatingNotificationUuid(uuid = uuid)))
     }
 
-    private fun configureNotification(uuid: String, alarmee: Alarmee, notificationTrigger: UNNotificationTrigger, onSuccess: () -> Unit) {
+    private fun configureNotification(uuid: String, alarmee: Alarmee, notificationTrigger: UNNotificationTrigger, onScheduleSuccess: () -> Unit) {
         val content = UNMutableNotificationContent().apply {
             setTitle(alarmee.notificationTitle)
             setBody(alarmee.notificationBody)
@@ -128,10 +128,10 @@ class AlarmeeSchedulerIos(
                 notificationCenter.addNotificationRequest(request) { requestError ->
                     if (requestError != null) {
                         println("Scheduling notification on iOS failed with error: $requestError")
+                    } else {
+                        // Notification scheduled successfully
+                        onScheduleSuccess()
                     }
-
-                    // Notification scheduled successfully
-                    onSuccess()
                 }
             } else if (authorizationError != null) {
                 println("Error requesting notification permission: $authorizationError")
