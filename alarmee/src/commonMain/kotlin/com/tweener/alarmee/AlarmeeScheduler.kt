@@ -90,7 +90,7 @@ abstract class AlarmeeScheduler {
 
     internal abstract fun cancelAlarm(uuid: String)
 
-    abstract fun pushNotificationNow(alarmee: Alarmee, onSuccess: () -> Unit)
+    internal abstract fun pushAlarmee(alarmee: Alarmee, onSuccess: () -> Unit)
 
     private fun validateAlarmee(alarmee: Alarmee, schedule: Boolean = false) {
 
