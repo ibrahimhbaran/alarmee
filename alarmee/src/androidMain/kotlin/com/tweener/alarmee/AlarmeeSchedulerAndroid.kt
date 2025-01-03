@@ -107,7 +107,7 @@ class AlarmeeSchedulerAndroid(
         }
     }
 
-    override fun pushNotificationNow(alarmee: Alarmee, onSuccess: () -> Unit) {
+    override fun pushAlarmee(alarmee: Alarmee, onSuccess: () -> Unit) {
         createNotificationChannels(context = context)
         validateNotificationChannelId(alarmee)
 

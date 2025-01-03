@@ -68,7 +68,7 @@ abstract class AlarmeeScheduler {
     fun push(alarmee: Alarmee) {
         validateAlarmee(alarmee)
 
-        pushNotificationNow(alarmee = alarmee) {
+        pushAlarmee(alarmee = alarmee) {
             println("Notification with title '${alarmee.notificationTitle}' successfully sent.")
         }
     }

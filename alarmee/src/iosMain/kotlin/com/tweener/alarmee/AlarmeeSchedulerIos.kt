@@ -25,7 +25,6 @@ import platform.UserNotifications.UNCalendarNotificationTrigger
 import platform.UserNotifications.UNMutableNotificationContent
 import platform.UserNotifications.UNNotificationRequest
 import platform.UserNotifications.UNNotificationTrigger
-import platform.UserNotifications.UNPushNotificationTrigger
 import platform.UserNotifications.UNTimeIntervalNotificationTrigger
 import platform.UserNotifications.UNUserNotificationCenter
 
@@ -114,7 +113,7 @@ class AlarmeeSchedulerIos(
         notificationCenter.removePendingNotificationRequestsWithIdentifiers(identifiers = listOf(uuid, getFirstRepeatingNotificationUuid(uuid = uuid)))
     }
 
-    override fun pushNotificationNow(alarmee: Alarmee, onSuccess: () -> Unit) {
+    override fun pushAlarmee(alarmee: Alarmee, onSuccess: () -> Unit) {
         val trigger = UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(1.0, false)
 
         configureNotification(

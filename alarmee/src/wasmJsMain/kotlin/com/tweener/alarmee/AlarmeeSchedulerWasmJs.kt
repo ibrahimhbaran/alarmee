@@ -33,7 +33,7 @@ class AlarmeeSchedulerWasmJs(
         TODO("Not yet implemented")
     }
 
-    override fun pushNotificationNow(alarmee: Alarmee, onSuccess: () -> Unit) {
+    override fun pushAlarmee(alarmee: Alarmee, onSuccess: () -> Unit) {
         TODO("Not yet implemented")
     }
 }
