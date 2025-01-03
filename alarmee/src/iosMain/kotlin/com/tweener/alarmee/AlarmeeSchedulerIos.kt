@@ -114,7 +114,7 @@ class AlarmeeSchedulerIos(
     }
 
     override fun pushAlarmee(alarmee: Alarmee, onSuccess: () -> Unit) {
-        val trigger = UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(1.0, false)
+        val trigger = null
 
         configureNotification(
             uuid = alarmee.uuid,
@@ -124,7 +124,7 @@ class AlarmeeSchedulerIos(
         )
     }
 
-    private fun configureNotification(uuid: String, alarmee: Alarmee, notificationTrigger: UNNotificationTrigger, onSuccess: () -> Unit) {
+    private fun configureNotification(uuid: String, alarmee: Alarmee, notificationTrigger: UNNotificationTrigger?, onSuccess: () -> Unit) {
         val content = UNMutableNotificationContent().apply {
             setTitle(alarmee.notificationTitle)
             setBody(alarmee.notificationBody)
