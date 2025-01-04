@@ -28,6 +28,7 @@ Be sure to show your support by starring ⭐️ this repository, and feel free t
 
 - 📅 **One-off alarm**: Schedule an alarm to trigger at a specific date and time.
 - 🔁 **Repeating alarm**: Schedule recurring alarms with intervals: hourly, daily, weekly, monthly, yearly or custom (providing a duration).
+- 🚀 **Instant notifications**: Push notifications immediately without scheduling them.
 - **Extensible Configuration**: Customize alarms and notifications with platform-specific settings.
 
 ---
@@ -46,7 +47,7 @@ Then add Alarmee dependency to your module:
 - With version catalog, open `libs.versions.toml`:
 ```Groovy
 [versions]
-alarmee = "1.2.0" // Check latest version
+alarmee = "1.5.0" // Check latest version
 
 [libraries]
 alarmee = { group = "io.github.tweener", name = "alarmee", version.ref = "alarmee" }
@@ -62,7 +63,7 @@ dependencies {
 - Without version catalog, in your module `build.gradle.kts` add:
 ```Groovy
 dependencies {
-    val alarmee_version = "1.2.0" // Check latest version
+    val alarmee_version = "1.5.0" // Check latest version
 
     implementation("io.github.tweener:alarmee:$alarmee_version")
 }
@@ -174,13 +175,13 @@ You can specify a [`RepeatInterval`](https://github.com/Tweener/alarmee/blob/mai
 
 #### Fixed repeat interval
 You can use a fixed repeat interval to schedule an Alarmee every hour, day, week, month, or year.
-For instance, to schedule an alarm to start on January 12th, 2025, and repeat every day at 9:30 AM, you can use `RepeatInterval.Daily`:
+For instance, to schedule an alarm to repeat every day at 9:30 AM, you can use `RepeatInterval.Daily`:
 ```Kotlin
 alarmeeScheduler.schedule(
     alarmee = Alarmee(
         uuid = "myAlarmId",
         notificationTitle = "🔁 Congratulations! You've schedule a daily repeating Alarmee!",
-        notificationBody = "This notification will be displayed on January 12th, 2025, and will repeat every day at 09:30.",
+        notificationBody = "This notification will be displayed every day at 09:30.",
         scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 12, hour = 9, minute = 30),
         repeatInterval = RepeatInterval.Daily, // Will repeat every day
         androidNotificationConfiguration = AndroidNotificationConfiguration( // Required configuration for Android target only (this parameter is ignored on iOS)
@@ -193,14 +194,13 @@ alarmeeScheduler.schedule(
 
 #### Custom repeat interval
 You can also set a custom repeat interval using `RepeatInterval.Custom(duration)` to schedule an Alarmee at a specified duration interval.
-For example, to schedule an alarm to start on January 1st, 2025, at 9:30 AM, and repeat every 15 minutes, you can use `RepeatInterval.Custom(duration = 15.minutes)`:
+For example, to schedule an alarm to repeat every 15 minutes, you can use `RepeatInterval.Custom(duration = 15.minutes)`:
 ```Kotlin
 alarmeeScheduler.schedule(
     alarmee = Alarmee(
         uuid = "myAlarmId",
         notificationTitle = "🔁 Congratulations! You've schedule a custom repeating Alarmee!",
-        notificationBody = "This notification will be displayed on January 1st, 2025, at 9:30 AM and will repeat every 15 minutes",
-        scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 1, hour = 9, minute = 30),
+        notificationBody = "This notification will be displayed every 15 minutes",
         repeatInterval = RepeatInterval.Custom(duration = 15.minutes), // Will repeat every 15 minutes
         androidNotificationConfiguration = AndroidNotificationConfiguration( // Required configuration for Android target only (this parameter is ignored on iOS)
             priority = AndroidNotificationPriority.DEFAULT,
@@ -216,7 +216,23 @@ An alarm can be cancelled using its uuid, using `Alarmee#cancel(...)`. If an ala
 alarmeeScheduler.cancel(uuid = "myAlarmId")
 ```
 
-### 5. Notification customization
+### 5. Push an alarm right away
+You can push an alarm to instantly display a notification without scheduling it for a specific time:
+```Kotlin
+alarmeeScheduler.push(
+    alarmee = Alarmee(
+        uuid = "myAlarmId",
+        notificationTitle = "🚀 Congratulations! You've pushed an Alarmee right now!",
+        notificationBody = "This notification will be displayed right away",
+        androidNotificationConfiguration = AndroidNotificationConfiguration( // Required configuration for Android target only (this parameter is ignored on iOS)
+            priority = AndroidNotificationPriority.DEFAULT,
+            channelId = "immediateChannelId",
+        )
+    )
+)
+```
+
+### 6. Notification customization
 #### 🤖 Android-specific customization
 
 * **Global icon customization**: You can set a default notification icon color and drawable for all notifications for your app.
