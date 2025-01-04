@@ -8,6 +8,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
 import com.tweener.alarmee.android.R
+import com.tweener.alarmee.notification.NotificationFactory
 import com.tweener.kmpkit.kotlinextensions.getNotificationManager
 import com.tweener.kmpkit.safeLet
 
@@ -48,17 +49,7 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
                 val channelId = intent.getStringExtra(KEY_CHANNEL_ID) ?: DEFAULT_CHANNEL_ID
 
                 // Create the notification
-                val notification = NotificationCompat.Builder(context, channelId)
-                    .apply {
-                        setSmallIcon(iconResId)
-                        setContentTitle(title)
-                        setContentText(body)
-                        setPriority(priority)
-                        setColor(iconColor)
-                        setAutoCancel(true)
-                        setContentIntent(getPendingIntent(context = context)) // Handles click on notification
-                    }
-                    .build()
+                val notification = NotificationFactory.create(context = context, channelId = channelId, title = title, body = body, priority = priority, iconResId = iconResId, iconColor = iconColor)
 
                 // Display the notification
                 context.getNotificationManager()?.let { notificationManager ->

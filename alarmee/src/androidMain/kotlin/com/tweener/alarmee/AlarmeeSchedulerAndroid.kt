@@ -15,6 +15,7 @@ import com.tweener.alarmee.channel.AlarmeeNotificationChannel
 import com.tweener.alarmee.channel.NotificationChannelRegister
 import com.tweener.alarmee.configuration.AlarmeeAndroidPlatformConfiguration
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
+import com.tweener.alarmee.notification.NotificationFactory
 import com.tweener.kmpkit.kotlinextensions.getAlarmManager
 import com.tweener.kmpkit.kotlinextensions.getNotificationManager
 import com.tweener.kmpkit.kotlinextensions.toEpochMilliseconds
@@ -107,33 +108,36 @@ class AlarmeeSchedulerAndroid(
         }
     }
 
-    override fun pushAlarmee(alarmee: Alarmee, onSuccess: () -> Unit) {
+    override fun pushAlarm(alarmee: Alarmee, onSuccess: () -> Unit) {
         createNotificationChannels(context = context)
         validateNotificationChannelId(alarmee)
 
-        val notification = alarmee.androidNotificationConfiguration.channelId?.let {
-            NotificationCompat.Builder(
-                context,
-                it
+        alarmee.androidNotificationConfiguration.channelId?.let { channelId ->
+            val priority = mapPriority(priority = alarmee.androidNotificationConfiguration.priority)
+
+            // If the alarmee doesn't have a specific icon or color, use the default configuration
+            val notificationResId = alarmee.androidNotificationConfiguration.notificationIconResId ?: configuration.notificationIconResId
+            val notificationIconColor = alarmee.androidNotificationConfiguration.notificationIconColor ?: configuration.notificationIconColor
+
+            val notification = NotificationFactory.create(
+                context = context,
+                channelId = channelId,
+                title = alarmee.notificationTitle,
+                body = alarmee.notificationBody,
+                priority = priority,
+                iconResId = notificationResId,
+                iconColor = notificationIconColor.toArgb(),
             )
-                .apply {
-                    setSmallIcon(configuration.notificationIconResId)
-                    setContentTitle(alarmee.notificationTitle)
-                    setContentText(alarmee.notificationBody)
-                    setPriority(mapPriority(alarmee.androidNotificationConfiguration.priority))
-                    setAutoCancel(true)
+
+            context.getNotificationManager()?.let { notificationManager ->
+                if (notificationManager.areNotificationsEnabled()) {
+                    notificationManager.notify(alarmee.uuid.hashCode(), notification)
+
+                    // Notification sent
+                    onSuccess()
+                } else {
+                    println("Notifications permission is not granted! Can't show the notification.")
                 }
-                .build()
-        }
-
-        context.getNotificationManager()?.let { notificationManager ->
-            if (notificationManager.areNotificationsEnabled()) {
-                notificationManager.notify(alarmee.uuid.hashCode(), notification)
-
-                // Notification sent
-                onSuccess()
-            } else {
-                println("Notifications permission is not granted! Can't show the notification.")
             }
         }
     }

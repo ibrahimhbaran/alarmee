@@ -113,18 +113,11 @@ class AlarmeeSchedulerIos(
         notificationCenter.removePendingNotificationRequestsWithIdentifiers(identifiers = listOf(uuid, getFirstRepeatingNotificationUuid(uuid = uuid)))
     }
 
-    override fun pushAlarmee(alarmee: Alarmee, onSuccess: () -> Unit) {
-        val trigger = null
-
-        configureNotification(
-            uuid = alarmee.uuid,
-            alarmee = alarmee,
-            notificationTrigger = trigger,
-            onScheduleSuccess = onSuccess
-        )
+    override fun pushAlarm(alarmee: Alarmee, onSuccess: () -> Unit) {
+        configureNotification(uuid = alarmee.uuid, alarmee = alarmee, onScheduleSuccess = onSuccess)
     }
 
-    private fun configureNotification(uuid: String, alarmee: Alarmee, notificationTrigger: UNNotificationTrigger?, onScheduleSuccess: () -> Unit) {
+    private fun configureNotification(uuid: String, alarmee: Alarmee, notificationTrigger: UNNotificationTrigger? = null, onScheduleSuccess: () -> Unit) {
         val content = UNMutableNotificationContent().apply {
             setTitle(alarmee.notificationTitle)
             setBody(alarmee.notificationBody)

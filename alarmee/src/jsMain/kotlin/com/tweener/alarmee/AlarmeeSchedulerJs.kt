@@ -33,7 +33,7 @@ class AlarmeeSchedulerJs(
         TODO("Not yet implemented")
     }
 
-    override fun pushAlarmee(alarmee: Alarmee, onSuccess: () -> Unit) {
+    override fun pushAlarm(alarmee: Alarmee, onSuccess: () -> Unit) {
         TODO("Not yet implemented")
     }
 }

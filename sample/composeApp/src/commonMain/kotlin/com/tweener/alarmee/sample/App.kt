@@ -23,12 +23,12 @@ import com.tweener.alarmee.AndroidNotificationPriority
 import com.tweener.alarmee.RepeatInterval
 import com.tweener.alarmee.rememberAlarmeeScheduler
 import com.tweener.alarmee.sample.ui.theme.AlarmeeTheme
-import com.tweener.kmpkit.kotlinextensions.fromEpochMilliseconds
 import com.tweener.kmpkit.kotlinextensions.now
-import com.tweener.kmpkit.kotlinextensions.toEpochMilliseconds
+import com.tweener.kmpkit.kotlinextensions.plus
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.Month
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun App() {
@@ -42,15 +42,12 @@ fun App() {
                 verticalArrangement = Arrangement.spacedBy(space = 16.dp, alignment = Alignment.CenterVertically),
             ) {
                 Button(onClick = {
-                    val now = LocalDateTime.now()
-                    val alarmeeDateTime = (now.toEpochMilliseconds() + 5 * 1000).fromEpochMilliseconds() // 5 seconds from now
-
                     alarmeeScheduler.schedule(
                         alarmee = Alarmee(
                             uuid = "myOneOffAlarmId",
                             notificationTitle = "🎉 Congratulations! You've schedule a one-off Alarmee!",
-                            notificationBody = "This is the notification that will be displayed at the specified date and time.",
-                            scheduledDateTime = alarmeeDateTime,
+                            notificationBody = "This is the notification that will be displayed 10 seconds from now.",
+                            scheduledDateTime = LocalDateTime.now().plus(10.seconds),
                             androidNotificationConfiguration = AndroidNotificationConfiguration(
                                 priority = AndroidNotificationPriority.DEFAULT,
                                 channelId = "dailyNewsChannelId",
@@ -76,15 +73,12 @@ fun App() {
                 }) { Text("Set a daily repeating Alarmee") }
 
                 Button(onClick = {
-                    val now = LocalDateTime.now()
-                    val alarmeeDateTime = (now.toEpochMilliseconds() + 5 * 1000).fromEpochMilliseconds() // 5 seconds from now
-
                     alarmeeScheduler.schedule(
                         alarmee = Alarmee(
                             uuid = "myRepeatingAlarmId",
                             notificationTitle = "🔁 Congratulations! You've schedule a custom repeating Alarmee!",
                             notificationBody = "This is the notification that will be displayed in 5 seconds and then every 15 minutes.",
-                            scheduledDateTime = alarmeeDateTime,
+                            scheduledDateTime = LocalDateTime.now().plus(5.seconds),
                             repeatInterval = RepeatInterval.Custom(duration = 15.minutes),
                             androidNotificationConfiguration = AndroidNotificationConfiguration(
                                 priority = AndroidNotificationPriority.MAXIMUM,
@@ -102,7 +96,7 @@ fun App() {
                             notificationBody = "This is an immediate notification pushed without any schedule.",
                             androidNotificationConfiguration = AndroidNotificationConfiguration(
                                 priority = AndroidNotificationPriority.MINIMUM,
-                                channelId = "immediateChannelId"
+                                channelId = "immediateChannelId",
                             ),
                         )
                     )

@@ -68,7 +68,7 @@ abstract class AlarmeeScheduler {
     fun push(alarmee: Alarmee) {
         validateAlarmee(alarmee)
 
-        pushAlarmee(alarmee = alarmee) {
+        pushAlarm(alarmee = alarmee) {
             println("Notification with title '${alarmee.notificationTitle}' successfully sent.")
         }
     }
@@ -90,7 +90,7 @@ abstract class AlarmeeScheduler {
 
     internal abstract fun cancelAlarm(uuid: String)
 
-    internal abstract fun pushAlarmee(alarmee: Alarmee, onSuccess: () -> Unit)
+    internal abstract fun pushAlarm(alarmee: Alarmee, onSuccess: () -> Unit)
 
     private fun validateAlarmee(alarmee: Alarmee, schedule: Boolean = false) {
 
