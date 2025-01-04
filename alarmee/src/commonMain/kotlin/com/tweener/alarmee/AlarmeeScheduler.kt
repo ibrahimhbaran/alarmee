@@ -2,6 +2,7 @@ package com.tweener.alarmee
 
 import androidx.compose.runtime.Composable
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
+import com.tweener.kmpkit.kotlinextensions.ignoreNanoSeconds
 import com.tweener.kmpkit.kotlinextensions.now
 import com.tweener.kmpkit.kotlinextensions.plus
 import kotlinx.datetime.DateTimeUnit
@@ -9,6 +10,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import kotlin.reflect.KClass
+import kotlin.time.Duration.Companion.minutes
 
 /**
  * Creates an [AlarmeeScheduler] instance and remembers it.
@@ -35,19 +37,19 @@ abstract class AlarmeeScheduler {
     fun schedule(alarmee: Alarmee) {
         validateAlarmee(alarmee = alarmee, schedule = true)
 
-        val scheduledDateTime = adjustDateInFuture(alarmee)
+        val scheduledDateTime = adjustDateInFuture(alarmee = alarmee)
         val updatedAlarmee = alarmee.copy(scheduledDateTime = scheduledDateTime)
 
         updatedAlarmee.repeatInterval
             ?.let { repeatInterval ->
                 scheduleRepeatingAlarm(alarmee = updatedAlarmee, repeatInterval = repeatInterval) {
                     val message = when (repeatInterval) {
-                        is RepeatInterval.Hourly -> "every hour at minute: ${scheduledDateTime.minute}"
-                        is RepeatInterval.Daily -> "every day at ${scheduledDateTime.time}"
-                        is RepeatInterval.Weekly -> "every week on ${scheduledDateTime.dayOfWeek} at ${scheduledDateTime.time}"
-                        is RepeatInterval.Monthly -> "every month on day ${scheduledDateTime.dayOfMonth} at ${scheduledDateTime.time}"
-                        is RepeatInterval.Yearly -> "every year on the ${scheduledDateTime.month}/${scheduledDateTime.dayOfMonth} at ${scheduledDateTime.time}"
-                        is RepeatInterval.Custom -> "every ${repeatInterval.duration} from ${scheduledDateTime.time}"
+                        is RepeatInterval.Hourly -> "every hour at minute: ${scheduledDateTime!!.minute}"
+                        is RepeatInterval.Daily -> "every day at ${scheduledDateTime!!.time}"
+                        is RepeatInterval.Weekly -> "every week on ${scheduledDateTime!!.dayOfWeek} at ${scheduledDateTime.time}"
+                        is RepeatInterval.Monthly -> "every month on day ${scheduledDateTime!!.dayOfMonth} at ${scheduledDateTime.time}"
+                        is RepeatInterval.Yearly -> "every year on the ${scheduledDateTime!!.month}/${scheduledDateTime.dayOfMonth} at ${scheduledDateTime.time}"
+                        is RepeatInterval.Custom -> "every ${repeatInterval.duration}"
                     }
 
                     println("Notification with title '${updatedAlarmee.notificationTitle}' scheduled $message.")
@@ -66,13 +68,12 @@ abstract class AlarmeeScheduler {
      * @param alarmee The [Alarmee] object containing the configuration for the alarm.
      */
     fun push(alarmee: Alarmee) {
-        validateAlarmee(alarmee)
+        validateAlarmee(alarmee = alarmee)
 
         pushAlarm(alarmee = alarmee) {
             println("Notification with title '${alarmee.notificationTitle}' successfully sent.")
         }
     }
-
 
     /**
      * Cancels an existing alarm based on its unique identifier.
@@ -93,17 +94,18 @@ abstract class AlarmeeScheduler {
     internal abstract fun pushAlarm(alarmee: Alarmee, onSuccess: () -> Unit)
 
     private fun validateAlarmee(alarmee: Alarmee, schedule: Boolean = false) {
-
         if (schedule) {
-            require(alarmee.scheduledDateTime != null) { "scheduledDateTime is required for scheduling alarms." }
-        }
-
-        if (alarmee.repeatInterval != null) {
-            require(alarmee.scheduledDateTime != null) { "scheduledDateTime is required for repeating alarms." }
-        }
-
-        if (alarmee.repeatInterval is RepeatInterval.Custom) {
-            require(alarmee.repeatInterval.duration.isPositive()) { "Custom repeat interval duration must be greater than zero." }
+            if (alarmee.repeatInterval == null) {
+                // One-off Alarmees conditions
+                require(alarmee.scheduledDateTime != null) { "scheduledDateTime is required for one-off Alarmees." }
+            } else {
+                // Repeating Alarmees conditions
+                if (alarmee.repeatInterval is RepeatInterval.Custom) {
+                    require(alarmee.repeatInterval.duration >= 1.minutes) { "Custom repeat interval duration must be at least 1 minute." }
+                } else {
+                    require(alarmee.scheduledDateTime != null) { "scheduledDateTime is required for repeating Alarmees with repeatInterval: ${alarmee.repeatInterval}." }
+                }
+            }
         }
     }
 
@@ -115,31 +117,36 @@ abstract class AlarmeeScheduler {
      * @param alarmee The alarm configuration containing the scheduled date and repeat interval.
      * @return The adjusted date and time in the future.
      */
-    private fun adjustDateInFuture(alarmee: Alarmee): LocalDateTime {
-        val now = LocalDateTime.now(timeZone = alarmee.timeZone)
+    private fun adjustDateInFuture(alarmee: Alarmee): LocalDateTime? {
+        if (alarmee.scheduledDateTime == null) {
+            return null
+        }
 
-        return if (alarmee.scheduledDateTime!! <= now) {
-            val adjustedDateTime = if (alarmee.repeatInterval == null) {
+        val now = LocalDateTime.now(timeZone = alarmee.timeZone).ignoreNanoSeconds()
+        var adjustedDateTime = alarmee.scheduledDateTime.ignoreNanoSeconds()
+
+        while (adjustedDateTime <= now) {
+            adjustedDateTime = if (alarmee.repeatInterval == null) {
                 // One-off alarm: adjust to tomorrow
-                now.plus(1, DateTimeUnit.DAY, timeZone = alarmee.timeZone)
+                adjustedDateTime.plus(1, DateTimeUnit.DAY, timeZone = alarmee.timeZone)
             } else {
                 // Repeating alarm: adjust to the next valid occurrence
                 when (alarmee.repeatInterval) {
-                    is RepeatInterval.Hourly -> now.plus(value = 1, unit = DateTimeUnit.HOUR, timeZone = alarmee.timeZone)
-                    is RepeatInterval.Daily -> now.plus(value = 1, unit = DateTimeUnit.DAY, timeZone = alarmee.timeZone)
-                    is RepeatInterval.Weekly -> now.plus(value = 1, unit = DateTimeUnit.WEEK, timeZone = alarmee.timeZone)
-                    is RepeatInterval.Monthly -> now.plus(value = 1, unit = DateTimeUnit.MONTH, timeZone = alarmee.timeZone)
-                    is RepeatInterval.Yearly -> now.plus(value = 1, unit = DateTimeUnit.YEAR, timeZone = alarmee.timeZone)
-                    is RepeatInterval.Custom -> now.plus(duration = alarmee.repeatInterval.duration, timeZone = alarmee.timeZone)
+                    is RepeatInterval.Hourly -> adjustedDateTime.plus(value = 1, unit = DateTimeUnit.HOUR, timeZone = alarmee.timeZone)
+                    is RepeatInterval.Daily -> adjustedDateTime.plus(value = 1, unit = DateTimeUnit.DAY, timeZone = alarmee.timeZone)
+                    is RepeatInterval.Weekly -> adjustedDateTime.plus(value = 1, unit = DateTimeUnit.WEEK, timeZone = alarmee.timeZone)
+                    is RepeatInterval.Monthly -> adjustedDateTime.plus(value = 1, unit = DateTimeUnit.MONTH, timeZone = alarmee.timeZone)
+                    is RepeatInterval.Yearly -> adjustedDateTime.plus(value = 1, unit = DateTimeUnit.YEAR, timeZone = alarmee.timeZone)
+                    is RepeatInterval.Custom -> adjustedDateTime.plus(duration = alarmee.repeatInterval.duration, timeZone = alarmee.timeZone)
                 }
             }
-
-            println("The scheduled date and time (${alarmee.scheduledDateTime}) was in the past. It has been adjusted to the future: $adjustedDateTime")
-
-            adjustedDateTime
-        } else {
-            alarmee.scheduledDateTime
         }
+
+        if (adjustedDateTime != alarmee.scheduledDateTime.ignoreNanoSeconds()) {
+            println("The scheduled date and time (${alarmee.scheduledDateTime.ignoreNanoSeconds()}) was in the past. It has been adjusted to the future: $adjustedDateTime")
+        }
+
+        return adjustedDateTime
     }
 }
 

@@ -18,7 +18,9 @@ import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
 import com.tweener.alarmee.notification.NotificationFactory
 import com.tweener.kmpkit.kotlinextensions.getAlarmManager
 import com.tweener.kmpkit.kotlinextensions.getNotificationManager
+import com.tweener.kmpkit.kotlinextensions.now
 import com.tweener.kmpkit.kotlinextensions.toEpochMilliseconds
+import kotlinx.datetime.LocalDateTime
 
 /**
  * @author Vivien Mahe
@@ -77,7 +79,8 @@ class AlarmeeSchedulerAndroid(
         }
 
         context.getAlarmManager()?.let { alarmManager ->
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmee.scheduledDateTime!!.toEpochMilliseconds(timeZone = alarmee.timeZone), intervalMillis, pendingIntent)
+            val triggerAtMillis = (alarmee.scheduledDateTime ?: LocalDateTime.now(timeZone = alarmee.timeZone)).toEpochMilliseconds(timeZone = alarmee.timeZone)
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, intervalMillis, pendingIntent)
 
             // Notification scheduled successfully
             onSuccess()

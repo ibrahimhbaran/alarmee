@@ -26,7 +26,6 @@ import com.tweener.alarmee.sample.ui.theme.AlarmeeTheme
 import com.tweener.kmpkit.kotlinextensions.now
 import com.tweener.kmpkit.kotlinextensions.plus
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.Month
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
@@ -57,12 +56,15 @@ fun App() {
                 }) { Text("Set a one-off Alarmee") }
 
                 Button(onClick = {
+                    val now = LocalDateTime.now()
+                    val scheduledDateTime = LocalDateTime(year = now.year, month = now.month, dayOfMonth = now.dayOfMonth, hour = 9, minute = 36, second = 0)
+
                     alarmeeScheduler.schedule(
                         alarmee = Alarmee(
                             uuid = "myRepeatingAlarmId",
                             notificationTitle = "🔁 Congratulations! You've schedule a daily repeating Alarmee!",
-                            notificationBody = "This notification will be displayed on December 26th, 2024, at 09:36 and will repeat every day at 09:36.",
-                            scheduledDateTime = LocalDateTime(year = 2024, month = Month.DECEMBER, dayOfMonth = 26, hour = 9, minute = 36),
+                            notificationBody = "This notification will be displayed every day at 09:36.",
+                            scheduledDateTime = scheduledDateTime,
                             repeatInterval = RepeatInterval.Daily,
                             androidNotificationConfiguration = AndroidNotificationConfiguration(
                                 priority = AndroidNotificationPriority.HIGH,
@@ -77,8 +79,7 @@ fun App() {
                         alarmee = Alarmee(
                             uuid = "myRepeatingAlarmId",
                             notificationTitle = "🔁 Congratulations! You've schedule a custom repeating Alarmee!",
-                            notificationBody = "This is the notification that will be displayed in 5 seconds and then every 15 minutes.",
-                            scheduledDateTime = LocalDateTime.now().plus(5.seconds),
+                            notificationBody = "This is the notification that will be displayed every 15 minutes.",
                             repeatInterval = RepeatInterval.Custom(duration = 15.minutes),
                             androidNotificationConfiguration = AndroidNotificationConfiguration(
                                 priority = AndroidNotificationPriority.MAXIMUM,
