@@ -51,61 +51,44 @@ class AlarmeeSchedulerIos(
     }
 
     override fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: RepeatInterval, onSuccess: () -> Unit) {
-        // Schedule the first notification at the start date
-        val firstTrigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = alarmee.scheduledDateTime!!.toNSDateComponents(), repeats = false)
+        val trigger = if (repeatInterval is RepeatInterval.Custom) {
+            UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(timeInterval = repeatInterval.duration.inWholeMilliseconds / 1000.0, repeats = true)
+        } else {
+            val dateComponents = NSDateComponents()
+            dateComponents.calendar = NSCalendar.currentCalendar
 
-        // Create a specific uuid for the one-off notification, so it is different from the one for the repeating notification.
-        // Two notifications with the same identifier will overwrite each other, therefore, the repeating notification overwrites the one-off notification before the first one has a chance to trigger.
-        val firstRepeatingUuid = getFirstRepeatingNotificationUuid(uuid = alarmee.uuid)
+            dateComponents.second = alarmee.scheduledDateTime!!.second.toLong()
+            dateComponents.minute = alarmee.scheduledDateTime.minute.toLong()
 
-        configureNotification(
-            uuid = firstRepeatingUuid,
-            alarmee = alarmee,
-            notificationTrigger = firstTrigger,
-            onScheduleSuccess = {
-                // Schedule subsequent notifications at the repeat interval
-                val repeatTrigger = if (repeatInterval is RepeatInterval.Custom) {
-                    UNTimeIntervalNotificationTrigger.triggerWithTimeInterval(timeInterval = repeatInterval.duration.inWholeMilliseconds / 1000.0, repeats = true)
-                } else {
-                    val dateComponents = NSDateComponents()
-                    dateComponents.calendar = NSCalendar.currentCalendar
+            when (repeatInterval) {
+                is RepeatInterval.Custom -> Unit // Nothing to do, already handled before
+                is RepeatInterval.Hourly -> Unit // No need to set specific date or hour; repeats every hour
 
-                    dateComponents.second = alarmee.scheduledDateTime.second.toLong()
-                    dateComponents.minute = alarmee.scheduledDateTime.minute.toLong()
-
-                    when (repeatInterval) {
-                        is RepeatInterval.Custom -> Unit // Nothing to do, already handled before
-                        is RepeatInterval.Hourly -> Unit // No need to set specific date or hour; repeats every hour
-
-                        is RepeatInterval.Daily -> {
-                            dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
-                        }
-
-                        is RepeatInterval.Weekly -> {
-                            dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
-                            dateComponents.weekday = alarmee.scheduledDateTime.dayOfWeek.isoDayNumber.toLong()
-                        }
-
-                        is RepeatInterval.Monthly -> {
-                            dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
-                            dateComponents.day = alarmee.scheduledDateTime.dayOfMonth.toLong()
-                        }
-
-                        is RepeatInterval.Yearly -> {
-                            dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
-                            dateComponents.day = alarmee.scheduledDateTime.dayOfMonth.toLong()
-                            dateComponents.month = alarmee.scheduledDateTime.monthNumber.toLong()
-                        }
-                    }
-
-                    UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = dateComponents, repeats = true)
+                is RepeatInterval.Daily -> {
+                    dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
                 }
 
-                configureNotification(uuid = alarmee.uuid, alarmee = alarmee, notificationTrigger = repeatTrigger, onScheduleSuccess = {})
+                is RepeatInterval.Weekly -> {
+                    dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
+                    dateComponents.weekday = alarmee.scheduledDateTime.dayOfWeek.isoDayNumber.toLong()
+                }
 
-                onSuccess()
+                is RepeatInterval.Monthly -> {
+                    dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
+                    dateComponents.day = alarmee.scheduledDateTime.dayOfMonth.toLong()
+                }
+
+                is RepeatInterval.Yearly -> {
+                    dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
+                    dateComponents.day = alarmee.scheduledDateTime.dayOfMonth.toLong()
+                    dateComponents.month = alarmee.scheduledDateTime.monthNumber.toLong()
+                }
             }
-        )
+
+            UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = dateComponents, repeats = true)
+        }
+
+        configureNotification(uuid = alarmee.uuid, alarmee = alarmee, notificationTrigger = trigger, onScheduleSuccess = onSuccess)
     }
 
     override fun cancelAlarm(uuid: String) {
