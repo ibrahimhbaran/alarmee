@@ -1,12 +1,17 @@
 # Changelog
 
+## [1.6.0] - January 12, 2025
+- 🎉 New feature to set custom notification sounds 🔈 on both Android and iOS.
+- 🍎 On iOS, new feature to set the badge number on notifications.
+- **`[BREAKING]`** 🤖 On Android, `AndroidNotificationConfiguration#notificationIconResId` and `AndroidNotificationConfiguration#notificationIconColor` have been renamed respectively `AndroidNotificationConfiguration#iconResId` and `AndroidNotificationConfiguration#iconColor` for naming consistency.
+
 ## [1.5.0] - January 4, 2025
-- 🎉 Feature to directly push Alarmees right away without scheduling by [@Zubayer204](https://github.com/Zubayer204) in https://github.com/Tweener/alarmee/pull/7
+- 🎉 New feature to directly push Alarmees right away without scheduling by [@Zubayer204](https://github.com/Zubayer204) in https://github.com/Tweener/alarmee/pull/7
 - Improves validation of an Alarmee and adjusting date in future.
 - 🍎 On iOS, fixes Alarmees being duplicated in some cases, by keeping only one trigger.
 
 ## [1.4.1] - December 21, 2024
-- Use KMPKit library instead of deprecated kmp-common.
+- Uses KMPKit library instead of deprecated kmp-common.
 - 🤖 On Android, you can now customize the notification icon color and drawable for all notifications in your app or on a per-notification basis.
 
 ## [1.4.0] - December 17, 2024
