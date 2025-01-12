@@ -20,6 +20,7 @@ import com.tweener.alarmee.Alarmee
 import com.tweener.alarmee.AlarmeeScheduler
 import com.tweener.alarmee.AndroidNotificationConfiguration
 import com.tweener.alarmee.AndroidNotificationPriority
+import com.tweener.alarmee.IosNotificationConfiguration
 import com.tweener.alarmee.RepeatInterval
 import com.tweener.alarmee.rememberAlarmeeScheduler
 import com.tweener.alarmee.sample.ui.theme.AlarmeeTheme
@@ -51,6 +52,7 @@ fun App() {
                                 priority = AndroidNotificationPriority.DEFAULT,
                                 channelId = "dailyNewsChannelId",
                             ),
+                            iosNotificationConfiguration = IosNotificationConfiguration(),
                         )
                     )
                 }) { Text("Set a one-off Alarmee") }
@@ -70,6 +72,7 @@ fun App() {
                                 priority = AndroidNotificationPriority.HIGH,
                                 channelId = "breakingNewsChannelId",
                             ),
+                            iosNotificationConfiguration = IosNotificationConfiguration(),
                         )
                     )
                 }) { Text("Set a daily repeating Alarmee") }
@@ -85,6 +88,7 @@ fun App() {
                                 priority = AndroidNotificationPriority.MAXIMUM,
                                 channelId = "breakingNewsChannelId",
                             ),
+                            iosNotificationConfiguration = IosNotificationConfiguration(),
                         )
                     )
                 }) { Text("Set a custom repeating Alarmee") }
@@ -99,9 +103,27 @@ fun App() {
                                 priority = AndroidNotificationPriority.MINIMUM,
                                 channelId = "immediateChannelId",
                             ),
+                            iosNotificationConfiguration = IosNotificationConfiguration(),
                         )
                     )
                 }) { Text("Push Notification Now") }
+
+                Button(onClick = {
+                    alarmeeScheduler.push(
+                        alarmee = Alarmee(
+                            uuid = "soundNotificationId",
+                            notificationTitle = "🔈 Notification with custom sound",
+                            notificationBody = "This is a notification with a custom sound.",
+                            androidNotificationConfiguration = AndroidNotificationConfiguration(
+                                priority = AndroidNotificationPriority.HIGH,
+                                channelId = "soundChannelId",
+                            ),
+                            iosNotificationConfiguration = IosNotificationConfiguration(
+                                soundFilename = "notifications.wav",
+                            ),
+                        )
+                    )
+                }) { Text("Push a notification with sound") }
             }
         }
     }

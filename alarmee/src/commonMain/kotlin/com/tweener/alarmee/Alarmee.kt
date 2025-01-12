@@ -18,7 +18,8 @@ import kotlinx.datetime.TimeZone
  * @property scheduledDateTime The specific date and time when the alarm is scheduled to trigger. Optional for pushing the notification immediately
  * @property timeZone The time zone in which the alarm should be scheduled. By default, this is set to the system's current time zone.
  * @property repeatInterval The optional interval at which the alarm should repeat (e.g., hourly, daily, weekly). If `null`, the alarm will not repeat.
- * @property androidNotificationConfiguration Configuration specific to Android notifications, including channel ID and priority.
+ * @property androidNotificationConfiguration Configuration specific to Android notifications.
+ * @property iosNotificationConfiguration Configuration specific to iOS notifications.
  *
  * @author Vivien Mahe
  * @since 06/11/2024
@@ -31,6 +32,7 @@ data class Alarmee(
     val timeZone: TimeZone = TimeZone.currentSystemDefault(),
     val repeatInterval: RepeatInterval? = null,
     val androidNotificationConfiguration: AndroidNotificationConfiguration,
+    val iosNotificationConfiguration: IosNotificationConfiguration,
 )
 
 /**
@@ -38,12 +40,25 @@ data class Alarmee(
  *
  * @property priority The priority level of the notification (e.g., low, default, high). Determines how prominently the notification is displayed.
  * @property channelId The notification channel to post the notification on. Required for Android 8.0 (API level 26) and above.
+ * @property iconResId The resource ID of the icon to display in the notification.
+ * @property iconColor The color of the icon to display in the notification.
  */
 data class AndroidNotificationConfiguration(
     val priority: AndroidNotificationPriority = DEFAULT,
     val channelId: String? = null,
-    val notificationIconResId: Int? = null,
-    val notificationIconColor: Color? = null,
+    val iconResId: Int? = null,
+    val iconColor: Color? = null,
+)
+
+/**
+ * Data class representing iOS-specific configuration for notifications.
+ *
+ * @property soundFilename The name of the sound file to play when the notification is triggered. Sound files must be less than 30 seconds in length. If the sound file is longer than 30 seconds, the system plays the default sound instead.
+ * @property badge The badge number to display on the app icon. If `0`, the badge will be removed.
+ */
+data class IosNotificationConfiguration(
+    val soundFilename: String? = null,
+    val badge: Int = 0,
 )
 
 /**

@@ -18,6 +18,7 @@ actual fun createAlarmeePlatformConfiguration(): AlarmeePlatformConfiguration =
         notificationChannels = listOf(
             AlarmeeNotificationChannel(id = "dailyNewsChannelId", name = "Daily news notifications"),
             AlarmeeNotificationChannel(id = "breakingNewsChannelId", name = "Breaking news notifications", importance = NotificationManager.IMPORTANCE_HIGH),
-            AlarmeeNotificationChannel(id = "immediateChannelId", name = "Immediate Notification", importance = NotificationManager.IMPORTANCE_HIGH),
+            AlarmeeNotificationChannel(id = "immediateChannelId", name = "Immediate notifications", importance = NotificationManager.IMPORTANCE_HIGH),
+            AlarmeeNotificationChannel(id = "soundChannelId", name = "Sound notifications", importance = NotificationManager.IMPORTANCE_HIGH, soundFilename = "hello"),
         )
     )

@@ -48,10 +48,10 @@ class AlarmeeSchedulerAndroid(
 ) : AlarmeeScheduler() {
 
     override fun scheduleAlarm(alarmee: Alarmee, onSuccess: () -> Unit) {
-        createNotificationChannels(context = context)
+        createNotificationChannels()
         validateNotificationChannelId(alarmee = alarmee)
 
-        val pendingIntent = getPendingIntent(context = context, alarmee = alarmee)
+        val pendingIntent = getPendingIntent(alarmee = alarmee)
 
         // Schedule the alarm
         context.getAlarmManager()?.let { alarmManager ->
@@ -63,10 +63,10 @@ class AlarmeeSchedulerAndroid(
     }
 
     override fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: RepeatInterval, onSuccess: () -> Unit) {
-        createNotificationChannels(context = context)
+        createNotificationChannels()
         validateNotificationChannelId(alarmee = alarmee)
 
-        val pendingIntent = getPendingIntent(context = context, alarmee = alarmee)
+        val pendingIntent = getPendingIntent(alarmee = alarmee)
 
         // Schedule the alarm according to the repeat interval
         val intervalMillis = when (repeatInterval) {
@@ -112,15 +112,15 @@ class AlarmeeSchedulerAndroid(
     }
 
     override fun pushAlarm(alarmee: Alarmee, onSuccess: () -> Unit) {
-        createNotificationChannels(context = context)
+        createNotificationChannels()
         validateNotificationChannelId(alarmee)
 
         alarmee.androidNotificationConfiguration.channelId?.let { channelId ->
             val priority = mapPriority(priority = alarmee.androidNotificationConfiguration.priority)
 
             // If the alarmee doesn't have a specific icon or color, use the default configuration
-            val notificationResId = alarmee.androidNotificationConfiguration.notificationIconResId ?: configuration.notificationIconResId
-            val notificationIconColor = alarmee.androidNotificationConfiguration.notificationIconColor ?: configuration.notificationIconColor
+            val notificationResId = alarmee.androidNotificationConfiguration.iconResId ?: configuration.notificationIconResId
+            val notificationIconColor = alarmee.androidNotificationConfiguration.iconColor ?: configuration.notificationIconColor
 
             val notification = NotificationFactory.create(
                 context = context,
@@ -130,6 +130,7 @@ class AlarmeeSchedulerAndroid(
                 priority = priority,
                 iconResId = notificationResId,
                 iconColor = notificationIconColor.toArgb(),
+                soundFilename = configuration.notificationChannels.firstOrNull { it.id == channelId }?.soundFilename,
             )
 
             context.getNotificationManager()?.let { notificationManager ->
@@ -145,14 +146,15 @@ class AlarmeeSchedulerAndroid(
         }
     }
 
-    private fun createNotificationChannels(context: Context) {
+    private fun createNotificationChannels() {
         // Create a notification channel for Android O and above
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             require(configuration.notificationChannels.isNotEmpty()) { "At least one ${AlarmeeNotificationChannel::class.simpleName} must be provided." }
 
+            val notificationChannelRegister = NotificationChannelRegister(context = context)
+
             configuration.notificationChannels.forEach { channel ->
-                val notificationChannelRegister = NotificationChannelRegister(context = context)
-                notificationChannelRegister.register(id = channel.id, name = channel.name, importance = channel.importance)
+                notificationChannelRegister.register(id = channel.id, name = channel.name, importance = channel.importance, soundFilename = channel.soundFilename)
             }
         }
     }
@@ -173,12 +175,13 @@ class AlarmeeSchedulerAndroid(
         }
     }
 
-    private fun getPendingIntent(context: Context, alarmee: Alarmee): PendingIntent {
+    private fun getPendingIntent(alarmee: Alarmee): PendingIntent {
         val priority = mapPriority(priority = alarmee.androidNotificationConfiguration.priority)
+        val soundFilename = configuration.notificationChannels.firstOrNull { it.id == alarmee.androidNotificationConfiguration.channelId }?.soundFilename
 
         // If the alarmee doesn't have a specific icon or color, use the default configuration
-        val notificationResId = alarmee.androidNotificationConfiguration.notificationIconResId ?: configuration.notificationIconResId
-        val notificationIconColor = alarmee.androidNotificationConfiguration.notificationIconColor ?: configuration.notificationIconColor
+        val notificationResId = alarmee.androidNotificationConfiguration.iconResId ?: configuration.notificationIconResId
+        val notificationIconColor = alarmee.androidNotificationConfiguration.iconColor ?: configuration.notificationIconColor
 
         // Create the receiver intent with the alarm parameters
         val receiverIntent = Intent(context, NotificationBroadcastReceiver::class.java).apply {
@@ -190,6 +193,7 @@ class AlarmeeSchedulerAndroid(
             putExtra(NotificationBroadcastReceiver.KEY_CHANNEL_ID, alarmee.androidNotificationConfiguration.channelId)
             putExtra(NotificationBroadcastReceiver.KEY_ICON_RES_ID, notificationResId)
             putExtra(NotificationBroadcastReceiver.KEY_ICON_COLOR, notificationIconColor.toArgb())
+            putExtra(NotificationBroadcastReceiver.KEY_SOUND_FILENAME, soundFilename)
         }
 
         // Create the broadcast pending intent

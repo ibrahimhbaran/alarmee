@@ -17,6 +17,7 @@ import platform.Foundation.NSCalendarUnitSecond
 import platform.Foundation.NSCalendarUnitYear
 import platform.Foundation.NSDate
 import platform.Foundation.NSDateComponents
+import platform.Foundation.NSNumber
 import platform.Foundation.dateWithTimeIntervalSince1970
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge
@@ -24,6 +25,7 @@ import platform.UserNotifications.UNAuthorizationOptionSound
 import platform.UserNotifications.UNCalendarNotificationTrigger
 import platform.UserNotifications.UNMutableNotificationContent
 import platform.UserNotifications.UNNotificationRequest
+import platform.UserNotifications.UNNotificationSound
 import platform.UserNotifications.UNNotificationTrigger
 import platform.UserNotifications.UNTimeIntervalNotificationTrigger
 import platform.UserNotifications.UNUserNotificationCenter
@@ -104,6 +106,8 @@ class AlarmeeSchedulerIos(
         val content = UNMutableNotificationContent().apply {
             setTitle(alarmee.notificationTitle)
             setBody(alarmee.notificationBody)
+            alarmee.iosNotificationConfiguration.soundFilename?.let { setSound(UNNotificationSound.soundNamed(name = it)) }
+            setBadge(NSNumber(int = alarmee.iosNotificationConfiguration.badge))
         }
 
         val request = UNNotificationRequest.requestWithIdentifier(identifier = uuid, content = content, trigger = notificationTrigger)

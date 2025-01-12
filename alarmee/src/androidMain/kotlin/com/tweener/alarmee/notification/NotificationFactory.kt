@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import com.tweener.alarmee._internal.kotlinextensions.getRawUri
 
 /**
  * @author Vivien Mahe
@@ -14,7 +15,7 @@ class NotificationFactory {
 
     companion object {
 
-        fun create(context: Context, channelId: String, title: String, body: String, priority: Int, iconResId: Int, iconColor: Int): Notification =
+        fun create(context: Context, channelId: String, title: String, body: String, priority: Int, iconResId: Int, iconColor: Int, soundFilename: String? = null): Notification =
             NotificationCompat.Builder(context, channelId)
                 .apply {
                     setContentTitle(title)
@@ -23,6 +24,7 @@ class NotificationFactory {
                     setSmallIcon(iconResId)
                     setColor(iconColor)
                     setAutoCancel(true)
+                    soundFilename?.let { setSound(context.getRawUri(it)) } // Ignored on Android 8.0 and higher in favor of the value set on the notification's channel
                     setContentIntent(getPendingIntent(context = context)) // Handles click on notification
                 }
                 .build()
