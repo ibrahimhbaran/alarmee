@@ -29,7 +29,7 @@ Be sure to show your support by starring ⭐️ this repository, and feel free t
 - 📅 **One-off alarm**: Schedule an alarm to trigger at a specific date and time.
 - 🔁 **Repeating alarm**: Schedule recurring alarms with intervals: hourly, daily, weekly, monthly, yearly or custom (providing a duration).
 - 🚀 **Instant notifications**: Push notifications immediately without scheduling them.
-- **Extensible Configuration**: Customize alarms and notifications with platform-specific settings.
+- 🎨 **Extensible Configuration**: Customize alarms and notifications with platform-specific settings.
 
 ---
 
@@ -89,7 +89,8 @@ val platformConfiguration: AlarmeePlatformConfiguration = AlarmeeAndroidPlatform
         AlarmeeNotificationChannel(
             id = "dailyNewsChannelId",
             name = "Daily news notifications",
-            importance = NotificationManager.IMPORTANCE_HIGH
+            importance = NotificationManager.IMPORTANCE_HIGH,
+	    soundFilename = "notifications_sound",
         ),
         AlarmeeNotificationChannel(
             id = "breakingNewsChannelId",
@@ -165,7 +166,8 @@ alarmeeScheduler.schedule(
         androidNotificationConfiguration = AndroidNotificationConfiguration( // Required configuration for Android target only (this parameter is ignored on iOS)
             priority = AndroidNotificationPriority.HIGH,
             channelId = "dailyNewsChannelId",
-        )
+        ),
+        iosNotificationConfiguration = IosNotificationConfiguration(),
     )
 )
 ```
@@ -187,7 +189,8 @@ alarmeeScheduler.schedule(
         androidNotificationConfiguration = AndroidNotificationConfiguration( // Required configuration for Android target only (this parameter is ignored on iOS)
             priority = AndroidNotificationPriority.DEFAULT,
             channelId = "dailyNewsChannelId",
-        )
+        ),
+        iosNotificationConfiguration = IosNotificationConfiguration(),
     )
 )
 ```
@@ -205,7 +208,8 @@ alarmeeScheduler.schedule(
         androidNotificationConfiguration = AndroidNotificationConfiguration( // Required configuration for Android target only (this parameter is ignored on iOS)
             priority = AndroidNotificationPriority.DEFAULT,
             channelId = "otherChannelId",
-        )
+        ),
+        iosNotificationConfiguration = IosNotificationConfiguration(),
     )
 )
 ```
@@ -227,13 +231,56 @@ alarmeeScheduler.push(
         androidNotificationConfiguration = AndroidNotificationConfiguration( // Required configuration for Android target only (this parameter is ignored on iOS)
             priority = AndroidNotificationPriority.DEFAULT,
             channelId = "immediateChannelId",
-        )
+        ),
+        iosNotificationConfiguration = IosNotificationConfiguration(),
     )
 )
 ```
 
 ### 6. Notification customization
-#### 🤖 Android-specific customization
+#### Notification sound
+You can customize the notification sound on both Android and iOS.
+
+> [!WARNING]
+> Custom sounds must be under 30 seconds in length on both Android and iOS. If the sound exceeds this limit, the system will fall back to the default notification sound..
+
+<details>
+	<summary>🤖 Android</summary>
+
+Notification sounds are set via `AlarmeeNotificationChannel`, which allows you to define the sound file for a specific notification channel.
+
+1. Place your custom sound file in the `res/raw` directory of your app (e.g., `res/raw/notifications_sound.obb`).
+2. Define a custom notification channel and provide the sound file name:
+```Kotlin
+AlarmeeNotificationChannel(
+    id = "dailyNewsChannelId",
+    name = "Daily news notifications",
+    importance = NotificationManager.IMPORTANCE_HIGH,
+    soundFilename = "notifications_sound", // file name without the extension
+)
+```
+</details>
+
+<details>
+	<summary>🍎 iOS</summary>
+
+Notification sounds are set in the `IosNotificationConfiguration` by providing the file name of the sound located in the app's bundle.
+
+1. Add your sound file to your Xcode project under the `main` bundle.
+2. Reference the sound file with its exact name and extension:
+```Kotlin
+Alarmee(
+    // ...
+    iosNotificationConfiguration = IosNotificationConfiguration(
+        soundFilename = "notifications_sound.wav",
+    ),
+)
+```
+</details>
+
+#### Notification icon
+<details>
+	<summary>🤖 Android</summary>
 
 * **Global icon customization**: You can set a default notification icon color and drawable for all notifications for your app.
 ```Kotlin
@@ -244,7 +291,7 @@ AlarmeeAndroidPlatformConfiguration(
 )
 ```
 
-* Per-alarm icon customization: Override the global defaults by specifying the icon color and drawable for individual notifications.
+* **Per-alarm icon customization**: Override the global defaults by specifying the icon color and drawable for individual notifications.
 ```Kotlin
 alarmeeScheduler.schedule(
     alarmee = Alarmee(
@@ -257,9 +304,36 @@ alarmeeScheduler.schedule(
     )
 )
 ```
+</details>
 
-#### 🍎 iOS-specific customization
+<details>
+	<summary>🍎 iOS</summary>
+
 On iOS, customizing icon colors and drawables is not supported.
+</details>
+
+#### Notification badge
+<details>
+	<summary>🤖 Android</summary>
+
+On Android, badge numbers are managed by the system and direct control over the badge number is not available in the notification API. The system automatically handles badge updates based on notifications.
+</details>
+
+<details>
+	<summary>🍎 iOS</summary>
+
+You can customize the badge number displayed on the app icon for notifications. This is done using the `IosNotificationConfiguration`:
+```Kotlin
+Alarmee(
+    // ...
+    iosNotificationConfiguration = IosNotificationConfiguration(
+        badge = 4,
+    ),
+)
+```
+
+If `badge = 0`, the badge will be cleared from the app icon.
+</details>
 
 ---
 
