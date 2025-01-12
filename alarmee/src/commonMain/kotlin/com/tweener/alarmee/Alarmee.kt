@@ -54,11 +54,11 @@ data class AndroidNotificationConfiguration(
  * Data class representing iOS-specific configuration for notifications.
  *
  * @property soundFilename The name of the sound file to play when the notification is triggered. Sound files must be less than 30 seconds in length. If the sound file is longer than 30 seconds, the system plays the default sound instead.
- * @property badge The badge number to display on the app icon. If `0`, the badge will be removed.
+ * @property badge The badge number to display on the app icon. If `0`, the badge will be removed. If `null`, the badge will not be changed.
  */
 data class IosNotificationConfiguration(
     val soundFilename: String? = null,
-    val badge: Int = 0,
+    val badge: Int? = null,
 )
 
 /**

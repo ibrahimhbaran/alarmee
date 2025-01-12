@@ -107,7 +107,7 @@ class AlarmeeSchedulerIos(
             setTitle(alarmee.notificationTitle)
             setBody(alarmee.notificationBody)
             alarmee.iosNotificationConfiguration.soundFilename?.let { setSound(UNNotificationSound.soundNamed(name = it)) }
-            setBadge(NSNumber(int = alarmee.iosNotificationConfiguration.badge))
+            alarmee.iosNotificationConfiguration.badge?.let { setBadge(NSNumber(int = it)) }
         }
 
         val request = UNNotificationRequest.requestWithIdentifier(identifier = uuid, content = content, trigger = notificationTrigger)
