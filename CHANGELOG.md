@@ -1,8 +1,8 @@
 # Changelog
 
 ## [1.6.0] - January 12, 2025
-- 🎉 New feature to set custom notification sounds 🔈 on both Android and iOS.
-- 🍎 On iOS, new feature to set the badge number on notifications.
+- 🎉 New feature to set custom notification sounds 🔈 on both Android and iOS. Details [here](https://github.com/Tweener/alarmee/blob/main/README.md#notification-sound).
+- 🍎 On iOS, new feature to set the badge number on notifications. Details [here](https://github.com/Tweener/alarmee/blob/main/README.md#notification-badge).
 - **`[BREAKING]`** 🤖 On Android, `AndroidNotificationConfiguration#notificationIconResId` and `AndroidNotificationConfiguration#notificationIconColor` have been renamed respectively `AndroidNotificationConfiguration#iconResId` and `AndroidNotificationConfiguration#iconColor` for naming consistency.
 
 ## [1.5.0] - January 4, 2025
