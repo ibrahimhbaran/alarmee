@@ -332,7 +332,7 @@ Alarmee(
 )
 ```
 
-If `badge = 0`, the badge will be cleared from the app icon.
+If `badge = 0`, the badge will be cleared from the app icon. If `badge = null`, the badge will not be updated.
 </details>
 
 ---
