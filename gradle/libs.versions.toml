@@ -1,28 +1,18 @@
 [versions]
-kotlin = "2.0.21"
-gradle = "8.5.2"
+kotlin = "2.1.0"
+gradle = "8.7.3"
 dependencyVersionsPlugin = "0.51.0"
 nexusSonatype = "2.0.0"
 dokka = "1.9.20"
 coroutines = "1.9.0"
-composeMultiplatform = "1.7.1"
-
-# Tweener
-tweenerKmpKit = "1.0.1"
-
-# Android
+composeMultiplatform = "1.7.3"
+kmpKit = "1.0.1"
 androidActivity = "1.9.3"
 
 [libraries]
 compose-multiplatform-material3 = { group = "org.jetbrains.compose.material3", name = "material3", version.ref = "composeMultiplatform" }
-
-# Tweener
-tweener-kmpkit = { group = "io.github.tweener", name = "kmpkit", version.ref = "tweenerKmpKit" }
-
-# Coroutines
 kotlin-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
-
-# Android
+tweener-kmpkit = { group = "io.github.tweener", name = "kmpkit", version.ref = "kmpKit" }
 android-activity = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidActivity" }
 android-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidActivity" }
 
