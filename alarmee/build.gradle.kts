@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.net.URI
-import java.net.URL
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -81,7 +80,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.tweener.kmpkit)
+            implementation(libs.kmpkit)
 
             // Coroutines
             implementation(libs.kotlin.coroutines.core)

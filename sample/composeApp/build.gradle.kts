@@ -32,7 +32,7 @@ kotlin {
         commonMain.dependencies {
             api(project(":alarmee"))
 
-            implementation(libs.tweener.kmpkit)
+            implementation(libs.kmpkit)
 
             // Compose
             implementation(compose.runtime)
