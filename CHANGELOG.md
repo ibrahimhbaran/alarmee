@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.6.1] - January 24, 2025
+- Update Kotlin to 2.1.0.
+- Update Compose Multiplatform to 1.7.3.
+- Update Gradle to 8.11.1.
+- 🍎 On iOS, badge is now optional to avoid automatically setting it to 0 when not provided.
+
 ## [1.6.0] - January 12, 2025
 - 🎉 New feature to set custom notification sounds 🔈 on both Android and iOS. Details [here](https://github.com/Tweener/alarmee/blob/main/README.md#notification-sound).
 - 🍎 On iOS, new feature to set the badge number on notifications. Details [here](https://github.com/Tweener/alarmee/blob/main/README.md#notification-badge).
