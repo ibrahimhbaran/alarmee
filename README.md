@@ -160,7 +160,7 @@ For instance, to schedule an alarm on January 12th, 2025, at 5 PM:
 alarmeeScheduler.schedule(
     alarmee = Alarmee(
         uuid = "myAlarmId",
-        notificationTitle = "🎉 Congratulations! You've schedule an Alarmee!",
+        notificationTitle = "🎉 Congratulations! You've scheduled an Alarmee!",
         notificationBody = "This is the notification that will be displayed at the specified date and time.",
         scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 12, hour = 17, minute = 0),
         androidNotificationConfiguration = AndroidNotificationConfiguration( // Required configuration for Android target only (this parameter is ignored on iOS)
@@ -182,7 +182,7 @@ For instance, to schedule an alarm to repeat every day at 9:30 AM, you can use `
 alarmeeScheduler.schedule(
     alarmee = Alarmee(
         uuid = "myAlarmId",
-        notificationTitle = "🔁 Congratulations! You've schedule a daily repeating Alarmee!",
+        notificationTitle = "🔁 Congratulations! You've scheduled a daily repeating Alarmee!",
         notificationBody = "This notification will be displayed every day at 09:30.",
         scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 12, hour = 9, minute = 30),
         repeatInterval = RepeatInterval.Daily, // Will repeat every day
@@ -202,7 +202,7 @@ For example, to schedule an alarm to repeat every 15 minutes, you can use `Repea
 alarmeeScheduler.schedule(
     alarmee = Alarmee(
         uuid = "myAlarmId",
-        notificationTitle = "🔁 Congratulations! You've schedule a custom repeating Alarmee!",
+        notificationTitle = "🔁 Congratulations! You've scheduled a custom repeating Alarmee!",
         notificationBody = "This notification will be displayed every 15 minutes",
         repeatInterval = RepeatInterval.Custom(duration = 15.minutes), // Will repeat every 15 minutes
         androidNotificationConfiguration = AndroidNotificationConfiguration( // Required configuration for Android target only (this parameter is ignored on iOS)
