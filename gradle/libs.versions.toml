@@ -1,12 +1,12 @@
 [versions]
-kotlin = "2.1.20"
+kotlin = "2.1.21"
 gradle = "8.8.2"
 dependencyVersionsPlugin = "0.51.0"
 nexusSonatype = "2.0.0"
 dokka = "1.9.20"
 coroutines = "1.10.1"
-composeMultiplatform = "1.7.3"
-kmpKit = "1.0.6"
+composeMultiplatform = "1.8.0"
+kmpKit = "1.0.7"
 androidActivity = "1.10.1"
 
 [libraries]
