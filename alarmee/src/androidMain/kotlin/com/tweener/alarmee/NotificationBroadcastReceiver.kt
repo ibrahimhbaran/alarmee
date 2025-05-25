@@ -1,6 +1,5 @@
 package com.tweener.alarmee
 
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -10,7 +9,7 @@ import androidx.core.app.NotificationCompat
 import com.tweener.alarmee.android.R
 import com.tweener.alarmee.notification.NotificationFactory
 import com.tweener.kmpkit.kotlinextensions.getNotificationManager
-import com.tweener.kmpkit.safeLet
+import com.tweener.kmpkit.utils.safeLet
 
 /**
  * @author Vivien Mahe
@@ -28,6 +27,7 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
         const val KEY_ICON_RES_ID = "notificationIconResId"
         const val KEY_ICON_COLOR = "notificationColor"
         const val KEY_SOUND_FILENAME = "notificationSoundFilename"
+        const val KEY_DEEP_LINK_URI = "notificationDeepLinkUri"
 
         private val DEFAULT_ICON_RES_ID = R.drawable.ic_notification
         private val DEFAULT_ICON_COLOR = Color.Transparent
@@ -46,6 +46,7 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
                 val iconResId = intent.getIntExtra(KEY_ICON_RES_ID, DEFAULT_ICON_RES_ID)
                 val iconColor = intent.getIntExtra(KEY_ICON_COLOR, DEFAULT_ICON_COLOR.toArgb())
                 val soundFilename = intent.getStringExtra(KEY_SOUND_FILENAME)
+                val deepLinkUri = intent.getStringExtra(KEY_DEEP_LINK_URI)
 
                 // For devices running on Android before Android 0, channelId passed through intents might be null so we used a default channelId that will be ignored
                 val channelId = intent.getStringExtra(KEY_CHANNEL_ID) ?: DEFAULT_CHANNEL_ID
@@ -60,6 +61,7 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
                     iconResId = iconResId,
                     iconColor = iconColor,
                     soundFilename = soundFilename,
+                    deepLinkUri = deepLinkUri,
                 )
 
                 // Display the notification
@@ -73,11 +75,4 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
             }
         }
     }
-
-    private fun getPendingIntent(context: Context): PendingIntent? {
-        val intent = context.getLauncherActivityIntent()?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-    }
-
-    private fun Context.getLauncherActivityIntent(): Intent? = applicationContext.packageManager.getLaunchIntentForPackage(applicationContext.packageName)
 }

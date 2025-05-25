@@ -131,6 +131,7 @@ class AlarmeeSchedulerAndroid(
                 iconResId = notificationResId,
                 iconColor = notificationIconColor.toArgb(),
                 soundFilename = configuration.notificationChannels.firstOrNull { it.id == channelId }?.soundFilename,
+                deepLinkUri = alarmee.deepLinkUri,
             )
 
             context.getNotificationManager()?.let { notificationManager ->
@@ -194,6 +195,7 @@ class AlarmeeSchedulerAndroid(
             putExtra(NotificationBroadcastReceiver.KEY_ICON_RES_ID, notificationResId)
             putExtra(NotificationBroadcastReceiver.KEY_ICON_COLOR, notificationIconColor.toArgb())
             putExtra(NotificationBroadcastReceiver.KEY_SOUND_FILENAME, soundFilename)
+            putExtra(NotificationBroadcastReceiver.KEY_DEEP_LINK_URI, alarmee.deepLinkUri)
         }
 
         // Create the broadcast pending intent

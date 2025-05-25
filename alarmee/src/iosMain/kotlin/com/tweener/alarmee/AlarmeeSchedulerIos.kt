@@ -46,6 +46,10 @@ class AlarmeeSchedulerIos(
     private val configuration: AlarmeeIosPlatformConfiguration = AlarmeeIosPlatformConfiguration,
 ) : AlarmeeScheduler() {
 
+    companion object {
+        private const val DEEP_LINK_URI_PARAM = "deepLinkUri"
+    }
+
     override fun scheduleAlarm(alarmee: Alarmee, onSuccess: () -> Unit) {
         val trigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = alarmee.scheduledDateTime!!.toNSDateComponents(), repeats = false)
 
@@ -108,6 +112,7 @@ class AlarmeeSchedulerIos(
             setBody(alarmee.notificationBody)
             alarmee.iosNotificationConfiguration.soundFilename?.let { setSound(UNNotificationSound.soundNamed(name = it)) }
             alarmee.iosNotificationConfiguration.badge?.let { setBadge(NSNumber(int = it)) }
+            alarmee.deepLinkUri?.let { setUserInfo(mapOf(DEEP_LINK_URI_PARAM to it)) }
         }
 
         val request = UNNotificationRequest.requestWithIdentifier(identifier = uuid, content = content, trigger = notificationTrigger)

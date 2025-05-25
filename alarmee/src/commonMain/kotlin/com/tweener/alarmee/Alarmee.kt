@@ -31,6 +31,7 @@ data class Alarmee(
     val scheduledDateTime: LocalDateTime? = null,
     val timeZone: TimeZone = TimeZone.currentSystemDefault(),
     val repeatInterval: RepeatInterval? = null,
+    val deepLinkUri: String? = null,
     val androidNotificationConfiguration: AndroidNotificationConfiguration,
     val iosNotificationConfiguration: IosNotificationConfiguration,
 )

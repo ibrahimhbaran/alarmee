@@ -99,6 +99,7 @@ fun App() {
                             uuid = "immediateNotificationId",
                             notificationTitle = "🚀 Immediate Notification",
                             notificationBody = "This is an immediate notification pushed without any schedule.",
+                            deepLinkUri = "https://www.example.com",
                             androidNotificationConfiguration = AndroidNotificationConfiguration(
                                 priority = AndroidNotificationPriority.MINIMUM,
                                 channelId = "immediateChannelId",

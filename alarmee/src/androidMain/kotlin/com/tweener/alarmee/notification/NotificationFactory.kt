@@ -15,7 +15,19 @@ class NotificationFactory {
 
     companion object {
 
-        fun create(context: Context, channelId: String, title: String, body: String, priority: Int, iconResId: Int, iconColor: Int, soundFilename: String? = null): Notification =
+        private const val DEEP_LINK_URI_PARAM = "deepLinkUri"
+
+        fun create(
+            context: Context,
+            channelId: String,
+            title: String,
+            body: String,
+            priority: Int,
+            iconResId: Int,
+            iconColor: Int,
+            soundFilename: String? = null,
+            deepLinkUri: String? = null
+        ): Notification =
             NotificationCompat.Builder(context, channelId)
                 .apply {
                     setContentTitle(title)
@@ -25,12 +37,15 @@ class NotificationFactory {
                     setColor(iconColor)
                     setAutoCancel(true)
                     soundFilename?.let { setSound(context.getRawUri(it)) } // Ignored on Android 8.0 and higher in favor of the value set on the notification's channel
-                    setContentIntent(getPendingIntent(context = context)) // Handles click on notification
+                    setContentIntent(getPendingIntent(context = context, deepLinkUri = deepLinkUri)) // Handles click on notification
                 }
                 .build()
 
-        private fun getPendingIntent(context: Context): PendingIntent? {
-            val intent = context.getLauncherActivityIntent()?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        private fun getPendingIntent(context: Context, deepLinkUri: String? = null): PendingIntent? {
+            val intent = context.getLauncherActivityIntent()?.apply {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                deepLinkUri?.let { putExtra(DEEP_LINK_URI_PARAM, it) } // Pass the deep link URI to the activity
+            }
             return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
