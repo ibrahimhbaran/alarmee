@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.6.4] - May 25, 2025
+- 🎉 New feature to add `deepLinkUri` support to `Alarmee` (Requested by [@M1r7](https://github.com/M1r7) in [https://github.com/Tweener/alarmee/pull/7](https://github.com/Tweener/alarmee/issues/18))
+
 ## [1.6.3] - May 13, 2025
 - Update Kotlin to 2.1.21.
 - Update Compose Multiplatform to 1.8.0.
