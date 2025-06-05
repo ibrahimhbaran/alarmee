@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
  * @author Vivien Mahe
  * @since 05/06/2025
  */
-class DefaultPushNotificationService(
+internal class DefaultPushNotificationService(
     private val config: AlarmeePlatformConfiguration
 ) : PushNotificationService {
 

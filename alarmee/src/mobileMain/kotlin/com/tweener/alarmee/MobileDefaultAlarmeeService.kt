@@ -6,7 +6,7 @@ import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
  * @author Vivien Mahe
  * @since 05/06/2025
  */
-class MobileDefaultAlarmeeService : DefaultAlarmeeService(), MobileAlarmeeService {
+internal class MobileDefaultAlarmeeService : DefaultAlarmeeService(), MobileAlarmeeService {
 
     override lateinit var push: PushNotificationService
 
@@ -18,7 +18,3 @@ class MobileDefaultAlarmeeService : DefaultAlarmeeService(), MobileAlarmeeServic
     }
 }
 
-actual fun createAlarmeeService(config: AlarmeePlatformConfiguration): AlarmeeService =
-    MobileDefaultAlarmeeService().apply {
-        onAppLaunch(platformConfiguration = config)
-    }

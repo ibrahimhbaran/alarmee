@@ -6,9 +6,7 @@ import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
  * @author Vivien Mahe
  * @since 05/06/2025
  */
-expect fun createAlarmeeService(config: AlarmeePlatformConfiguration): AlarmeeService
-
-open class DefaultAlarmeeService : AlarmeeService {
+internal open class DefaultAlarmeeService : AlarmeeService {
 
     protected lateinit var config: AlarmeePlatformConfiguration
 
@@ -32,6 +30,8 @@ open class DefaultAlarmeeService : AlarmeeService {
         isInitialized = true
     }
 }
+
+expect fun createAlarmeeService(config: AlarmeePlatformConfiguration): AlarmeeService
 
 expect fun createLocalNotificationService(config: AlarmeePlatformConfiguration): LocalNotificationService
 

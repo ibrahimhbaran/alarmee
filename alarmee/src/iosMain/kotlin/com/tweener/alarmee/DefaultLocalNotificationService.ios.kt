@@ -1,5 +1,6 @@
 package com.tweener.alarmee
 
+import com.tweener.alarmee.configuration.AlarmeeIosPlatformConfiguration
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
 import com.tweener.alarmee.model.Alarmee
 import com.tweener.alarmee.model.RepeatInterval
@@ -35,6 +36,11 @@ import platform.UserNotifications.UNUserNotificationCenter
  */
 
 private const val DEEP_LINK_URI_PARAM = "deepLinkUri"
+
+actual fun createLocalNotificationService(config: AlarmeePlatformConfiguration): LocalNotificationService {
+    requirePlatformConfiguration(providedPlatformConfiguration = config, targetPlatformConfiguration = AlarmeeIosPlatformConfiguration::class)
+    return DefaultLocalNotificationService(config = config)
+}
 
 actual fun scheduleAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration, onSuccess: () -> Unit) {
     val trigger = UNCalendarNotificationTrigger.triggerWithDateMatchingComponents(dateComponents = alarmee.scheduledDateTime!!.toNSDateComponents(), repeats = false)

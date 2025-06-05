@@ -14,7 +14,7 @@ import kotlin.time.Duration.Companion.minutes
  * @author Vivien Mahe
  * @since 05/06/2025
  */
-class DefaultLocalNotificationService(
+internal class DefaultLocalNotificationService(
     private val config: AlarmeePlatformConfiguration
 ) : LocalNotificationService {
 

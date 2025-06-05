@@ -27,6 +27,11 @@ import kotlinx.datetime.LocalDateTime
  * @since 06/11/2024
  */
 
+actual fun createLocalNotificationService(config: AlarmeePlatformConfiguration): LocalNotificationService {
+    requirePlatformConfiguration(providedPlatformConfiguration = config, targetPlatformConfiguration = AlarmeeAndroidPlatformConfiguration::class)
+    return DefaultLocalNotificationService(config = config)
+}
+
 actual fun scheduleAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration, onSuccess: () -> Unit) {
     requirePlatformConfiguration(providedPlatformConfiguration = config, targetPlatformConfiguration = AlarmeeAndroidPlatformConfiguration::class)
     createNotificationChannels(config = config)

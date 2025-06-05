@@ -8,6 +8,6 @@ import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
  */
 
 actual fun createAlarmeeService(config: AlarmeePlatformConfiguration): AlarmeeService =
-    DefaultAlarmeeService().apply {
+    MobileDefaultAlarmeeService().apply {
         onAppLaunch(platformConfiguration = config)
     }
