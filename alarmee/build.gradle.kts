@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.jetbrains.compose)
     alias(libs.plugins.jetbrains.compose.compiler)
     alias(libs.plugins.dokka)
+    alias(libs.plugins.kotlin.nativeCocoaPods)
     alias(libs.plugins.maven.publish)
 }
 
@@ -45,12 +46,25 @@ android {
 }
 
 kotlin {
-    applyDefaultHierarchyTemplate()
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    applyDefaultHierarchyTemplate {
+        common {
+            group("mobile") {
+                withAndroidTarget()
+                withIos()
+            }
+
+            group("nonMobile") {
+                withJvm()
+                withJs()
+                withWasmJs()
+            }
+        }
+    }
 
     androidTarget {
         publishLibraryVariants("release")
 
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.fromTarget(ProjectConfiguration.Compiler.jvmTarget))
         }
@@ -65,6 +79,12 @@ kotlin {
             baseName = "alarmee"
             isStatic = true
         }
+    }
+
+    cocoapods {
+        ios.deploymentTarget = ProjectConfiguration.iOS.deploymentTarget
+
+        pod("FirebaseMessaging")
     }
 
     jvm()
@@ -87,6 +107,38 @@ kotlin {
 
             // Compose
             implementation(compose.foundation)
+        }
+
+        val mobileMain by getting {
+            dependencies {
+                implementation(libs.firebase.messaging)
+            }
+        }
+
+        iosMain {
+            dependsOn(mobileMain)
+        }
+
+        androidMain {
+            dependsOn(mobileMain)
+
+            dependencies {
+                implementation(libs.android.startup)
+            }
+        }
+
+        val nonMobileMain by getting
+
+        jvmMain {
+            dependsOn(nonMobileMain)
+        }
+
+        wasmJsMain {
+            dependsOn(nonMobileMain)
+        }
+
+        jsMain {
+            dependsOn(nonMobileMain)
         }
     }
 }

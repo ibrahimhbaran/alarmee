@@ -2,6 +2,7 @@ package com.tweener.alarmee.sample
 
 import android.app.NotificationManager
 import androidx.compose.ui.graphics.Color
+import com.tweener.alarmee.PushNotificationService
 import com.tweener.alarmee.channel.AlarmeeNotificationChannel
 import com.tweener.alarmee.configuration.AlarmeeAndroidPlatformConfiguration
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
@@ -11,7 +12,7 @@ import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
  * @since 26/11/2024
  */
 
-actual fun createAlarmeePlatformConfiguration(): AlarmeePlatformConfiguration =
+private val alarmeePlatformConfiguration =
     AlarmeeAndroidPlatformConfiguration(
         notificationIconResId = R.drawable.ic_stat_name,
         notificationIconColor = Color.Yellow,
@@ -22,3 +23,5 @@ actual fun createAlarmeePlatformConfiguration(): AlarmeePlatformConfiguration =
             AlarmeeNotificationChannel(id = "soundChannelId", name = "Sound notifications", importance = NotificationManager.IMPORTANCE_HIGH, soundFilename = "hello"),
         )
     )
+
+actual fun createAlarmeePlatformConfiguration(): AlarmeePlatformConfiguration = alarmeePlatformConfiguration
