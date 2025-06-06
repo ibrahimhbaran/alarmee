@@ -1,6 +1,7 @@
 package com.tweener.alarmee
 
 import android.app.AlarmManager
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.os.Build
@@ -27,14 +28,16 @@ import kotlinx.datetime.LocalDateTime
  * @since 06/11/2024
  */
 
+internal const val DEFAULT_NOTIFICATION_CHANNEL_ID = "defaultNotificationChannelId"
+
 actual fun createLocalNotificationService(config: AlarmeePlatformConfiguration): LocalNotificationService {
     requirePlatformConfiguration(providedPlatformConfiguration = config, targetPlatformConfiguration = AlarmeeAndroidPlatformConfiguration::class)
+    createNotificationChannels(config = config)
     return DefaultLocalNotificationService(config = config)
 }
 
 actual fun scheduleAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration, onSuccess: () -> Unit) {
     requirePlatformConfiguration(providedPlatformConfiguration = config, targetPlatformConfiguration = AlarmeeAndroidPlatformConfiguration::class)
-    createNotificationChannels(config = config)
     validateNotificationChannelId(alarmee = alarmee)
 
     val pendingIntent = getPendingIntent(alarmee = alarmee, config = config)
@@ -50,7 +53,6 @@ actual fun scheduleAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration,
 
 actual fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: RepeatInterval, config: AlarmeePlatformConfiguration, onSuccess: () -> Unit) {
     requirePlatformConfiguration(providedPlatformConfiguration = config, targetPlatformConfiguration = AlarmeeAndroidPlatformConfiguration::class)
-    createNotificationChannels(config = config)
     validateNotificationChannelId(alarmee = alarmee)
 
     val pendingIntent = getPendingIntent(alarmee = alarmee, config = config)
@@ -102,7 +104,6 @@ actual fun cancelAlarm(uuid: String, config: AlarmeePlatformConfiguration) {
 
 actual fun pushAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration, onSuccess: () -> Unit) {
     requirePlatformConfiguration(providedPlatformConfiguration = config, targetPlatformConfiguration = AlarmeeAndroidPlatformConfiguration::class)
-    createNotificationChannels(config = config)
     validateNotificationChannelId(alarmee)
 
     alarmee.androidNotificationConfiguration.channelId?.let { channelId ->
@@ -149,6 +150,17 @@ private fun createNotificationChannels(config: AlarmeePlatformConfiguration) {
 
         config.notificationChannels.forEach { channel ->
             notificationChannelRegister.register(id = channel.id, name = channel.name, importance = channel.importance, soundFilename = channel.soundFilename)
+        }
+
+        // Add a default notification channel if none is provided
+        if (config.notificationChannels.none { it.id == DEFAULT_NOTIFICATION_CHANNEL_ID }) {
+            // Register a default notification channel if none is provided
+            notificationChannelRegister.register(
+                id = DEFAULT_NOTIFICATION_CHANNEL_ID,
+                name = "Default Notification Channel",
+                importance = NotificationManager.IMPORTANCE_HIGH,
+                soundFilename = null,
+            )
         }
     }
 }

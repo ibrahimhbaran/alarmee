@@ -29,8 +29,8 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
         const val KEY_SOUND_FILENAME = "notificationSoundFilename"
         const val KEY_DEEP_LINK_URI = "notificationDeepLinkUri"
 
-        private val DEFAULT_ICON_RES_ID = R.drawable.ic_notification
-        private val DEFAULT_ICON_COLOR = Color.Transparent
+        val DEFAULT_ICON_RES_ID = R.drawable.ic_notification
+        val DEFAULT_ICON_COLOR = Color.Transparent
         private const val DEFAULT_PRIORITY = NotificationCompat.PRIORITY_DEFAULT
         private const val DEFAULT_CHANNEL_ID = "notificationsChannelId"
     }

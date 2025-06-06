@@ -34,8 +34,8 @@ internal class DefaultPushNotificationService(
     }
 
     override fun onMessageReceived(data: Map<String, String>) {
-        handleRemoteMessage(data)
+        handleNotificationData(data)
     }
 }
 
-internal expect fun handleRemoteMessage(data: Map<String, String>)
+internal expect fun handleNotificationData(data: Map<String, String>)
