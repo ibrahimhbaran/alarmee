@@ -8,7 +8,7 @@ import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
  */
 internal open class DefaultAlarmeeService : AlarmeeService {
 
-    protected lateinit var config: AlarmeePlatformConfiguration
+    private lateinit var config: AlarmeePlatformConfiguration
 
     override lateinit var local: LocalNotificationService
     private var isInitialized = false

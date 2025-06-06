@@ -2,7 +2,6 @@ package com.tweener.alarmee.sample
 
 import android.app.NotificationManager
 import androidx.compose.ui.graphics.Color
-import com.tweener.alarmee.PushNotificationService
 import com.tweener.alarmee.channel.AlarmeeNotificationChannel
 import com.tweener.alarmee.configuration.AlarmeeAndroidPlatformConfiguration
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration

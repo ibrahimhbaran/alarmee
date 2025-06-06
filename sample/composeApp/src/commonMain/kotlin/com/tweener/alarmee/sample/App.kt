@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tweener.alarmee.AlarmeeService
+import com.tweener.alarmee.MobileAlarmeeService
 import com.tweener.alarmee.model.Alarmee
 import com.tweener.alarmee.model.AndroidNotificationConfiguration
 import com.tweener.alarmee.model.AndroidNotificationPriority
