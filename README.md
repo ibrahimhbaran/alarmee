@@ -93,21 +93,21 @@ In the `androidMain` source set, implement the actual function and return an `Al
 ```kotlin
 actual fun createAlarmeePlatformConfiguration(): AlarmeePlatformConfiguration =
   notificationIconResId = R.drawable.ic_notification,
-notificationIconColor = androidx.compose.ui.graphics.Color.Red, // Defaults to Color.Transparent is not specified
-notificationChannels = listOf(
-  AlarmeeNotificationChannel(
-    id = "dailyNewsChannelId",
-    name = "Daily news notifications",
-    importance = NotificationManager.IMPORTANCE_HIGH,
-    soundFilename = "notifications_sound",
-  ),
-  AlarmeeNotificationChannel(
-    id = "breakingNewsChannelId",
-    name = "Breaking news notifications",
-    importance = NotificationManager.IMPORTANCE_LOW,
-  ),
-  // List all the notification channels you need here
-)
+  notificationIconColor = androidx.compose.ui.graphics.Color.Red, // Defaults to Color.Transparent is not specified
+  notificationChannels = listOf(
+    AlarmeeNotificationChannel(
+      id = "dailyNewsChannelId",
+      name = "Daily news notifications",
+      importance = NotificationManager.IMPORTANCE_HIGH,
+      soundFilename = "notifications_sound",
+    ),
+    AlarmeeNotificationChannel(
+      id = "breakingNewsChannelId",
+      name = "Breaking news notifications",
+      importance = NotificationManager.IMPORTANCE_LOW,
+    ),
+    // List all the notification channels you need here
+  )
 }
 ```
 
@@ -306,7 +306,7 @@ AlarmeeAndroidPlatformConfiguration(
 
 * **Per-alarm icon customization**: Override the global defaults by specifying the icon color and drawable for individual notifications.
 ```Kotlin
-alarmeeScheduler.schedule(
+localService.schedule(
     alarmee = Alarmee(
         androidNotificationConfiguration = AndroidNotificationConfiguration(
             notificationIconResId = R.drawable.ic_another_notification,
