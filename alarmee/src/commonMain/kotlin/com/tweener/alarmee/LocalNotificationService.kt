@@ -25,11 +25,11 @@ interface LocalNotificationService {
     fun schedule(alarmee: Alarmee)
 
     /**
-     * Pushes a notification immediately to the device without scheduling an alarm.
+     * Sends a notification immediately to the device without scheduling an alarm.
      *
      * @param alarmee The [Alarmee] object containing the configuration for the alarm.
      */
-    fun push(alarmee: Alarmee)
+    fun immediate(alarmee: Alarmee)
 
     /**
      * Cancels an existing alarm based on its unique identifier.

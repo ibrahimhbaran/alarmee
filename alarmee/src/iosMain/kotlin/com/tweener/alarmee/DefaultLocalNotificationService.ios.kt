@@ -94,7 +94,7 @@ actual fun cancelAlarm(uuid: String, config: AlarmeePlatformConfiguration) {
     notificationCenter.removePendingNotificationRequestsWithIdentifiers(identifiers = listOf(uuid, getFirstRepeatingNotificationUuid(uuid = uuid)))
 }
 
-actual fun pushAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration, onSuccess: () -> Unit) {
+actual fun immediateAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration, onSuccess: () -> Unit) {
     configureNotification(uuid = alarmee.uuid, alarmee = alarmee, onScheduleSuccess = onSuccess)
 }
 

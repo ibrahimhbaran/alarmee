@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tweener.alarmee.AlarmeeService
-import com.tweener.alarmee.MobileAlarmeeService
 import com.tweener.alarmee.model.Alarmee
 import com.tweener.alarmee.model.AndroidNotificationConfiguration
 import com.tweener.alarmee.model.AndroidNotificationPriority
@@ -95,7 +94,7 @@ fun App() {
                 }) { Text("Set a custom repeating Alarmee") }
 
                 Button(onClick = {
-                    alarmService.local.push(
+                    alarmService.local.immediate(
                         alarmee = Alarmee(
                             uuid = "immediateNotificationId",
                             notificationTitle = "🚀 Immediate Notification",
@@ -111,7 +110,7 @@ fun App() {
                 }) { Text("Push Notification Now") }
 
                 Button(onClick = {
-                    alarmService.local.push(
+                    alarmService.local.immediate(
                         alarmee = Alarmee(
                             uuid = "soundNotificationId",
                             notificationTitle = "🔈 Notification with custom sound",

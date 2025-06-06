@@ -46,10 +46,10 @@ internal class DefaultLocalNotificationService(
             }
     }
 
-    override fun push(alarmee: Alarmee) {
+    override fun immediate(alarmee: Alarmee) {
         validateAlarmee(alarmee = alarmee)
 
-        pushAlarm(alarmee = alarmee, config = config) {
+        immediateAlarm(alarmee = alarmee, config = config) {
             println("Notification with title '${alarmee.notificationTitle}' successfully sent.")
         }
     }
@@ -121,5 +121,5 @@ internal expect fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: Rep
 
 internal expect fun cancelAlarm(uuid: String, config: AlarmeePlatformConfiguration)
 
-internal expect fun pushAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration, onSuccess: () -> Unit)
+internal expect fun immediateAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration, onSuccess: () -> Unit)
 

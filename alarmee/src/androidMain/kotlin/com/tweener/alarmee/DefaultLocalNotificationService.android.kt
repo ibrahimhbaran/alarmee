@@ -102,7 +102,7 @@ actual fun cancelAlarm(uuid: String, config: AlarmeePlatformConfiguration) {
     }
 }
 
-actual fun pushAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration, onSuccess: () -> Unit) {
+actual fun immediateAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration, onSuccess: () -> Unit) {
     requirePlatformConfiguration(providedPlatformConfiguration = config, targetPlatformConfiguration = AlarmeeAndroidPlatformConfiguration::class)
     validateNotificationChannelId(alarmee)
 
