@@ -18,21 +18,17 @@ class AppDelegate : NSObject, UIApplicationDelegate, UNUserNotificationCenterDel
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        print("New Firebase token received: \(deviceToken)")
         Messaging.messaging().apnsToken = deviceToken
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
-        print("userInfo: \(userInfo)")
-        
-        AlarmeeHelper().onRemoteMessageReceived(userInfo: userInfo)
-        
+        AlarmeeHelper().onNotificationReceived(userInfo: userInfo)
         return UIBackgroundFetchResult.newData
     }
     
-    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {        
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         let userInfo = notification.request.content.userInfo
-        AlarmeeHelper().onRemoteMessageReceived(userInfo: userInfo)
+        AlarmeeHelper().onNotificationReceived(userInfo: userInfo)
         
         completionHandler([.banner, .list, .badge, .sound])
     }

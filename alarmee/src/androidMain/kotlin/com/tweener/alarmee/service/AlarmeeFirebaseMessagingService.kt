@@ -1,6 +1,5 @@
 package com.tweener.alarmee.service
 
-import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.tweener.alarmee.PushNotificationServiceRegistry
@@ -20,14 +19,16 @@ class AlarmeeFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
-        println("Firebase message received from: ${message.from}")
+        val title = message.data["title"]
+        val body = message.data["body"]
+
         println("Firebase message received data payload: ${message.data}")
-        println("Firebase message received notification title: ${message.notification?.title}")
-        println("Firebase message received notification body: ${message.notification?.body}")
+        println("Firebase message received notification title: $title")
+        println("Firebase message received notification body: $body")
 
         if (message.data.isNotEmpty()) {
             PushNotificationServiceRegistry.get()?.onMessageReceived(message.data)
-                ?: Log.w("Alarmee", "PushNotificationService not initialized. Ignoring push.")
+                ?: println("PushNotificationService not initialized. Ignoring push.")
         }
     }
 

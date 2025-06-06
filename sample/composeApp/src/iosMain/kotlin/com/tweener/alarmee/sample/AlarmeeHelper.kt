@@ -8,7 +8,7 @@ import com.tweener.alarmee.PushNotificationServiceRegistry
  */
 class AlarmeeHelper {
 
-    fun onRemoteMessageReceived(userInfo: Map<Any?, *>?) {
+    fun onNotificationReceived(userInfo: Map<Any?, *>?) {
         val parsed = userInfo
             ?.mapNotNull { (key, value) ->
                 val k = key?.toString()
