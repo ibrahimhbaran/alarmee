@@ -16,7 +16,7 @@
 
 # Alarmee
 
-**Alarmee** is a Kotlin/Compose Multiplatform llibrary designed to simplify scheduling alarms and notifications on both Android and iOS platforms. With Alarmee, you can schedule one-time or repeating alarms and display platform-specific notifications seamlessly.
+**Alarmee** is a Kotlin/Compose Multiplatform llibrary designed to simplify scheduling alarms and notifications on both Android and iOS platforms. With Alarmee, you can schedule one-time or repeating alarms, display platform-specific notifications, and now supports push notifications using Firebase Cloud Messaging (Android) and Apple Push Notification service (iOS).
 
 <br>
 
@@ -28,7 +28,8 @@ Be sure to show your support by starring ⭐️ this repository, and feel free t
 
 - 📅 **One-off alarm**: Schedule an alarm to trigger at a specific date and time.
 - 🔁 **Repeating alarm**: Schedule recurring alarms with intervals: hourly, daily, weekly, monthly, yearly or custom (providing a duration).
-- 🚀 **Instant notifications**: Push notifications immediately without scheduling them.
+- ⚡️ **Instant notifications**: Send notifications immediately without scheduling them.
+- ☁️ **Push notifications**: Handle remote notifications via FCM/APNs.
 - 🎨 **Extensible Configuration**: Customize alarms and notifications with platform-specific settings.
 
 ---
@@ -38,7 +39,7 @@ Be sure to show your support by starring ⭐️ this repository, and feel free t
 In your `settings.gradle.kts` file, add Maven Central to your repositories:
 ```Groovy
 repositories {
-    mavenCentral()
+  mavenCentral()
 }
 ```
 
@@ -47,7 +48,7 @@ Then add Alarmee dependency to your module:
 - With version catalog, open `libs.versions.toml`:
 ```Groovy
 [versions]
-alarmee = "1.5.0" // Check latest version
+alarmee = "2.0.0" // Check latest version
 
 [libraries]
 alarmee = { group = "io.github.tweener", name = "alarmee", version.ref = "alarmee" }
@@ -56,16 +57,16 @@ alarmee = { group = "io.github.tweener", name = "alarmee", version.ref = "alarme
 Then in your module `build.gradle.kts` add:
 ```Groovy
 dependencies {
-    implementation(libs.alarmee)
+  implementation(libs.alarmee)
 }
 ```
 
 - Without version catalog, in your module `build.gradle.kts` add:
 ```Groovy
 dependencies {
-    val alarmee_version = "1.5.0" // Check latest version
+  val alarmee_version = "2.0.0" // Check latest version
 
-    implementation("io.github.tweener:alarmee:$alarmee_version")
+  implementation("io.github.tweener:alarmee:$alarmee_version")
 }
 ```
 
@@ -75,95 +76,106 @@ The latest version is: [![Maven Central Version](https://img.shields.io/maven-ce
 
 ## 🔧 Configuration
 
-In the `commonModule`, you need to use an instance of a subclass of `AlarmeeScheduler`. Each platform will create the corresponding subclass of the `AlarmeeScheduler`. This can be easily done with dependency injection.
+To get started with Alarmee, you need to provide a platform-specific configuration for Android and iOS. Follow these steps:
 
-<details>
-	<summary>🤖 Android</summary>
+### 1. Declare an expect function in `commonMain`
 
-In the `androidMain` module, create a `AlarmeeAndroidPlatformConfiguration(...)` instance with the following parameters:
-```Kotlin
-val platformConfiguration: AlarmeePlatformConfiguration = AlarmeeAndroidPlatformConfiguration(
-    notificationIconResId = R.drawable.ic_notification,
-    notificationIconColor = androidx.compose.ui.graphics.Color.Red, // Defaults to Color.Transparent is not specified
-    notificationChannels = listOf(
-        AlarmeeNotificationChannel(
-            id = "dailyNewsChannelId",
-            name = "Daily news notifications",
-            importance = NotificationManager.IMPORTANCE_HIGH,
-	    soundFilename = "notifications_sound",
-        ),
-        AlarmeeNotificationChannel(
-            id = "breakingNewsChannelId",
-            name = "Breaking news notifications",
-            importance = NotificationManager.IMPORTANCE_LOW,
-        ),
-        // List all the notification channels you need here
-    )
-)
+In your `commonMain` source set, declare the following function to provide platform-specific configuration:
+
+```kotlin
+expect fun createAlarmeePlatformConfiguration(): AlarmeePlatformConfiguration
 ```
-</details>
 
-<details>
-	<summary>🍎 iOS</summary>
+### 2. Provide the actual implementation in `androidMain`
 
-In your `iosMain` module, create a `AlarmeeIosPlatformConfiguration`:
-```Kotlin
+In the `androidMain` source set, implement the actual function and return an `AlarmeeAndroidPlatformConfiguration`:
+
+```kotlin
+actual fun createAlarmeePlatformConfiguration(): AlarmeePlatformConfiguration =
+  notificationIconResId = R.drawable.ic_notification,
+notificationIconColor = androidx.compose.ui.graphics.Color.Red, // Defaults to Color.Transparent is not specified
+notificationChannels = listOf(
+  AlarmeeNotificationChannel(
+    id = "dailyNewsChannelId",
+    name = "Daily news notifications",
+    importance = NotificationManager.IMPORTANCE_HIGH,
+    soundFilename = "notifications_sound",
+  ),
+  AlarmeeNotificationChannel(
+    id = "breakingNewsChannelId",
+    name = "Breaking news notifications",
+    importance = NotificationManager.IMPORTANCE_LOW,
+  ),
+  // List all the notification channels you need here
+)
+}
+```
+
+### 3. Provide the actual implementation in `iosMain`
+
+In the `iosMain` source set, implement the actual function and return an `AlarmeeIosPlatformConfiguration`:
+
+```kotlin
 val platformConfiguration: AlarmeePlatformConfiguration = AlarmeeIosPlatformConfiguration
 ```
-</details>
 
----
+### 4. Initialize `AlarmeeService` in your root Composable
 
-## 🧑‍💻 Usage
+In your shared root Composable (usually `App()` in `commonMain`), initialize the `AlarmeeService` with the platform configuration:
+
+```kotlin
+val alarmService: AlarmeeService = rememberAlarmeeService(
+    platformConfiguration = createAlarmeePlatformConfiguration()
+)
+```
+
+You can then use this instance to schedule or cancel alarms from your shared code.
+
+
+## 🧑‍💻  Usage
 
 > [!IMPORTANT]
 > Before using Alarmee, make sure the Notifications permission is granted on the target platform (Android [official documentation](https://developer.android.com/develop/ui/views/notifications/notification-permission), iOS [official documentation](https://developer.apple.com/documentation/usernotifications/asking-permission-to-use-notifications)).
-> 
+>
 > Alternativally, you can use [`moko-permissions`](https://github.com/icerockdev/moko-permissions) to easily handle permissions for you.
 
-### 1. Create an instance of AlarmeeScheduler
-Depending on your project configuration, you can create an instance of `AlarmeeScheduler` in two different ways:
+After initializing `AlarmeeService`, you can access the notification services:
 
-<details>
-	<summary>➡️ Kotlin Multplatform (without Compose)</summary>
+##### Local Notifications (all platforms)
 
-- 🤖 Android
+To send local notifications, use the local service:
 
-  Create an instance of `AlarmeeSchedulerAndroid` with the configuration created previously:
-```Kotlin
-val alarmeeScheduler: AlarmeeScheduler = AlarmeeSchedulerAndroid(context = context, platformConfiguration = platformConfiguration)
+```kotlin
+val localService = alarmService.local
+localService.schedule(...) // For instance
 ```
 
-- 🍎 iOS
+This is available on all targets (Android, iOS, desktop, web, etc.).
 
-  Create an instance of `AlarmeeSchedulerIos` with the configuration created previously:
-```Kotlin
-val alarmeeScheduler: AlarmeeScheduler = AlarmeeSchedulerIos(platformConfiguration = platformConfiguration)
+##### Push Notifications (mobile only)
+
+To access push notifications (e.g. Firebase), cast the service to MobileAlarmeeService:
+
+```kotlin
+val pushService = (alarmService as? MobileAlarmeeService)?.push
 ```
 
-</details>
+This is only available on Android and iOS. On non-mobile targets, pushService will be null.
 
-<details>
-	<summary>➡️ Compose Multplatform</summary>
+### Local Notification Service
 
-Using `rememberAlarmeeScheduler(...)` with the configuration created previously:
-```Kotlin
-val alarmeeScheduler: AlarmeeScheduler = rememberAlarmeeScheduler(platformConfiguration = platformConfiguration)
-```
-</details>
-
-### 2. Scheduling a one-off alarm
-You can schedule an alarm to be triggered at a specific time of the day, using `Alarmee#schedule(...)`. When the alarm is triggered, a notification will be displayed.
+#### 1. Scheduling a one-off alarm
+You can schedule an alarm to be triggered at a specific time of the day, using `AlarmeeService#schedule(...)`. When the alarm is triggered, a notification will be displayed.
 
 For instance, to schedule an alarm on January 12th, 2025, at 5 PM:
 ```Kotlin
-alarmeeScheduler.schedule(
+localService.schedule(
     alarmee = Alarmee(
         uuid = "myAlarmId",
         notificationTitle = "🎉 Congratulations! You've scheduled an Alarmee!",
         notificationBody = "This is the notification that will be displayed at the specified date and time.",
         scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 12, hour = 17, minute = 0),
-	deepLinkUri = "https://www.example.com", // A deep link URI to be retrieved in MainActivity#onNewIntent() on Android and in AppDelegate#userNotificationCenter() on iOS
+    	deepLinkUri = "https://www.example.com", // A deep link URI to be retrieved in MainActivity#onNewIntent() on Android and in AppDelegate#userNotificationCenter() on iOS
         androidNotificationConfiguration = AndroidNotificationConfiguration( // Required configuration for Android target only (this parameter is ignored on iOS)
             priority = AndroidNotificationPriority.HIGH,
             channelId = "dailyNewsChannelId",
@@ -173,14 +185,14 @@ alarmeeScheduler.schedule(
 )
 ```
 
-### 3. Scheduling a repeating alarm
+#### 2. Scheduling a repeating alarm
 You can specify a [`RepeatInterval`](https://github.com/Tweener/alarmee/blob/main/alarmee/src/commonMain/kotlin/com/tweener/alarmee/RepeatInterval.kt) parameter, which allows scheduling an alarm to repeat hourly, daily, weekly, monthly, yearly or custom, based on the specified scheduledDateTime.
 
-#### Fixed repeat interval
+##### Fixed repeat interval
 You can use a fixed repeat interval to schedule an Alarmee every hour, day, week, month, or year.
 For instance, to schedule an alarm to repeat every day at 9:30 AM, you can use `RepeatInterval.Daily`:
 ```Kotlin
-alarmeeScheduler.schedule(
+localService.schedule(
     alarmee = Alarmee(
         uuid = "myAlarmId",
         notificationTitle = "🔁 Congratulations! You've scheduled a daily repeating Alarmee!",
@@ -196,11 +208,11 @@ alarmeeScheduler.schedule(
 )
 ```
 
-#### Custom repeat interval
+##### Custom repeat interval
 You can also set a custom repeat interval using `RepeatInterval.Custom(duration)` to schedule an Alarmee at a specified duration interval.
 For example, to schedule an alarm to repeat every 15 minutes, you can use `RepeatInterval.Custom(duration = 15.minutes)`:
 ```Kotlin
-alarmeeScheduler.schedule(
+localService.schedule(
     alarmee = Alarmee(
         uuid = "myAlarmId",
         notificationTitle = "🔁 Congratulations! You've scheduled a custom repeating Alarmee!",
@@ -215,16 +227,16 @@ alarmeeScheduler.schedule(
 )
 ```
 
-### 4. Cancelling an alarm
+#### 3. Cancelling an alarm
 An alarm can be cancelled using its uuid, using `Alarmee#cancel(...)`. If an alarm with the specified uuid is found, it will be canceled, preventing any future notifications from being triggered for that alarm.
 ```Kotlin
-alarmeeScheduler.cancel(uuid = "myAlarmId")
+localService.cancel(uuid = "myAlarmId")
 ```
 
-### 5. Push an alarm right away
-You can push an alarm to instantly display a notification without scheduling it for a specific time:
+#### 4. Trigger an alarm right away
+You can trigger an alarm to instantly display a notification without scheduling it for a specific time:
 ```Kotlin
-alarmeeScheduler.push(
+localService.immediate(
     alarmee = Alarmee(
         uuid = "myAlarmId",
         notificationTitle = "🚀 Congratulations! You've pushed an Alarmee right now!",
@@ -238,8 +250,8 @@ alarmeeScheduler.push(
 )
 ```
 
-### 6. Notification customization
-#### Notification sound
+#### 5. Notification customization
+##### Notification sound
 You can customize the notification sound on both Android and iOS.
 
 > [!WARNING]
@@ -279,7 +291,7 @@ Alarmee(
 ```
 </details>
 
-#### Notification icon
+##### Notification icon
 <details>
 	<summary>🤖 Android</summary>
 
@@ -313,7 +325,7 @@ alarmeeScheduler.schedule(
 On iOS, customizing icon colors and drawables is not supported.
 </details>
 
-#### Notification badge
+##### Notification badge
 <details>
 	<summary>🤖 Android</summary>
 
@@ -337,6 +349,12 @@ If `badge = 0`, the badge will be cleared from the app icon. If `badge = null`, 
 </details>
 
 ---
+
+### Push Notification Service
+
+The `PushNotificationService` handles push notifications for mobile platforms only (Android & iOS). It is available via the `MobileAlarmeeService` interface.
+
+Currently, `Alarmee` automatically displays a notification when a push message is received, using the `title` and `body` fields from the payload. In a future release, developers will be able to handle the push payload manually and choose whether or not to display a notification.
 
 ## 👨‍💻 Contributing
 
