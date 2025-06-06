@@ -21,8 +21,8 @@ internal class DefaultPushNotificationService(
 
     override fun register() {
         scope.launch {
-            val token = Firebase.messaging.getToken()
-            println("Firebase current token: $token")
+//            val token = Firebase.messaging.getToken()
+//            println("Firebase current token: $token")
         }
     }
 

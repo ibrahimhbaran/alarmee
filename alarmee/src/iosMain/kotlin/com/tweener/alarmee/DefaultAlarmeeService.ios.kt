@@ -33,10 +33,10 @@ actual fun initializeFirebase() {
 private class FirebaseMessageDelegate : FIRMessagingDelegateProtocol, NSObject() {
 
     override fun messaging(messaging: FIRMessaging, didReceiveRegistrationToken: String?) {
-        println("Firebase registration token received: $didReceiveRegistrationToken")
-
-        val hexToken = messaging.APNSToken?.toHexString()
-        println("APNS current token: $hexToken")
+//        println("Firebase registration token received: $didReceiveRegistrationToken")
+//
+//        val hexToken = messaging.APNSToken?.toHexString()
+//        println("APNS current token: $hexToken")
     }
 }
 

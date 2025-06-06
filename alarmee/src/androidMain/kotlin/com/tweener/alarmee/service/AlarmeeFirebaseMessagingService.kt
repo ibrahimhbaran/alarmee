@@ -22,7 +22,7 @@ class AlarmeeFirebaseMessagingService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
 
-        println("New Firebase token received: $token")
+//        println("New Firebase token received: $token")
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
