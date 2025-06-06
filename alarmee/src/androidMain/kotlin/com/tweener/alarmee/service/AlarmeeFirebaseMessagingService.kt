@@ -6,6 +6,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.tweener.alarmee.DEFAULT_NOTIFICATION_CHANNEL_ID
 import com.tweener.alarmee.notification.NotificationFactory
+import com.tweener.alarmee.notification.NotificationFactory.Companion.DEEP_LINK_URI_PARAM
 import com.tweener.alarmee.reveicer.NotificationBroadcastReceiver.Companion.DEFAULT_ICON_COLOR
 import com.tweener.alarmee.reveicer.NotificationBroadcastReceiver.Companion.DEFAULT_ICON_RES_ID
 import com.tweener.kmpkit.kotlinextensions.getNotificationManager
@@ -28,7 +29,7 @@ class AlarmeeFirebaseMessagingService : FirebaseMessagingService() {
         super.onMessageReceived(message)
 
         safeLet(message.data["title"], message.data["body"]) { title, body ->
-            val deepLinkUri = message.data["deepLinkUri"]
+            val deepLinkUri = message.data[DEEP_LINK_URI_PARAM]
 
             val notification = NotificationFactory.create(
                 context = com.tweener.alarmee._internal.applicationContext,
