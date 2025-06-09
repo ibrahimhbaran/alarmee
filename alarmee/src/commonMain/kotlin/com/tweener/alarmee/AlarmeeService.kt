@@ -9,8 +9,8 @@ fun rememberAlarmeeService(
     platformConfiguration: AlarmeePlatformConfiguration
 ): AlarmeeService =
     remember(platformConfiguration) {
-        createAlarmeeService(platformConfiguration).apply {
-            onAppLaunch(platformConfiguration)
+        createAlarmeeService().apply {
+            initialize(platformConfiguration)
         }
     }
 
@@ -18,7 +18,7 @@ fun rememberAlarmeeService(
  * Entry point of the Alarmee library.
  *
  * This service allows you to schedule, trigger, and cancel alarms using the [LocalNotificationService].
- * It must be initialized when your app starts by calling [onAppLaunch], typically in your root `App()` composable.
+ * It must be initialized when your app starts by calling [initialize], typically in your root `App()` composable.
  *
  * Platform-specific configuration is passed through [AlarmeePlatformConfiguration].
  *
@@ -50,7 +50,10 @@ interface AlarmeeService {
      * ```kotlin
      * val alarmeeService = rememberAlarmeeService(createAlarmeePlatformConfiguration())
      * ```
+     *
+     * Use this method if your app does not already use a Firebase instance.
+     *
+     * @param platformConfiguration The platform-specific configuration for Alarmee.
      */
-    fun onAppLaunch(platformConfiguration: AlarmeePlatformConfiguration)
-
+    fun initialize(platformConfiguration: AlarmeePlatformConfiguration)
 }

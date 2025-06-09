@@ -1,5 +1,11 @@
 package com.tweener.alarmee
 
+import cocoapods.FirebaseMessaging.FIRMessaging
+import dev.gitlive.firebase.Firebase
+import dev.gitlive.firebase.messaging.messaging
+import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.coroutines.delay
+
 /**
  * @author Vivien Mahe
  * @since 05/06/2025
@@ -8,4 +14,22 @@ package com.tweener.alarmee
 internal actual fun handleNotificationData(data: Map<String, String>) {
     // On iOS, we let the system display the notification. But we can still get the data attached to the notification.
     println("Handling notification data on iOS: $data")
+}
+
+@OptIn(ExperimentalForeignApi::class)
+internal actual suspend fun getFirebaseToken(): String {
+    var attempts = 0
+    val maxAttempts = 10
+    val delayMillis = 500L
+
+    while (FIRMessaging.messaging().APNSToken == null && attempts < maxAttempts) {
+        delay(delayMillis)
+        attempts++
+    }
+
+    return try {
+        Firebase.messaging.getToken()
+    } catch (throwable: Throwable) {
+        throw throwable
+    }
 }

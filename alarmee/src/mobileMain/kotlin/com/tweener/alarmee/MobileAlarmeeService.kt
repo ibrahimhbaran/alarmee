@@ -1,5 +1,8 @@
 package com.tweener.alarmee
 
+import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
+import dev.gitlive.firebase.Firebase
+
 /**
  * Platform-specific extension of [AlarmeeService] for mobile platforms (Android and iOS).
  *
@@ -26,4 +29,20 @@ interface MobileAlarmeeService : AlarmeeService {
      * Only available on Android and iOS targets.
      */
     val push: PushNotificationService
+
+    /**
+     * Initializes the Alarmee service with platform-specific configuration and Firebase instance.
+     *
+     * This method **must be called once when the app is launched**. For example, in your root Composable:
+     *
+     * ```kotlin
+     * val alarmeeService = rememberAlarmeeService(createAlarmeePlatformConfiguration())
+     * ```
+     *
+     * Use this method if your app already uses a Firebase instance.
+     *
+     * @param platformConfiguration The platform-specific configuration for Alarmee.
+     * @param firebase The Firebase instance used to initialize Firebase Messaging.
+     */
+    fun initialize(platformConfiguration: AlarmeePlatformConfiguration, firebase: Firebase)
 }

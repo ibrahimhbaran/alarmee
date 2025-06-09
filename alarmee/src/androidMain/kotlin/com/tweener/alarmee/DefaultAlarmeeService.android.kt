@@ -8,3 +8,7 @@ package com.tweener.alarmee
 actual fun initializeFirebase() {
     // Nothing to do here
 }
+
+actual fun configureFirebase() {
+    // Nothing to do here
+}

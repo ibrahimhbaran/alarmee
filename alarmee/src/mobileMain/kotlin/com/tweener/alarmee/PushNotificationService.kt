@@ -13,25 +13,26 @@ package com.tweener.alarmee
 interface PushNotificationService {
 
     /**
-     * Registers the device for receiving push notifications.
-     * On Android, this may retrieve the Firebase Cloud Messaging (FCM) token.
-     * On iOS, this requests permission and registers for remote notifications.
-     */
-    fun register()
-
-    /**
      * Unregisters the device from receiving push notifications.
      * Typically used when the user signs out or disables notifications.
      */
     fun unregister()
 
     /**
-     * Handles a push message received from the platform (e.g. FCM on Android).
-     * This function should parse the payload and show a local notification,
-     * or trigger custom logic depending on the app’s needs.
+     * Handles a push message received from the platform.
+     * This function parses the payload and shows a local notification.
      *
      * @param data The key-value payload of the remote push message.
      */
     fun onMessageReceived(data: Map<String, String>)
 
+    /**
+     * Retrieves the current Firebase Cloud Messaging (FCM) token for the device.
+     * This token uniquely identifies the app instance and is required for sending push notifications.
+     *
+     * On iOS, this method waits for the APNs token to be set before fetching the FCM token.
+     *
+     * @return A [Result] containing the FCM token on success, or an exception on failure.
+     */
+    suspend fun getToken(): Result<String>
 }

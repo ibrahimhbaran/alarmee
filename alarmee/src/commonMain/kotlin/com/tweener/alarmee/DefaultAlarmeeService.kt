@@ -13,14 +13,19 @@ internal open class DefaultAlarmeeService : AlarmeeService {
     override lateinit var local: LocalNotificationService
     private var isInitialized = false
 
-    override fun onAppLaunch(platformConfiguration: AlarmeePlatformConfiguration) {
+    override fun initialize(platformConfiguration: AlarmeePlatformConfiguration) {
+        initializeFirebase()
+        init(platformConfiguration = platformConfiguration)
+    }
+
+    protected fun init(platformConfiguration: AlarmeePlatformConfiguration) {
         // Check if the service is already initialized to prevent re-initialization
         if (isInitialized) {
             println("AlarmeeService is already initialized.")
             return
         }
 
-        initializeFirebase()
+        configureFirebase()
 
         config = platformConfiguration
 
@@ -28,11 +33,15 @@ internal open class DefaultAlarmeeService : AlarmeeService {
         local = createLocalNotificationService(config)
 
         isInitialized = true
+
+        println("Alarmee is initialized.")
     }
 }
 
-expect fun createAlarmeeService(config: AlarmeePlatformConfiguration): AlarmeeService
+expect fun createAlarmeeService(): AlarmeeService
 
-expect fun createLocalNotificationService(config: AlarmeePlatformConfiguration): LocalNotificationService
+internal expect fun createLocalNotificationService(config: AlarmeePlatformConfiguration): LocalNotificationService
 
-expect fun initializeFirebase()
+internal expect fun initializeFirebase()
+
+internal expect fun configureFirebase()

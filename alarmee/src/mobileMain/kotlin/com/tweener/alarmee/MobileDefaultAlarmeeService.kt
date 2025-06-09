@@ -1,6 +1,7 @@
 package com.tweener.alarmee
 
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
+import dev.gitlive.firebase.Firebase
 
 /**
  * @author Vivien Mahe
@@ -10,11 +11,10 @@ internal class MobileDefaultAlarmeeService : DefaultAlarmeeService(), MobileAlar
 
     override lateinit var push: PushNotificationService
 
-    override fun onAppLaunch(platformConfiguration: AlarmeePlatformConfiguration) {
-        super.onAppLaunch(platformConfiguration)
+    override fun initialize(platformConfiguration: AlarmeePlatformConfiguration, firebase: Firebase) {
+        init(platformConfiguration = platformConfiguration)
 
         push = DefaultPushNotificationService(platformConfiguration)
         PushNotificationServiceRegistry.register(push)
     }
 }
-

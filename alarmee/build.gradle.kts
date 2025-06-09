@@ -150,7 +150,12 @@ version = ProjectConfiguration.Alarmee.versionName
 
 mavenPublishing {
     publishToMavenCentral(host = SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
-    signAllPublications()
+
+    // Only enable signing if the flag is true
+    if (findProperty("mavenPublishing.signAllPublications")?.toString()?.toBoolean() == true) {
+        signAllPublications()
+    }
+
     coordinates(groupId = group.toString(), artifactId = ProjectConfiguration.Alarmee.Maven.name.lowercase(), version = version.toString())
     configure(
         platform = KotlinMultiplatform(
