@@ -12,10 +12,12 @@ actual fun initializeFirebase() {
     // No-op for non-mobile platforms
 }
 
-actual fun createAlarmeeService(config: AlarmeePlatformConfiguration): AlarmeeService =
-    DefaultAlarmeeService().apply {
-        onAppLaunch(platformConfiguration = config)
-    }
+actual fun configureFirebase() {
+    // No-op for non-mobile platforms
+}
+
+actual fun createAlarmeeService(): AlarmeeService =
+    DefaultAlarmeeService()
 
 actual fun createLocalNotificationService(config: AlarmeePlatformConfiguration): LocalNotificationService {
     requirePlatformConfiguration(providedPlatformConfiguration = config, targetPlatformConfiguration = AlarmeePlatformConfigurationNonMobile::class)

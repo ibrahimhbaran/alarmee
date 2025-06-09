@@ -22,10 +22,11 @@ import platform.darwin.NSObject
  * @since 05/06/2025
  */
 
-@OptIn(ExperimentalForeignApi::class)
 actual fun initializeFirebase() {
     Firebase.initialize()
+}
 
+actual fun configureFirebase() {
     FIRMessaging.messaging().delegate = FirebaseMessageDelegate()
     UIApplication.sharedApplication.registerForRemoteNotifications()
 }
@@ -33,8 +34,6 @@ actual fun initializeFirebase() {
 private class FirebaseMessageDelegate : FIRMessagingDelegateProtocol, NSObject() {
 
     override fun messaging(messaging: FIRMessaging, didReceiveRegistrationToken: String?) {
-//        println("Firebase registration token received: $didReceiveRegistrationToken")
-//
 //        val hexToken = messaging.APNSToken?.toHexString()
 //        println("APNS current token: $hexToken")
     }
