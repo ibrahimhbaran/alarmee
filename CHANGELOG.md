@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.0] - June 9, 2025
+🚀 Alarmee 2.0 is here!
+- 🎉 New feature: Push notifications on iOS and Android!
+- The API structure has been revamped with a focus on clearer service boundaries and support for both local and push notifications.
+
+Check out the [migration guide from version 1.x to 2.0](https://github.com/Tweener/alarmee?tab=readme-ov-file#-migration-guide-from-alarmee-1x-to-20).
+
 ## [1.6.4] - May 25, 2025
 - 🎉 New feature to add `deepLinkUri` support to `Alarmee` (Requested by [@M1r7](https://github.com/M1r7) in [https://github.com/Tweener/alarmee/pull/7](https://github.com/Tweener/alarmee/issues/18))
 
