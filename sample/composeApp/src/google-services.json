@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "677696598845",
+    "project_id": "alarmeesample",
+    "storage_bucket": "alarmeesample.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:677696598845:android:d56580fea8773a78974b54",
+        "android_client_info": {
+          "package_name": "com.tweener.alarmee.sample"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiTYpUOsFbDUBkHcDELJfyKcq1UdMvZ24"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
