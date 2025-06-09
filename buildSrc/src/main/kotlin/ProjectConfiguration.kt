@@ -16,7 +16,7 @@ object ProjectConfiguration {
 
         object Maven {
             const val name = "Alarmee"
-            const val description = "A Kotlin/Compose Multiplatform library for effortless alarm and local notification scheduling on both Android and iOS."
+            const val description = "A Kotlin/Compose Multiplatform library to schedule alarms, display local notifications, and handle push notifications on Android and iOS."
             const val group = "io.github.tweener"
             const val packageUrl = "https://github.com/Tweener/alarmee"
             const val gitUrl = "github.com:Tweener/alarmee.git"
