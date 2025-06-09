@@ -83,7 +83,7 @@ kotlin {
 
     cocoapods {
         ios.deploymentTarget = ProjectConfiguration.iOS.deploymentTarget
-
+        noPodspec()
         pod("FirebaseMessaging")
     }
 
