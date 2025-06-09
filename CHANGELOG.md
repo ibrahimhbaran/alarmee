@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.0.1] - June 9, 2025
+- Allow Alarmee to be initialized by passing a Firebase instance, for mobile targets (Android & iOS).
+- Exposes the FCM token via `PushNotificationService#getToken()`, for mobile targets (Android & iOS).
+
 ## [2.0.0] - June 9, 2025
 🚀 Alarmee 2.0 is here!
 - 🎉 New feature: Push notifications on iOS and Android!
