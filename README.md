@@ -16,7 +16,11 @@
 
 # Alarmee
 
-**Alarmee** is a Kotlin/Compose Multiplatform llibrary designed to simplify scheduling alarms and notifications on both Android and iOS platforms. With Alarmee, you can schedule one-time or repeating alarms, display platform-specific notifications, and now supports push notifications using Firebase Cloud Messaging (Android) and Apple Push Notification service (iOS).
+**Alarmee** is a Kotlin/Compose Multiplatform library designed to simplify scheduling alarms and notifications on both Android and iOS platforms. With Alarmee, you can schedule one-time or repeating alarms, display platform-specific notifications, and now supports push notifications using Firebase Cloud Messaging (Android) and Apple Push Notification service (iOS).
+
+> [!WARNING]
+> **Upgrading from v1.x?**  
+> Check out the [Migration Guide](#-migration-guide-from-alarmee-1x-to-20) to update your code for version 2.0.
 
 <br>
 
@@ -355,6 +359,80 @@ If `badge = 0`, the badge will be cleared from the app icon. If `badge = null`, 
 The `PushNotificationService` handles push notifications for mobile platforms only (Android & iOS). It is available via the `MobileAlarmeeService` interface.
 
 Currently, `Alarmee` automatically displays a notification when a push message is received, using the `title` and `body` fields from the payload. In a future release, developers will be able to handle the push payload manually and choose whether or not to display a notification.
+
+## 🔄 Migration Guide: From Alarmee 1.x to 2.0
+
+Version `2.0` introduces a new API structure with a focus on clearer service boundaries and support for both local and push notifications. Follow these steps to migrate your existing code:
+
+---
+
+### 1. Replace `AlarmeeScheduler` with `AlarmeeService`
+
+In `1.x`, the entry point was:
+
+```kotlin
+val alarmeeScheduler: AlarmeeScheduler = rememberAlarmeeScheduler(
+    platformConfiguration = platformConfiguration
+)
+```
+
+In `2.0`, it has been **replaced** by:
+
+```kotlin
+val alarmService: AlarmeeService = rememberAlarmeeService(
+    platformConfiguration = platformConfiguration
+)
+```
+
+### 2. Update function calls
+
+All method calls on `AlarmeeScheduler` should now be redirected to the **local notification service** from `AlarmeeService`:
+
+#### Replace:
+```kotlin
+alarmeeScheduler.schedule(alarmee)
+```
+
+#### With:
+```kotlin
+alarmService.local.schedule(alarmee)
+```
+
+Similarly, any other function calls (e.g., `cancel(...)`, `immediate(...)`, etc.) should follow this pattern:
+
+```kotlin
+// Before
+alarmeeScheduler.cancel(alarmee)
+
+// After
+alarmService.local.cancel(alarmee)
+```
+
+### 3. Rename `push(alarmee)` to `immediate(alarmee)`
+
+In `1.x`, to instantly trigger a local notification, you called:
+
+```kotlin
+alarmeeScheduler.push(alarmee)
+```
+
+In `2.0`, this method has been renamed to:
+
+```kotlin
+alarmService.local.immediate(alarmee)
+```
+
+### ✅ Summary of Changes
+
+| 1.x                                        | 2.0                                             |
+|--------------------------------------------|-------------------------------------------------|
+| `AlarmeeScheduler`                         | `AlarmeeService`                                |
+| `rememberAlarmeeScheduler(...)`            | `rememberAlarmeeService(...)`                   |
+| `alarmeeScheduler.schedule(...)`           | `alarmService.local.schedule(...)`              |
+| `alarmeeScheduler.cancel(...)`             | `alarmService.local.cancel(...)`                |
+| `alarmeeScheduler.push(...)`               | `alarmService.local.immediate(...)`             |
+
+---
 
 ## 👨‍💻 Contributing
 
