@@ -112,7 +112,6 @@ actual fun createAlarmeePlatformConfiguration(): AlarmeePlatformConfiguration =
     ),
     // List all the notification channels you need here
   )
-}
 ```
 
 ### 3. Provide the actual implementation in `iosMain`
