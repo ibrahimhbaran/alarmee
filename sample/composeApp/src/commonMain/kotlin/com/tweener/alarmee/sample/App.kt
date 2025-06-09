@@ -16,13 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.tweener.alarmee.Alarmee
-import com.tweener.alarmee.AlarmeeScheduler
-import com.tweener.alarmee.AndroidNotificationConfiguration
-import com.tweener.alarmee.AndroidNotificationPriority
-import com.tweener.alarmee.IosNotificationConfiguration
-import com.tweener.alarmee.RepeatInterval
-import com.tweener.alarmee.rememberAlarmeeScheduler
+import com.tweener.alarmee.AlarmeeService
+import com.tweener.alarmee.model.Alarmee
+import com.tweener.alarmee.model.AndroidNotificationConfiguration
+import com.tweener.alarmee.model.AndroidNotificationPriority
+import com.tweener.alarmee.model.IosNotificationConfiguration
+import com.tweener.alarmee.model.RepeatInterval
+import com.tweener.alarmee.rememberAlarmeeService
 import com.tweener.alarmee.sample.ui.theme.AlarmeeTheme
 import com.tweener.kmpkit.kotlinextensions.now
 import com.tweener.kmpkit.kotlinextensions.plus
@@ -32,7 +32,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun App() {
-    val alarmeeScheduler: AlarmeeScheduler = rememberAlarmeeScheduler(platformConfiguration = createAlarmeePlatformConfiguration())
+    val alarmService: AlarmeeService = rememberAlarmeeService(platformConfiguration = createAlarmeePlatformConfiguration())
 
     AlarmeeTheme {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -42,7 +42,7 @@ fun App() {
                 verticalArrangement = Arrangement.spacedBy(space = 16.dp, alignment = Alignment.CenterVertically),
             ) {
                 Button(onClick = {
-                    alarmeeScheduler.schedule(
+                    alarmService.local.schedule(
                         alarmee = Alarmee(
                             uuid = "myOneOffAlarmId",
                             notificationTitle = "🎉 Congratulations! You've schedule a one-off Alarmee!",
@@ -61,7 +61,7 @@ fun App() {
                     val now = LocalDateTime.now()
                     val scheduledDateTime = LocalDateTime(year = now.year, month = now.month, dayOfMonth = now.dayOfMonth, hour = 9, minute = 36, second = 0)
 
-                    alarmeeScheduler.schedule(
+                    alarmService.local.schedule(
                         alarmee = Alarmee(
                             uuid = "myRepeatingAlarmId",
                             notificationTitle = "🔁 Congratulations! You've schedule a daily repeating Alarmee!",
@@ -78,7 +78,7 @@ fun App() {
                 }) { Text("Set a daily repeating Alarmee") }
 
                 Button(onClick = {
-                    alarmeeScheduler.schedule(
+                    alarmService.local.schedule(
                         alarmee = Alarmee(
                             uuid = "myRepeatingAlarmId",
                             notificationTitle = "🔁 Congratulations! You've schedule a custom repeating Alarmee!",
@@ -94,7 +94,7 @@ fun App() {
                 }) { Text("Set a custom repeating Alarmee") }
 
                 Button(onClick = {
-                    alarmeeScheduler.push(
+                    alarmService.local.immediate(
                         alarmee = Alarmee(
                             uuid = "immediateNotificationId",
                             notificationTitle = "🚀 Immediate Notification",
@@ -110,7 +110,7 @@ fun App() {
                 }) { Text("Push Notification Now") }
 
                 Button(onClick = {
-                    alarmeeScheduler.push(
+                    alarmService.local.immediate(
                         alarmee = Alarmee(
                             uuid = "soundNotificationId",
                             notificationTitle = "🔈 Notification with custom sound",

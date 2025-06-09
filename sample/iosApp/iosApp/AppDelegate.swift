@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseMessaging
 import composeApp
 
 @MainActor
@@ -16,7 +17,19 @@ class AppDelegate : NSObject, UIApplicationDelegate, UNUserNotificationCenterDel
         return true
     }
     
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        Messaging.messaging().apnsToken = deviceToken
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
+        AlarmeeHelper().onNotificationReceived(userInfo: userInfo)
+        return UIBackgroundFetchResult.newData
+    }
+    
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        let userInfo = notification.request.content.userInfo
+        AlarmeeHelper().onNotificationReceived(userInfo: userInfo)
+        
         completionHandler([.banner, .list, .badge, .sound])
     }
     

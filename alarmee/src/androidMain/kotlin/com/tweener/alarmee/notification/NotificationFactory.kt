@@ -15,7 +15,7 @@ class NotificationFactory {
 
     companion object {
 
-        private const val DEEP_LINK_URI_PARAM = "deepLinkUri"
+         const val DEEP_LINK_URI_PARAM = "deepLinkUri"
 
         fun create(
             context: Context,

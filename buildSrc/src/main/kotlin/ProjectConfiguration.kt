@@ -9,14 +9,14 @@ object ProjectConfiguration {
 
     object Alarmee {
         const val packageName = "com.tweener.alarmee"
-        const val versionName = "1.6.4"
+        const val versionName = "2.0.0"
         const val namespace = "$packageName.android"
         const val compileSDK = 35
         const val minSDK = 24
 
         object Maven {
             const val name = "Alarmee"
-            const val description = "A Kotlin/Compose Multiplatform library for effortless alarm and local notification scheduling on both Android and iOS."
+            const val description = "A Kotlin/Compose Multiplatform library to schedule alarms, display local notifications, and handle push notifications on Android and iOS."
             const val group = "io.github.tweener"
             const val packageUrl = "https://github.com/Tweener/alarmee"
             const val gitUrl = "github.com:Tweener/alarmee.git"
@@ -32,5 +32,9 @@ object ProjectConfiguration {
     object Compiler {
         val javaCompatibility = JavaVersion.VERSION_21
         val jvmTarget = javaCompatibility.toString()
+    }
+
+    object iOS {
+        const val deploymentTarget = "12.0"
     }
 }

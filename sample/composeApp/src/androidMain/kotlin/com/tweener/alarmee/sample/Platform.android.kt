@@ -11,7 +11,7 @@ import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
  * @since 26/11/2024
  */
 
-actual fun createAlarmeePlatformConfiguration(): AlarmeePlatformConfiguration =
+private val alarmeePlatformConfiguration =
     AlarmeeAndroidPlatformConfiguration(
         notificationIconResId = R.drawable.ic_stat_name,
         notificationIconColor = Color.Yellow,
@@ -22,3 +22,5 @@ actual fun createAlarmeePlatformConfiguration(): AlarmeePlatformConfiguration =
             AlarmeeNotificationChannel(id = "soundChannelId", name = "Sound notifications", importance = NotificationManager.IMPORTANCE_HIGH, soundFilename = "hello"),
         )
     )
+
+actual fun createAlarmeePlatformConfiguration(): AlarmeePlatformConfiguration = alarmeePlatformConfiguration

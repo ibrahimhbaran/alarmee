@@ -8,4 +8,6 @@ import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
  * @since 26/11/2024
  */
 
-actual fun createAlarmeePlatformConfiguration(): AlarmeePlatformConfiguration = AlarmeeIosPlatformConfiguration
+private val alarmeePlatformConfiguration = AlarmeeIosPlatformConfiguration
+
+actual fun createAlarmeePlatformConfiguration(): AlarmeePlatformConfiguration = alarmeePlatformConfiguration
