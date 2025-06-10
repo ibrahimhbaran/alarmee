@@ -21,21 +21,21 @@ jobs:
     strategy:
       matrix:
         include:
-          - target: publishIosArm64PublicationToMavenCentralRepository
+          - target: publishIosArm64PublicationToMavenCentralRepository -PmavenPublishing.signAllPublications=true
             os: macos-latest
-          - target: publishIosSimulatorArm64PublicationToMavenCentralRepository
+          - target: publishIosSimulatorArm64PublicationToMavenCentralRepository -PmavenPublishing.signAllPublications=true
             os: macos-latest
-          - target: publishIosX64PublicationToMavenCentralRepository
+          - target: publishIosX64PublicationToMavenCentralRepository -PmavenPublishing.signAllPublications=true
             os: macos-latest
-          - target: publishAndroidReleasePublicationToMavenCentralRepository
+          - target: publishAndroidReleasePublicationToMavenCentralRepository -PmavenPublishing.signAllPublications=true
             os: ubuntu-latest
-          - target: publishJsPublicationToMavenCentralRepository
+          - target: publishJsPublicationToMavenCentralRepository -PmavenPublishing.signAllPublications=true
             os: ubuntu-latest
-          - target: publishWasmJsPublicationToMavenCentralRepository
+          - target: publishWasmJsPublicationToMavenCentralRepository -PmavenPublishing.signAllPublications=true
             os: ubuntu-latest
-          - target: publishJvmPublicationToMavenCentralRepository
+          - target: publishJvmPublicationToMavenCentralRepository -PmavenPublishing.signAllPublications=true
             os: ubuntu-latest
-          - target: publishKotlinMultiplatformPublicationToMavenCentralRepository
+          - target: publishKotlinMultiplatformPublicationToMavenCentralRepository -PmavenPublishing.signAllPublications=true
             os: ubuntu-latest
     runs-on: ${{ matrix.os }}
 
