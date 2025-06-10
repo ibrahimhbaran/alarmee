@@ -151,8 +151,9 @@ version = ProjectConfiguration.Alarmee.versionName
 mavenPublishing {
     publishToMavenCentral(host = SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
 
-    // Only enable signing if the flag is true
-    if (findProperty("mavenPublishing.signAllPublications")?.toString()?.toBoolean() == true) {
+    // Only disable signing if the flag is explicitly set to false
+    val signAllPublicationsProperty = findProperty("mavenPublishing.signAllPublications")
+    if (signAllPublicationsProperty == null || signAllPublicationsProperty.toString().toBoolean()) {
         signAllPublications()
     }
 
