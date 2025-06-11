@@ -1,5 +1,8 @@
 # Changelog
 
+## [2.0.2] - June 12, 2025
+- 🤖 On Android, create a default channel notification if none was provided in the `AlarmeeAndroidPlatformConfiguration`, to make sure there is always at least one.
+
 ## [2.0.1] - June 9, 2025
 - Allow Alarmee to be initialized by passing a Firebase instance, for mobile targets (Android & iOS).
 - Exposes the FCM token via `PushNotificationService#getToken()`, for mobile targets (Android & iOS).
