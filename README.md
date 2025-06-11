@@ -80,7 +80,12 @@ The latest version is: [![Maven Central Version](https://img.shields.io/maven-ce
 
 ## 🔧 Configuration
 
-To get started with Alarmee, you need to provide a platform-specific configuration for Android and iOS. Follow these steps:
+To get started with Alarmee, you need to provide a platform-specific configuration for Android and iOS. Follow these steps.
+
+> [!WARNING]
+> On iOS, make sure to add Firebase as a dependency (`https://github.com/firebase/firebase-ios-sdk`) to your Xcode project.
+> 
+> Then, in your target, add `Background Modes` (check `Remote notifications`) and `Push notifications` capabilities.
 
 ### 1. Declare an expect function in `commonMain`
 
