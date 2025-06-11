@@ -8,7 +8,6 @@ import android.os.Build
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
 import com.tweener.alarmee._internal.applicationContext
-import com.tweener.alarmee.channel.AlarmeeNotificationChannel
 import com.tweener.alarmee.channel.NotificationChannelRegister
 import com.tweener.alarmee.configuration.AlarmeeAndroidPlatformConfiguration
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
@@ -138,14 +137,14 @@ actual fun immediateAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration
     }
 }
 
-
+/**
+ * Creates notification channels based on the provided configuration. If no channels are provided, a default channel is created.
+ */
 private fun createNotificationChannels(config: AlarmeePlatformConfiguration) {
     requirePlatformConfiguration(providedPlatformConfiguration = config, targetPlatformConfiguration = AlarmeeAndroidPlatformConfiguration::class)
 
     // Create a notification channel for Android O and above
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        require(config.notificationChannels.isNotEmpty()) { "At least one ${AlarmeeNotificationChannel::class.simpleName} must be provided." }
-
         val notificationChannelRegister = NotificationChannelRegister(context = applicationContext)
 
         config.notificationChannels.forEach { channel ->
@@ -154,7 +153,6 @@ private fun createNotificationChannels(config: AlarmeePlatformConfiguration) {
 
         // Add a default notification channel if none is provided
         if (config.notificationChannels.none { it.id == DEFAULT_NOTIFICATION_CHANNEL_ID }) {
-            // Register a default notification channel if none is provided
             notificationChannelRegister.register(
                 id = DEFAULT_NOTIFICATION_CHANNEL_ID,
                 name = "Default Notification Channel",
