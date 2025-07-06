@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tweener.alarmee.AlarmeeService
+import com.tweener.alarmee.MobileAlarmeeService
 import com.tweener.alarmee.model.Alarmee
 import com.tweener.alarmee.model.AndroidNotificationConfiguration
 import com.tweener.alarmee.model.AndroidNotificationPriority
@@ -26,6 +27,11 @@ import com.tweener.alarmee.rememberAlarmeeService
 import com.tweener.alarmee.sample.ui.theme.AlarmeeTheme
 import com.tweener.kmpkit.kotlinextensions.now
 import com.tweener.kmpkit.kotlinextensions.plus
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -33,6 +39,16 @@ import kotlin.time.Duration.Companion.seconds
 @Composable
 fun App() {
     val alarmService: AlarmeeService = rememberAlarmeeService(platformConfiguration = createAlarmeePlatformConfiguration())
+    val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    // Example of how to get the Firebase push token
+    scope.launch {
+        (alarmService as? MobileAlarmeeService)?.push?.let { pushService ->
+            pushService.getToken()
+                .onSuccess { token -> println("Firebase push token: $token") }
+                .onFailure { throwable -> println("Failed to get Firebase push token: $throwable") }
+        }
+    }
 
     AlarmeeTheme {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
