@@ -15,7 +15,7 @@ class NotificationService: UNNotificationServiceExtension {
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         self.contentHandler = contentHandler
         bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
-        
+
         guard let bestAttemptContent = bestAttemptContent,
               let imageUrlString = bestAttemptContent.userInfo["imageUrl"] as? String,
               let url = URL(string: imageUrlString) else {
@@ -30,7 +30,7 @@ class NotificationService: UNNotificationServiceExtension {
             contentHandler(bestAttemptContent)
         }
     }
-    
+
     override func serviceExtensionTimeWillExpire() {
         // Called just before the extension will be terminated by the system.
         // Use this as an opportunity to deliver your "best attempt" at modified content, otherwise the original push payload will be used.
@@ -57,7 +57,7 @@ class NotificationService: UNNotificationServiceExtension {
                 completion(nil)
             }
         }
-        
+
         task.resume()
     }
 }
