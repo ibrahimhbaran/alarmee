@@ -362,7 +362,89 @@ If `badge = 0`, the badge will be cleared from the app icon. If `badge = null`, 
 
 The `PushNotificationService` handles push notifications for mobile platforms only (Android & iOS). It is available via the `MobileAlarmeeService` interface.
 
-Currently, `Alarmee` automatically displays a notification when a push message is received, using the `title` and `body` fields from the payload. In a future release, developers will be able to handle the push payload manually and choose whether or not to display a notification.
+You can access it like this:
+
+```kotlin
+val pushService = (alarmService as? MobileAlarmeeService)?.push
+```
+
+This is only available on **Android** and **iOS**. On other targets, `pushService` will be `null`.
+
+#### Add the Notification Service Extension (iOS only)
+
+To display images in push notifications on iOS, create a **Notification Service Extension** and paste the provided `NotificationService.swift` file:
+
+1. In Xcode, go to **File > New > Target...**
+2. Choose **Notification Service Extension**
+3. Name it `AlarmeeNotificationService`
+4. Replace the content of the created file with [`NotificationService.swift`](ios/NotificationServiceExtension/NotificationService.swift)
+
+#### Sending a test push notification
+
+To send a push notification manually using Postman or `curl`, you can call the FCM v1 HTTP API with the following:
+
+**URL:**
+```
+https://fcm.googleapis.com/v1/projects/{YOUR_FIREBASE_PROJECT_ID}/messages:send
+```
+
+Replace `{YOUR_PROJECT_ID}` with your Firebase project ID.
+
+**Example payload:**
+```json
+{
+  "message": {
+    "token": "DEVICE_FCM_TOKEN",
+    "apns": {
+      "payload": {
+        "aps": {
+          "alert": {
+            "title": "Title for iOS",
+            "body": "This is the body of the iOS notification"
+          },
+          "mutable-content": 1
+        }
+      },
+      "headers": {
+        "apns-priority": "10"
+      }
+    },
+    "data": {
+      "title": "Title for Android",
+      "body": "This is the body of the Android notification",
+      "deepLinkUri": "app://open/target", // Used on both Android & iOS
+      "imageUrl": "https://rickandmortyapi.com/api/character/avatar/1.jpeg" // Used on both Android & iOS
+    }
+  }
+}
+```
+
+- **`token`**: the FCM token of the target device.
+- **`apns.payload.aps.mutable-content`**: required for displaying images on iOS.
+- **`data.imageUrl`**: optional parameter to display an image within the notification.
+- **`apns.headers.apns-priority = 10`** ensures the push is delivered immediately.
+
+##### Authentication (Bearer Token)
+
+To authenticate requests to the FCM HTTP v1 API, you must include a **Bearer token** in the `Authorization` header.
+
+1. Make sure you have the `gcloud` CLI installed and authenticated.
+2. Set the correct project with:
+```bash
+gcloud config set project YOUR_FIREBASE_PROJECT_ID
+```
+3. Get an access token with:
+```bash
+gcloud auth print-access-token
+```
+4. In Postman or cURL, set the header:
+```http
+Authorization: Bearer YOUR_ACCESS_TOKEN
+```
+
+That's it! Your push notifications will now support images on iOS.
+
+---
 
 ## 🔄 Migration Guide: From Alarmee 1.x to 2.0
 
