@@ -11,8 +11,6 @@ androidActivity = "1.10.1"
 firebaseGitLiveApp = "2.1.0" # Firebase for KMP https://firebaseopensource.com/projects/gitliveapp/firebase-kotlin-sdk/
 googleServicesPlugin = "4.4.2"
 androidStartup = "1.2.0"
-glide = "4.16.0"
-ksp = "2.2.0-2.0.2"
 
 [libraries]
 compose-multiplatform-material3 = { group = "org.jetbrains.compose.material3", name = "material3", version.ref = "composeMultiplatform" }
@@ -22,10 +20,6 @@ android-activity = { group = "androidx.activity", name = "activity-ktx", version
 android-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidActivity" }
 firebase-messaging = { group = "dev.gitlive", name = "firebase-messaging", version.ref = "firebaseGitLiveApp" }
 android-startup = { group = "androidx.startup", name = "startup-runtime", version.ref = "androidStartup" }
-
-# Glide
-android-glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
-android-glide-compiler = { group = "com.github.bumptech.glide", name = "ksp", version.ref = "glide" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
@@ -38,4 +32,3 @@ jetbrains-compose = { id = "org.jetbrains.compose", version.ref = "composeMultip
 jetbrains-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-nativeCocoaPods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServicesPlugin" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

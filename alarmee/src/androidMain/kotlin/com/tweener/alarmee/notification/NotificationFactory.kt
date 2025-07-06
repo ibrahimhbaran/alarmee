@@ -5,11 +5,14 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.core.app.NotificationCompat
-import com.bumptech.glide.Glide
 import com.tweener.alarmee._internal.kotlinextensions.getRawUri
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 /**
  * @author Vivien Mahe
@@ -35,7 +38,7 @@ class NotificationFactory {
             imageUrl: String? = null,
         ): Notification {
             val bitmap = withContext(Dispatchers.IO) {
-                imageUrl?.let { loadImageFromUrl(context = context, imageUrl = it) }
+                imageUrl?.let { loadImageFromUrl(imageUrl = it) }
             }
 
             return NotificationCompat.Builder(context, channelId)
@@ -73,9 +76,16 @@ class NotificationFactory {
     }
 }
 
-private fun loadImageFromUrl(context: Context, imageUrl: String): Bitmap? =
+private fun loadImageFromUrl(imageUrl: String): Bitmap? =
     try {
-        Glide.with(context).asBitmap().load(imageUrl).submit().get()
-    } catch (exception: Exception) {
+        val url = URL(imageUrl)
+        val connection = url.openConnection() as HttpURLConnection
+        connection.doInput = true
+        connection.connect()
+
+        val inputStream: InputStream = connection.inputStream
+        BitmapFactory.decodeStream(inputStream)
+    } catch (e: Exception) {
+        e.printStackTrace()
         null
     }
