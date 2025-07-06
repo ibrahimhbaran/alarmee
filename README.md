@@ -184,6 +184,7 @@ localService.schedule(
         notificationBody = "This is the notification that will be displayed at the specified date and time.",
         scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 12, hour = 17, minute = 0),
     	deepLinkUri = "https://www.example.com", // A deep link URI to be retrieved in MainActivity#onNewIntent() on Android and in AppDelegate#userNotificationCenter() on iOS
+    	imageUrl = "https://rickandmortyapi.com/api/character/avatar/1.jpeg", // Optional parameter to display an image within the notification 
         androidNotificationConfiguration = AndroidNotificationConfiguration( // Required configuration for Android target only (this parameter is ignored on iOS)
             priority = AndroidNotificationPriority.HIGH,
             channelId = "dailyNewsChannelId",
