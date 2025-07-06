@@ -8,10 +8,36 @@
 
 /* Begin PBXBuildFile section */
 		9A3B24272DF189B7007018D6 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = 9A3B24262DF189B7007018D6 /* FirebaseMessaging */; };
+		9AFC04CB2E1ACD90003FE705 /* AlarmeeNotificationService.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9AFC04C42E1ACD90003FE705 /* AlarmeeNotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9AFC04C92E1ACD90003FE705 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9A9834CE2CF7187F00689828 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9AFC04C32E1ACD90003FE705;
+			remoteInfo = AlarmeeNotificationService;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9AFC04CC2E1ACD90003FE705 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				9AFC04CB2E1ACD90003FE705 /* AlarmeeNotificationService.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		9A9834D62CF7187F00689828 /* iosApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9AFC04C42E1ACD90003FE705 /* AlarmeeNotificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = AlarmeeNotificationService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -22,6 +48,13 @@
 			);
 			target = 9A9834D52CF7187F00689828 /* iosApp */;
 		};
+		9AFC04D02E1ACD90003FE705 /* Exceptions for "AlarmeeNotificationService" folder in "AlarmeeNotificationService" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9AFC04C32E1ACD90003FE705 /* AlarmeeNotificationService */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -31,6 +64,14 @@
 				9A9834E92CF71B2C00689828 /* Exceptions for "iosApp" folder in "iosApp" target */,
 			);
 			path = iosApp;
+			sourceTree = "<group>";
+		};
+		9AFC04C52E1ACD90003FE705 /* AlarmeeNotificationService */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9AFC04D02E1ACD90003FE705 /* Exceptions for "AlarmeeNotificationService" folder in "AlarmeeNotificationService" target */,
+			);
+			path = AlarmeeNotificationService;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -44,6 +85,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9AFC04C12E1ACD90003FE705 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -51,6 +99,7 @@
 			isa = PBXGroup;
 			children = (
 				9A9834D82CF7187F00689828 /* iosApp */,
+				9AFC04C52E1ACD90003FE705 /* AlarmeeNotificationService */,
 				9A9834D72CF7187F00689828 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -59,6 +108,7 @@
 			isa = PBXGroup;
 			children = (
 				9A9834D62CF7187F00689828 /* iosApp.app */,
+				9AFC04C42E1ACD90003FE705 /* AlarmeeNotificationService.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -74,10 +124,12 @@
 				9A9834D22CF7187F00689828 /* Sources */,
 				9A9834D32CF7187F00689828 /* Frameworks */,
 				9A9834D42CF7187F00689828 /* Resources */,
+				9AFC04CC2E1ACD90003FE705 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				9AFC04CA2E1ACD90003FE705 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				9A9834D82CF7187F00689828 /* iosApp */,
@@ -90,6 +142,28 @@
 			productReference = 9A9834D62CF7187F00689828 /* iosApp.app */;
 			productType = "com.apple.product-type.application";
 		};
+		9AFC04C32E1ACD90003FE705 /* AlarmeeNotificationService */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9AFC04CF2E1ACD90003FE705 /* Build configuration list for PBXNativeTarget "AlarmeeNotificationService" */;
+			buildPhases = (
+				9AFC04C02E1ACD90003FE705 /* Sources */,
+				9AFC04C12E1ACD90003FE705 /* Frameworks */,
+				9AFC04C22E1ACD90003FE705 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				9AFC04C52E1ACD90003FE705 /* AlarmeeNotificationService */,
+			);
+			name = AlarmeeNotificationService;
+			packageProductDependencies = (
+			);
+			productName = AlarmeeNotificationService;
+			productReference = 9AFC04C42E1ACD90003FE705 /* AlarmeeNotificationService.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -97,11 +171,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1600;
+				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					9A9834D52CF7187F00689828 = {
 						CreatedOnToolsVersion = 16.0;
+					};
+					9AFC04C32E1ACD90003FE705 = {
+						CreatedOnToolsVersion = 16.2;
 					};
 				};
 			};
@@ -123,12 +200,20 @@
 			projectRoot = "";
 			targets = (
 				9A9834D52CF7187F00689828 /* iosApp */,
+				9AFC04C32E1ACD90003FE705 /* AlarmeeNotificationService */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		9A9834D42CF7187F00689828 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9AFC04C22E1ACD90003FE705 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -166,7 +251,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9AFC04C02E1ACD90003FE705 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9AFC04CA2E1ACD90003FE705 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9AFC04C32E1ACD90003FE705 /* AlarmeeNotificationService */;
+			targetProxy = 9AFC04C92E1ACD90003FE705 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		9A9834E22CF7188000689828 /* Debug */ = {
@@ -356,6 +456,58 @@
 			};
 			name = Release;
 		};
+		9AFC04CD2E1ACD90003FE705 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5T66W8EEF2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AlarmeeNotificationService/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AlarmeeNotificationService;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tweener.alarmee.sample.AlarmeeNotificationService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9AFC04CE2E1ACD90003FE705 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5T66W8EEF2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AlarmeeNotificationService/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AlarmeeNotificationService;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tweener.alarmee.sample.AlarmeeNotificationService;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -373,6 +525,15 @@
 			buildConfigurations = (
 				9A9834E52CF7188000689828 /* Debug */,
 				9A9834E62CF7188000689828 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9AFC04CF2E1ACD90003FE705 /* Build configuration list for PBXNativeTarget "AlarmeeNotificationService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9AFC04CD2E1ACD90003FE705 /* Debug */,
+				9AFC04CE2E1ACD90003FE705 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

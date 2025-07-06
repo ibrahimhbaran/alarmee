@@ -4,8 +4,15 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.core.app.NotificationCompat
 import com.tweener.alarmee._internal.kotlinextensions.getRawUri
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 /**
  * @author Vivien Mahe
@@ -15,9 +22,10 @@ class NotificationFactory {
 
     companion object {
 
-         const val DEEP_LINK_URI_PARAM = "deepLinkUri"
+        const val DEEP_LINK_URI_PARAM = "deepLinkUri"
+        const val IMAGE_URL_PARAM = "imageUrl"
 
-        fun create(
+        suspend fun create(
             context: Context,
             channelId: String,
             title: String,
@@ -26,9 +34,14 @@ class NotificationFactory {
             iconResId: Int,
             iconColor: Int,
             soundFilename: String? = null,
-            deepLinkUri: String? = null
-        ): Notification =
-            NotificationCompat.Builder(context, channelId)
+            deepLinkUri: String? = null,
+            imageUrl: String? = null,
+        ): Notification {
+            val bitmap = withContext(Dispatchers.IO) {
+                imageUrl?.let { loadImageFromUrl(imageUrl = it) }
+            }
+
+            return NotificationCompat.Builder(context, channelId)
                 .apply {
                     setContentTitle(title)
                     setContentText(body)
@@ -38,8 +51,18 @@ class NotificationFactory {
                     setAutoCancel(true)
                     soundFilename?.let { setSound(context.getRawUri(it)) } // Ignored on Android 8.0 and higher in favor of the value set on the notification's channel
                     setContentIntent(getPendingIntent(context = context, deepLinkUri = deepLinkUri)) // Handles click on notification
+
+                    bitmap?.let {
+                        setLargeIcon(it)
+                        setStyle(
+                            NotificationCompat.BigPictureStyle()
+                                .bigPicture(it)
+                                .bigLargeIcon(null as? Bitmap)
+                        )
+                    }
                 }
                 .build()
+        }
 
         private fun getPendingIntent(context: Context, deepLinkUri: String? = null): PendingIntent? {
             val intent = context.getLauncherActivityIntent()?.apply {
@@ -52,3 +75,17 @@ class NotificationFactory {
         private fun Context.getLauncherActivityIntent(): Intent? = applicationContext.packageManager.getLaunchIntentForPackage(applicationContext.packageName)
     }
 }
+
+private fun loadImageFromUrl(imageUrl: String): Bitmap? =
+    try {
+        val url = URL(imageUrl)
+        val connection = url.openConnection() as HttpURLConnection
+        connection.doInput = true
+        connection.connect()
+
+        val inputStream: InputStream = connection.inputStream
+        BitmapFactory.decodeStream(inputStream)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }

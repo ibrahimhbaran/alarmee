@@ -5,6 +5,7 @@ import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
 import com.tweener.alarmee.model.Alarmee
 import com.tweener.alarmee.model.RepeatInterval
 import com.tweener.kmpkit.kotlinextensions.toEpochMilliseconds
+import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.isoDayNumber
@@ -15,15 +16,23 @@ import platform.Foundation.NSCalendarUnitMinute
 import platform.Foundation.NSCalendarUnitMonth
 import platform.Foundation.NSCalendarUnitSecond
 import platform.Foundation.NSCalendarUnitYear
+import platform.Foundation.NSData
 import platform.Foundation.NSDate
 import platform.Foundation.NSDateComponents
+import platform.Foundation.NSFileManager
 import platform.Foundation.NSNumber
+import platform.Foundation.NSURL
+import platform.Foundation.NSUUID
+import platform.Foundation.dataWithContentsOfURL
 import platform.Foundation.dateWithTimeIntervalSince1970
+import platform.Foundation.temporaryDirectory
+import platform.Foundation.writeToURL
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionBadge
 import platform.UserNotifications.UNAuthorizationOptionSound
 import platform.UserNotifications.UNCalendarNotificationTrigger
 import platform.UserNotifications.UNMutableNotificationContent
+import platform.UserNotifications.UNNotificationAttachment
 import platform.UserNotifications.UNNotificationRequest
 import platform.UserNotifications.UNNotificationSound
 import platform.UserNotifications.UNNotificationTrigger
@@ -105,6 +114,12 @@ private fun configureNotification(uuid: String, alarmee: Alarmee, notificationTr
         alarmee.iosNotificationConfiguration.soundFilename?.let { setSound(UNNotificationSound.soundNamed(name = it)) }
         alarmee.iosNotificationConfiguration.badge?.let { setBadge(NSNumber(int = it)) }
         alarmee.deepLinkUri?.let { setUserInfo(mapOf(DEEP_LINK_URI_PARAM to it)) }
+
+        // Add the image as attachment if available
+        alarmee.imageUrl?.let { imageUrl ->
+            val attachment = downloadImageAsAttachment(imageUrl)
+            attachment?.let { setAttachments(listOf(it)) }
+        }
     }
 
     val request = UNNotificationRequest.requestWithIdentifier(identifier = uuid, content = content, trigger = notificationTrigger)
@@ -137,3 +152,25 @@ private fun LocalDateTime.toNSDateComponents(timeZone: TimeZone = TimeZone.curre
 }
 
 private fun getFirstRepeatingNotificationUuid(uuid: String) = "${uuid}_${uuid}"
+
+@OptIn(ExperimentalForeignApi::class)
+private fun downloadImageAsAttachment(imageUrl: String): UNNotificationAttachment? {
+    val url = NSURL.URLWithString(imageUrl) ?: return null
+    val data = NSData.dataWithContentsOfURL(url) ?: return null
+
+    val tmpDir = NSFileManager.defaultManager.temporaryDirectory
+    val tmpFile = tmpDir.URLByAppendingPathComponent("${NSUUID().UUIDString}.jpg") ?: return null
+
+    return if (data.writeToURL(tmpFile, true)) {
+        runCatching {
+            UNNotificationAttachment.attachmentWithIdentifier(
+                identifier = "image",
+                URL = tmpFile,
+                options = null,
+                error = null
+            )
+        }.getOrNull()
+    } else {
+        null
+    }
+}

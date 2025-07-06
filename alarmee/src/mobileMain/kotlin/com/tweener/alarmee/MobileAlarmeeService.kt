@@ -42,7 +42,6 @@ interface MobileAlarmeeService : AlarmeeService {
      * Use this method if your app already uses a Firebase instance.
      *
      * @param platformConfiguration The platform-specific configuration for Alarmee.
-     * @param firebase The Firebase instance used to initialize Firebase Messaging.
      */
-    fun initialize(platformConfiguration: AlarmeePlatformConfiguration, firebase: Firebase)
+    override fun initialize(platformConfiguration: AlarmeePlatformConfiguration)
 }

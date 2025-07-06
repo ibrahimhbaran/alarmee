@@ -19,6 +19,7 @@ import kotlinx.datetime.TimeZone
  * @property timeZone The time zone in which the alarm should be scheduled. By default, this is set to the system's current time zone.
  * @property repeatInterval The optional interval at which the alarm should repeat (e.g., hourly, daily, weekly). If `null`, the alarm will not repeat.
  * @property deepLinkUri An optional URI that can be used to open a specific screen in the app when the notification is tapped. This is useful for deep linking into the app.
+ * @property imageUrl An optional URL for an image to be displayed in the notification. This can enhance the visual appeal of the notification.
  * @property androidNotificationConfiguration Configuration specific to Android notifications.
  * @property iosNotificationConfiguration Configuration specific to iOS notifications.
  *
@@ -33,6 +34,7 @@ data class Alarmee(
     val timeZone: TimeZone = TimeZone.currentSystemDefault(),
     val repeatInterval: RepeatInterval? = null,
     val deepLinkUri: String? = null,
+    val imageUrl: String? = null,
     val androidNotificationConfiguration: AndroidNotificationConfiguration,
     val iosNotificationConfiguration: IosNotificationConfiguration,
 )
