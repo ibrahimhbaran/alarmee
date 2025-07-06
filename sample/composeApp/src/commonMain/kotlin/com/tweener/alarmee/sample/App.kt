@@ -100,6 +100,7 @@ fun App() {
                             notificationTitle = "🚀 Immediate Notification",
                             notificationBody = "This is an immediate notification pushed without any schedule.",
                             deepLinkUri = "https://www.example.com",
+                            imageUrl = "https://rickandmortyapi.com/api/character/avatar/1.jpeg",
                             androidNotificationConfiguration = AndroidNotificationConfiguration(
                                 priority = AndroidNotificationPriority.MINIMUM,
                                 channelId = "immediateChannelId",

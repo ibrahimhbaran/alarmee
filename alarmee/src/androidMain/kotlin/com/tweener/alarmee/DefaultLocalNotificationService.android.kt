@@ -20,6 +20,10 @@ import com.tweener.kmpkit.kotlinextensions.getAlarmManager
 import com.tweener.kmpkit.kotlinextensions.getNotificationManager
 import com.tweener.kmpkit.kotlinextensions.now
 import com.tweener.kmpkit.kotlinextensions.toEpochMilliseconds
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 
 /**
@@ -28,6 +32,7 @@ import kotlinx.datetime.LocalDateTime
  */
 
 internal const val DEFAULT_NOTIFICATION_CHANNEL_ID = "defaultNotificationChannelId"
+private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
 actual fun createLocalNotificationService(config: AlarmeePlatformConfiguration): LocalNotificationService {
     requirePlatformConfiguration(providedPlatformConfiguration = config, targetPlatformConfiguration = AlarmeeAndroidPlatformConfiguration::class)
@@ -112,26 +117,29 @@ actual fun immediateAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration
         val notificationResId = alarmee.androidNotificationConfiguration.iconResId ?: config.notificationIconResId
         val notificationIconColor = alarmee.androidNotificationConfiguration.iconColor ?: config.notificationIconColor
 
-        val notification = NotificationFactory.create(
-            context = applicationContext,
-            channelId = channelId,
-            title = alarmee.notificationTitle,
-            body = alarmee.notificationBody,
-            priority = priority,
-            iconResId = notificationResId,
-            iconColor = notificationIconColor.toArgb(),
-            soundFilename = config.notificationChannels.firstOrNull { it.id == channelId }?.soundFilename,
-            deepLinkUri = alarmee.deepLinkUri,
-        )
+        scope.launch {
+            val notification = NotificationFactory.create(
+                context = applicationContext,
+                channelId = channelId,
+                title = alarmee.notificationTitle,
+                body = alarmee.notificationBody,
+                priority = priority,
+                iconResId = notificationResId,
+                iconColor = notificationIconColor.toArgb(),
+                soundFilename = config.notificationChannels.firstOrNull { it.id == channelId }?.soundFilename,
+                deepLinkUri = alarmee.deepLinkUri,
+                imageUrl = alarmee.imageUrl,
+            )
 
-        applicationContext.getNotificationManager()?.let { notificationManager ->
-            if (notificationManager.areNotificationsEnabled()) {
-                notificationManager.notify(alarmee.uuid.hashCode(), notification)
+            applicationContext.getNotificationManager()?.let { notificationManager ->
+                if (notificationManager.areNotificationsEnabled()) {
+                    notificationManager.notify(alarmee.uuid.hashCode(), notification)
 
-                // Notification sent
-                onSuccess()
-            } else {
-                println("Notifications permission is not granted! Can't show the notification.")
+                    // Notification sent
+                    onSuccess()
+                } else {
+                    println("Notifications permission is not granted! Can't show the notification.")
+                }
             }
         }
     }
@@ -201,6 +209,7 @@ private fun getPendingIntent(alarmee: Alarmee, config: AlarmeePlatformConfigurat
         putExtra(NotificationBroadcastReceiver.KEY_ICON_COLOR, notificationIconColor.toArgb())
         putExtra(NotificationBroadcastReceiver.KEY_SOUND_FILENAME, soundFilename)
         putExtra(NotificationBroadcastReceiver.KEY_DEEP_LINK_URI, alarmee.deepLinkUri)
+        putExtra(NotificationBroadcastReceiver.KEY_IMAGE_URL, alarmee.imageUrl)
     }
 
     // Create the broadcast pending intent

@@ -10,6 +10,10 @@ import com.tweener.alarmee.android.R
 import com.tweener.alarmee.notification.NotificationFactory
 import com.tweener.kmpkit.kotlinextensions.getNotificationManager
 import com.tweener.kmpkit.utils.safeLet
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 /**
  * @author Vivien Mahe
@@ -28,12 +32,15 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
         const val KEY_ICON_COLOR = "notificationColor"
         const val KEY_SOUND_FILENAME = "notificationSoundFilename"
         const val KEY_DEEP_LINK_URI = "notificationDeepLinkUri"
+        const val KEY_IMAGE_URL = "notificationImageUrl"
 
         val DEFAULT_ICON_RES_ID = R.drawable.ic_notification
         val DEFAULT_ICON_COLOR = Color.Transparent
         private const val DEFAULT_PRIORITY = NotificationCompat.PRIORITY_DEFAULT
         private const val DEFAULT_CHANNEL_ID = "notificationsChannelId"
     }
+
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == ALARM_ACTION) {
@@ -47,29 +54,33 @@ class NotificationBroadcastReceiver : BroadcastReceiver() {
                 val iconColor = intent.getIntExtra(KEY_ICON_COLOR, DEFAULT_ICON_COLOR.toArgb())
                 val soundFilename = intent.getStringExtra(KEY_SOUND_FILENAME)
                 val deepLinkUri = intent.getStringExtra(KEY_DEEP_LINK_URI)
+                val imageUrl = intent.getStringExtra(KEY_IMAGE_URL)
 
                 // For devices running on Android before Android 0, channelId passed through intents might be null so we used a default channelId that will be ignored
                 val channelId = intent.getStringExtra(KEY_CHANNEL_ID) ?: DEFAULT_CHANNEL_ID
 
                 // Create the notification
-                val notification = NotificationFactory.create(
-                    context = context,
-                    channelId = channelId,
-                    title = title,
-                    body = body,
-                    priority = priority,
-                    iconResId = iconResId,
-                    iconColor = iconColor,
-                    soundFilename = soundFilename,
-                    deepLinkUri = deepLinkUri,
-                )
+                scope.launch {
+                    val notification = NotificationFactory.create(
+                        context = context,
+                        channelId = channelId,
+                        title = title,
+                        body = body,
+                        priority = priority,
+                        iconResId = iconResId,
+                        iconColor = iconColor,
+                        soundFilename = soundFilename,
+                        deepLinkUri = deepLinkUri,
+                        imageUrl = imageUrl,
+                    )
 
-                // Display the notification
-                context.getNotificationManager()?.let { notificationManager ->
-                    if (notificationManager.areNotificationsEnabled()) {
-                        notificationManager.notify(uuid.hashCode(), notification)
-                    } else {
-                        println("Notifications permission is not granted! Can't show the notification.")
+                    // Display the notification
+                    context.getNotificationManager()?.let { notificationManager ->
+                        if (notificationManager.areNotificationsEnabled()) {
+                            notificationManager.notify(uuid.hashCode(), notification)
+                        } else {
+                            println("Notifications permission is not granted! Can't show the notification.")
+                        }
                     }
                 }
             }

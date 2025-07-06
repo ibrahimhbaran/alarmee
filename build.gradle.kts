@@ -12,4 +12,5 @@ plugins {
     alias(libs.plugins.maven.publish).apply(false)
     alias(libs.plugins.dependency.versions) // ./gradlew dependencyUpdates
     alias(libs.plugins.google.services).apply(false)
+    alias(libs.plugins.ksp).apply(false)
 }

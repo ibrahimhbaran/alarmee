@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.dokka)
     alias(libs.plugins.kotlin.nativeCocoaPods)
     alias(libs.plugins.maven.publish)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -124,6 +125,9 @@ kotlin {
 
             dependencies {
                 implementation(libs.android.startup)
+
+                // Glide (Image loading)
+                implementation(libs.android.glide)
             }
         }
 
@@ -199,3 +203,7 @@ mavenPublishing {
 }
 
 // endregion Publishing
+
+dependencies {
+    add("kspAndroid", libs.android.glide.compiler)
+}
