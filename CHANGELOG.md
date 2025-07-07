@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.1.0] - July 6, 2025
+- 🎉 New feature: Notifications can now display images, from both local and push sources.
+- 🔄 Update Kotlin to 2.2.0.
+- 🔄 Update Compose Multiplatform to 1.8.2.
+
 ## [2.0.2] - June 12, 2025
 - 🤖 On Android, create a default channel notification if none was provided in the `AlarmeeAndroidPlatformConfiguration`, to make sure there is always at least one.
 
@@ -18,17 +23,17 @@ Check out the [migration guide from version 1.x to 2.0](https://github.com/Tween
 - 🎉 New feature to add `deepLinkUri` support to `Alarmee` (Requested by [@M1r7](https://github.com/M1r7) in [https://github.com/Tweener/alarmee/pull/7](https://github.com/Tweener/alarmee/issues/18))
 
 ## [1.6.3] - May 13, 2025
-- Update Kotlin to 2.1.21.
-- Update Compose Multiplatform to 1.8.0.
-- Update KMPKit to 1.0.7.
+- 🔄 Update Kotlin to 2.1.21.
+- 🔄 Update Compose Multiplatform to 1.8.0.
+- 🔄 Update KMPKit to 1.0.7.
 
 ## [1.6.2] - April 15, 2025
-- Update Kotlin to 2.1.20.
+- 🔄 Update Kotlin to 2.1.20.
 
 ## [1.6.1] - January 24, 2025
-- Update Kotlin to 2.1.0.
-- Update Compose Multiplatform to 1.7.3.
-- Update Gradle to 8.11.1.
+- 🔄 Update Kotlin to 2.1.0.
+- 🔄 Update Compose Multiplatform to 1.7.3.
+- 🔄 Update Gradle to 8.11.1.
 - 🍎 On iOS, badge is now optional to avoid automatically setting it to 0 when not provided.
 
 ## [1.6.0] - January 12, 2025
