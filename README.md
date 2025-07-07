@@ -371,6 +371,10 @@ val pushService = (alarmService as? MobileAlarmeeService)?.push
 
 This is only available on **Android** and **iOS**. On other targets, `pushService` will be `null`.
 
+This is how it looks like on iOS & Android:
+
+![Group 4](https://github.com/user-attachments/assets/4e455c6c-6d45-4ca6-b292-8f8e57d4f799)
+
 #### Add the Notification Service Extension (iOS only)
 
 To display images in push notifications on iOS, create a **Notification Service Extension** and paste the provided `NotificationService.swift` file:
