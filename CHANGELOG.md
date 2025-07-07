@@ -1,5 +1,8 @@
 # Changelog
 
+## [2.1.1] - July 7, 2025
+- Fix Alarmee missing initialize method when a Firebase instance already exists.
+
 ## [2.1.0] - July 6, 2025
 - 🎉 New feature: Notifications can now display images, from both local and push sources.
 - 🔄 Update Kotlin to 2.2.0.
