@@ -31,6 +31,19 @@ interface MobileAlarmeeService : AlarmeeService {
     val push: PushNotificationService
 
     /**
+     * Initializes the Alarmee service with platform-specific configuration.
+     *
+     * This method **must be called once when the app is launched**. For example, in your root Composable:
+     *
+     * ```kotlin
+     * val alarmeeService = rememberAlarmeeService(createAlarmeePlatformConfiguration())
+     * ```
+     *
+     * @param platformConfiguration The platform-specific configuration for Alarmee.
+     */
+    override fun initialize(platformConfiguration: AlarmeePlatformConfiguration)
+
+    /**
      * Initializes the Alarmee service with platform-specific configuration and Firebase instance.
      *
      * This method **must be called once when the app is launched**. For example, in your root Composable:
@@ -42,6 +55,8 @@ interface MobileAlarmeeService : AlarmeeService {
      * Use this method if your app already uses a Firebase instance.
      *
      * @param platformConfiguration The platform-specific configuration for Alarmee.
+     * @param firebase The Firebase instance to use for push notifications.
      */
-    override fun initialize(platformConfiguration: AlarmeePlatformConfiguration)
+    fun initialize(platformConfiguration: AlarmeePlatformConfiguration, firebase: Firebase)
+
 }
