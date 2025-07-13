@@ -1,5 +1,8 @@
 # Changelog
 
+## [2.1.2] - July 13, 2025
+- It is now possible to initialize Alarmee via Compose, on mobile targets, with an already existing Firebase instance.
+
 ## [2.1.1] - July 7, 2025
 - Fix Alarmee missing initialize method when a Firebase instance already exists.
 
