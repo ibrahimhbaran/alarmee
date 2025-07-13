@@ -136,18 +136,70 @@ In the `iosMain` source set, implement the actual function and return an `Alarme
 val platformConfiguration: AlarmeePlatformConfiguration = AlarmeeIosPlatformConfiguration
 ```
 
-### 4. Initialize `AlarmeeService` in your root Composable
+### 4. Initialize `AlarmeeService`
 
-In your shared root Composable (usually `App()` in `commonMain`), initialize the `AlarmeeService` with the platform configuration:
+There are multiple ways to initialize Alarmee depending on your setup.
 
+---
+
+#### ✅ For all targets (Android, iOS, desktop, etc.)
+
+**With Compose:**
 ```kotlin
 val alarmService: AlarmeeService = rememberAlarmeeService(
     platformConfiguration = createAlarmeePlatformConfiguration()
 )
 ```
 
+**Without Compose:**
+```kotlin
+val alarmeeService = createAlarmeeService()
+alarmeeService.initialize(platformConfiguration = createAlarmeePlatformConfiguration())
+```
+
+---
+
+#### 📱 For mobile targets only (Android & iOS)
+
+Alarmee also supports push notifications on mobile via Firebase (Android) or APNs (iOS). If you're already using Firebase in your app, you can pass your own Firebase instance to avoid initializing it twice.
+
+**With Compose:**
+
+- If you're **not using Firebase yet**:
+```kotlin
+val alarmService: AlarmeeService = rememberAlarmeeService(
+    platformConfiguration = createAlarmeePlatformConfiguration()
+)
+```
+
+- If you're **already using Firebase** elsewhere in your app:
+```kotlin
+val alarmService: AlarmeeService = rememberAlarmeeService(
+    platformConfiguration = createAlarmeePlatformConfiguration(),
+    firebase = Firebase
+)
+```
+
+**Without Compose:**
+
+- If you're **not using Firebase yet**:
+```kotlin
+val alarmeeService = createAlarmeeService() as MobileAlarmeeService
+alarmeeService.initialize(platformConfiguration = createAlarmeePlatformConfiguration())
+```
+
+- If you're **already using Firebase**:
+```kotlin
+val alarmeeService = createAlarmeeService() as MobileAlarmeeService
+alarmeeService.initialize(
+    platformConfiguration = createAlarmeePlatformConfiguration(),
+    firebase = Firebase
+)
+```
+
 You can then use this instance to schedule or cancel alarms from your shared code.
 
+---
 
 ## 🧑‍💻  Usage
 
