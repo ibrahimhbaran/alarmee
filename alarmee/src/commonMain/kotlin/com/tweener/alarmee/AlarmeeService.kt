@@ -10,7 +10,7 @@ fun rememberAlarmeeService(
 ): AlarmeeService =
     remember(platformConfiguration) {
         createAlarmeeService().apply {
-            initialize(platformConfiguration)
+            initialize(platformConfiguration = platformConfiguration)
         }
     }
 

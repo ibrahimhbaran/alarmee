@@ -1,7 +1,20 @@
 package com.tweener.alarmee
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
 import dev.gitlive.firebase.Firebase
+
+@Composable
+fun rememberAlarmeeService(
+    platformConfiguration: AlarmeePlatformConfiguration,
+    firebase: Firebase,
+): MobileAlarmeeService =
+    remember(platformConfiguration, firebase) {
+        (createAlarmeeService() as MobileAlarmeeService).apply {
+            initialize(platformConfiguration = platformConfiguration, firebase = firebase)
+        }
+    }
 
 /**
  * Platform-specific extension of [AlarmeeService] for mobile platforms (Android and iOS).
