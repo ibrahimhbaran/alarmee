@@ -1,5 +1,8 @@
 # Changelog
 
+## [2.1.3] - July 15, 2025
+- 🔄 Update KMPKit to 1.0.10, which uses latest version of `kotlinx-datetime:0.7.1`.
+
 ## [2.1.2] - July 13, 2025
 - It is now possible to initialize Alarmee via Compose, on mobile targets, with an already existing Firebase instance.
 
