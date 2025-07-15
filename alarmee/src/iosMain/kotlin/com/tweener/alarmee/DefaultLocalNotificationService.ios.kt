@@ -9,6 +9,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.isoDayNumber
+import kotlinx.datetime.number
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSCalendarUnitDay
 import platform.Foundation.NSCalendarUnitHour
@@ -82,13 +83,13 @@ actual fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: RepeatInterv
 
             is RepeatInterval.Monthly -> {
                 dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
-                dateComponents.day = alarmee.scheduledDateTime.dayOfMonth.toLong()
+                dateComponents.day = alarmee.scheduledDateTime.day.toLong()
             }
 
             is RepeatInterval.Yearly -> {
                 dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
-                dateComponents.day = alarmee.scheduledDateTime.dayOfMonth.toLong()
-                dateComponents.month = alarmee.scheduledDateTime.monthNumber.toLong()
+                dateComponents.day = alarmee.scheduledDateTime.day.toLong()
+                dateComponents.month = alarmee.scheduledDateTime.month.number.toLong()
             }
         }
 

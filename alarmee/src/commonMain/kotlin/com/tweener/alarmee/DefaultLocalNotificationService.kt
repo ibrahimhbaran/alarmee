@@ -31,8 +31,8 @@ internal class DefaultLocalNotificationService(
                         is RepeatInterval.Hourly -> "every hour at minute: ${scheduledDateTime!!.minute}"
                         is RepeatInterval.Daily -> "every day at ${scheduledDateTime!!.time}"
                         is RepeatInterval.Weekly -> "every week on ${scheduledDateTime!!.dayOfWeek} at ${scheduledDateTime.time}"
-                        is RepeatInterval.Monthly -> "every month on day ${scheduledDateTime!!.dayOfMonth} at ${scheduledDateTime.time}"
-                        is RepeatInterval.Yearly -> "every year on the ${scheduledDateTime!!.month}/${scheduledDateTime.dayOfMonth} at ${scheduledDateTime.time}"
+                        is RepeatInterval.Monthly -> "every month on day ${scheduledDateTime!!.day} at ${scheduledDateTime.time}"
+                        is RepeatInterval.Yearly -> "every year on the ${scheduledDateTime!!.month}/${scheduledDateTime.day} at ${scheduledDateTime.time}"
                         is RepeatInterval.Custom -> "every ${repeatInterval.duration}"
                     }
 
