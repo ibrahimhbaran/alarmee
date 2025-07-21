@@ -31,4 +31,6 @@ open class DefaultAlarmeeService : AlarmeeService {
     }
 }
 
+fun createAlarmeeService(): AlarmeeService = DefaultAlarmeeService()
+
 internal expect fun createLocalNotificationService(config: AlarmeePlatformConfiguration): LocalNotificationService

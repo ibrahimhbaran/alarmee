@@ -11,7 +11,7 @@ fun rememberMobileAlarmeeService(
     firebase: Firebase? = null,
 ): MobileAlarmeeService =
     remember(platformConfiguration, firebase) {
-        (MobileDefaultAlarmeeService() as MobileAlarmeeService).apply {
+        createMobileAlarmeeService().apply {
             initialize(platformConfiguration = platformConfiguration, firebase = firebase)
         }
     }
