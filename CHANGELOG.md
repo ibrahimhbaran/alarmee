@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.1.4] - July 21, 2025
+- 🛠️ **`[FIX]`**: Use deep link URI hashCode as requestCode in PendingIntent creation (PR [#26](https://github.com/Tweener/alarmee/pull/26) by [@robholmes](https://github.com/robholmes))
+- 🛠️ **`[FIX]`**: Use correct Gradle distributionUrl pointing to version 8.14.3.
+
 ## [2.1.3] - July 15, 2025
 - 🔄 Update KMPKit to 1.0.10, which uses latest version of `kotlinx-datetime:0.7.1`.
 
