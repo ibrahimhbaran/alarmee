@@ -69,7 +69,7 @@ class NotificationFactory {
                 addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 deepLinkUri?.let { putExtra(DEEP_LINK_URI_PARAM, it) } // Pass the deep link URI to the activity
             }
-            return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+            return PendingIntent.getActivity(context, deepLinkUri?.hashCode() ?: 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
         private fun Context.getLauncherActivityIntent(): Intent? = applicationContext.packageManager.getLaunchIntentForPackage(applicationContext.packageName)
