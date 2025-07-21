@@ -101,3 +101,60 @@ kotlin {
         }
     }
 }
+
+// region Publishing
+
+group = ProjectConfiguration.Alarmee.Maven.group
+version = ProjectConfiguration.Alarmee.versionName
+
+mavenPublishing {
+    publishToMavenCentral(automaticRelease = true)
+
+    // Only disable signing if the flag is explicitly set to false
+    val signAllPublicationsProperty = findProperty("mavenPublishing.signAllPublications")
+    if (signAllPublicationsProperty == null || signAllPublicationsProperty.toString().toBoolean()) {
+        signAllPublications()
+    }
+
+    coordinates(groupId = group.toString(), artifactId = "alarmee-push", version = version.toString())
+    configure(
+        platform = KotlinMultiplatform(
+            javadocJar = JavadocJar.Dokka("dokkaHtml"),
+            sourcesJar = true,
+        )
+    )
+
+    pom {
+        name = ProjectConfiguration.Alarmee.Maven.name
+        description = ProjectConfiguration.Alarmee.Maven.description
+        url = ProjectConfiguration.Alarmee.Maven.packageUrl
+
+        licenses {
+            license {
+                name = "The Apache License, Version 2.0"
+                url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        }
+
+        issueManagement {
+            system = "GitHub Issues"
+            url = "${ProjectConfiguration.Alarmee.Maven.packageUrl}/issues"
+        }
+
+        developers {
+            developer {
+                id = ProjectConfiguration.Alarmee.Maven.Developer.id
+                name = ProjectConfiguration.Alarmee.Maven.Developer.name
+                email = ProjectConfiguration.Alarmee.Maven.Developer.email
+            }
+        }
+
+        scm {
+            connection = "scm:git:git://${ProjectConfiguration.Alarmee.Maven.gitUrl}"
+            developerConnection = "scm:git:ssh://${ProjectConfiguration.Alarmee.Maven.gitUrl}"
+            url = ProjectConfiguration.Alarmee.Maven.packageUrl
+        }
+    }
+}
+
+// endregion Publishing
