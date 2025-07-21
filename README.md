@@ -36,52 +36,72 @@ Be sure to show your support by starring ⭐️ this repository, and feel free t
 - ☁️ **Push notifications**: Handle remote notifications via FCM/APNs.
 - 🎨 **Extensible Configuration**: Customize alarms and notifications with platform-specific settings.
 
+![Group 4](https://github.com/user-attachments/assets/4e455c6c-6d45-4ca6-b292-8f8e57d4f799)
+
 ---
 
 ## 🚀 Used in production
 
 Alarmee powers notifications in real-world apps:
 
-- [**KMPShip**](https://www.kmpship.app/) — a Kotlin Multiplatform boilerplate to build mobile apps faster.
-- [**Bloomeo**](https://bloomeo.app/) — a personal finance app.
+- [**KMPShip**](https://www.kmpship.app/): a Kotlin Multiplatform boilerplate to build mobile apps faster.
+- [**Bloomeo**](https://bloomeo.app/): a personal finance app.
 
 ---
 
 ## 🛠️ Installation
 
-In your `settings.gradle.kts` file, add Maven Central to your repositories:
+1. In your `settings.gradle.kts` file, add Maven Central to your repositories:
 ```Groovy
 repositories {
   mavenCentral()
 }
 ```
 
-Then add Alarmee dependency to your module:
+2. Then add Alarmee dependency to your module.
 
-- With version catalog, open `libs.versions.toml`:
+- For **local notifications only**, use `alarmee` dependency.
+- For **both local and push notifications**, use `alarmee-push` dependency.
+
+<details>
+	<summary>With version catalog:</summary>
+
+Open `libs.versions.toml`:
+
 ```Groovy
 [versions]
 alarmee = "2.0.0" // Check latest version
 
 [libraries]
-alarmee = { group = "io.github.tweener", name = "alarmee", version.ref = "alarmee" }
+alarmee = { group = "io.github.tweener", name = "alarmee", version.ref = "alarmee" } // For local notifications only
+alarmee = { group = "io.github.tweener", name = "alarmee-push", version.ref = "alarmee" } // For both local & push notifications
+
 ```
 
 Then in your module `build.gradle.kts` add:
 ```Groovy
 dependencies {
-  implementation(libs.alarmee)
+    // Only one of these is needed, depending on your use case
+    implementation(libs.alarmee)
+    implementation(libs.alarmee.push)
 }
 ```
+</details>
 
-- Without version catalog, in your module `build.gradle.kts` add:
+<details>
+	<summary>Without version catalog:</summary>
+
+In your module `build.gradle.kts` add:
 ```Groovy
 dependencies {
-  val alarmee_version = "2.0.0" // Check latest version
+    val alarmee_version = "2.0.0" // Check latest version
 
-  implementation("io.github.tweener:alarmee:$alarmee_version")
+    // Only one of these is needed, depending on your use case
+    implementation("io.github.tweener:alarmee:$alarmee_version") // For local notifications only
+    implementation("io.github.tweener:alarmee-push:$alarmee_version") // For both local & push notifications
 }
 ```
+</details>
 
 The latest version is: [![Maven Central Version](https://img.shields.io/maven-central/v/io.github.tweener/alarmee?color=orange)](https://central.sonatype.com/artifact/io.github.tweener/alarmee)
 
@@ -90,11 +110,6 @@ The latest version is: [![Maven Central Version](https://img.shields.io/maven-ce
 ## 🔧 Configuration
 
 To get started with Alarmee, you need to provide a platform-specific configuration for Android and iOS. Follow these steps.
-
-> [!WARNING]
-> On iOS, make sure to add Firebase as a dependency (`https://github.com/firebase/firebase-ios-sdk`) to your Xcode project.
-> 
-> Then, in your target, add `Background Modes` (check `Remote notifications`) and `Push notifications` capabilities.
 
 ### 1. Declare an expect function in `commonMain`
 
@@ -110,22 +125,22 @@ In the `androidMain` source set, implement the actual function and return an `Al
 
 ```kotlin
 actual fun createAlarmeePlatformConfiguration(): AlarmeePlatformConfiguration =
-  notificationIconResId = R.drawable.ic_notification,
-  notificationIconColor = androidx.compose.ui.graphics.Color.Red, // Defaults to Color.Transparent is not specified
-  notificationChannels = listOf(
+    notificationIconResId = R.drawable.ic_notification,
+notificationIconColor = androidx.compose.ui.graphics.Color.Red, // Defaults to Color.Transparent is not specified
+notificationChannels = listOf(
     AlarmeeNotificationChannel(
-      id = "dailyNewsChannelId",
-      name = "Daily news notifications",
-      importance = NotificationManager.IMPORTANCE_HIGH,
-      soundFilename = "notifications_sound",
+        id = "dailyNewsChannelId",
+        name = "Daily news notifications",
+        importance = NotificationManager.IMPORTANCE_HIGH,
+        soundFilename = "notifications_sound",
     ),
     AlarmeeNotificationChannel(
-      id = "breakingNewsChannelId",
-      name = "Breaking news notifications",
-      importance = NotificationManager.IMPORTANCE_LOW,
+        id = "breakingNewsChannelId",
+        name = "Breaking news notifications",
+        importance = NotificationManager.IMPORTANCE_LOW,
     ),
     // List all the notification channels you need here
-  )
+)
 ```
 
 ### 3. Provide the actual implementation in `iosMain`
@@ -167,14 +182,14 @@ Alarmee also supports push notifications on mobile via Firebase (Android) or APN
 
 - If you're **not using Firebase yet**:
 ```kotlin
-val alarmService: AlarmeeService = rememberAlarmeeService(
+val alarmService: MobileAlarmeeService = rememberMobileAlarmeeService(
     platformConfiguration = createAlarmeePlatformConfiguration()
 )
 ```
 
 - If you're **already using Firebase** elsewhere in your app:
 ```kotlin
-val alarmService: AlarmeeService = rememberAlarmeeService(
+val alarmService: MobileAlarmeeService = rememberMobileAlarmeeService(
     platformConfiguration = createAlarmeePlatformConfiguration(),
     firebase = Firebase
 )
@@ -184,13 +199,13 @@ val alarmService: AlarmeeService = rememberAlarmeeService(
 
 - If you're **not using Firebase yet**:
 ```kotlin
-val alarmeeService = createAlarmeeService() as MobileAlarmeeService
+val alarmeeService = createMobileAlarmeeService()
 alarmeeService.initialize(platformConfiguration = createAlarmeePlatformConfiguration())
 ```
 
 - If you're **already using Firebase**:
 ```kotlin
-val alarmeeService = createAlarmeeService() as MobileAlarmeeService
+val alarmeeService = createMobileAlarmeeService()
 alarmeeService.initialize(
     platformConfiguration = createAlarmeePlatformConfiguration(),
     firebase = Firebase
@@ -223,10 +238,10 @@ This is available on all targets (Android, iOS, desktop, web, etc.).
 
 ##### Push Notifications (mobile only)
 
-To access push notifications (e.g. Firebase), cast the service to MobileAlarmeeService:
+To access push notifications (e.g. Firebase):
 
 ```kotlin
-val pushService = (alarmService as? MobileAlarmeeService)?.push
+val pushService = alarmService.push
 ```
 
 This is only available on Android and iOS. On non-mobile targets, pushService will be null.
@@ -244,8 +259,8 @@ localService.schedule(
         notificationTitle = "🎉 Congratulations! You've scheduled an Alarmee!",
         notificationBody = "This is the notification that will be displayed at the specified date and time.",
         scheduledDateTime = LocalDateTime(year = 2025, month = Month.JANUARY, dayOfMonth = 12, hour = 17, minute = 0),
-    	deepLinkUri = "https://www.example.com", // A deep link URI to be retrieved in MainActivity#onNewIntent() on Android and in AppDelegate#userNotificationCenter() on iOS
-    	imageUrl = "https://rickandmortyapi.com/api/character/avatar/1.jpeg", // Optional parameter to display an image within the notification 
+        deepLinkUri = "https://www.example.com", // A deep link URI to be retrieved in MainActivity#onNewIntent() on Android and in AppDelegate#userNotificationCenter() on iOS
+        imageUrl = "https://rickandmortyapi.com/api/character/avatar/1.jpeg", // Optional parameter to display an image within the notification 
         androidNotificationConfiguration = AndroidNotificationConfiguration( // Required configuration for Android target only (this parameter is ignored on iOS)
             priority = AndroidNotificationPriority.HIGH,
             channelId = "dailyNewsChannelId",
@@ -422,19 +437,20 @@ If `badge = 0`, the badge will be cleared from the app icon. If `badge = null`, 
 
 ### Push Notification Service
 
+> [!WARNING]
+> On iOS, make sure to add Firebase as a dependency (`https://github.com/firebase/firebase-ios-sdk`) to your Xcode project.
+>
+> Then, in your target, add `Background Modes` (check `Remote notifications`) and `Push notifications` capabilities.
+
 The `PushNotificationService` handles push notifications for mobile platforms only (Android & iOS). It is available via the `MobileAlarmeeService` interface.
 
 You can access it like this:
 
 ```kotlin
-val pushService = (alarmService as? MobileAlarmeeService)?.push
+val pushService = alarmService.push
 ```
 
 This is only available on **Android** and **iOS**. On other targets, `pushService` will be `null`.
-
-This is how it looks like on iOS & Android:
-
-![Group 4](https://github.com/user-attachments/assets/4e455c6c-6d45-4ca6-b292-8f8e57d4f799)
 
 #### Add the Notification Service Extension (iOS only)
 
