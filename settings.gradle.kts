@@ -17,4 +17,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "alarmee"
 include(":alarmee")
+include(":alarmee-push")
 include(":sample:composeApp")
