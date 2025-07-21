@@ -1,7 +1,6 @@
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -14,22 +13,39 @@ plugins {
     alias(libs.plugins.maven.publish)
 }
 
-kotlin {
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    applyDefaultHierarchyTemplate {
-        common {
-            group("mobile") {
-                withAndroidTarget()
-                withIos()
-            }
+android {
+    namespace = ProjectConfiguration.Alarmee.namespace
+    compileSdk = ProjectConfiguration.Alarmee.compileSDK
 
-            group("nonMobile") {
-                withJvm()
-                withJs()
-                withWasmJs()
-            }
+    defaultConfig {
+        minSdk = ProjectConfiguration.Alarmee.minSDK
+
+        consumerProguardFiles("consumer-rules.pro")
+    }
+
+    buildTypes {
+        getByName("release") {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+
+        getByName("debug") {
         }
     }
+
+    buildFeatures {
+        compose = true
+    }
+
+    compileOptions {
+        sourceCompatibility = ProjectConfiguration.Compiler.javaCompatibility
+        targetCompatibility = ProjectConfiguration.Compiler.javaCompatibility
+    }
+}
+
+kotlin {
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    applyDefaultHierarchyTemplate()
 
     androidTarget {
         publishLibraryVariants("release")
@@ -56,48 +72,13 @@ kotlin {
         pod("FirebaseMessaging")
     }
 
-    jvm()
-
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        browser()
-    }
-
-    js(IR) {
-        browser()
-    }
-
     sourceSets {
         commonMain.dependencies {
-            implementation(project(":alarmee"))
-        }
+            api(project(":alarmee"))
 
-        val mobileMain by getting {
-            dependencies {
-                implementation(libs.firebase.messaging)
-            }
-        }
-
-        iosMain {
-            dependsOn(mobileMain)
-        }
-
-        androidMain {
-            dependsOn(mobileMain)
-        }
-
-        val nonMobileMain by getting
-
-        jvmMain {
-            dependsOn(nonMobileMain)
-        }
-
-        wasmJsMain {
-            dependsOn(nonMobileMain)
-        }
-
-        jsMain {
-            dependsOn(nonMobileMain)
+            implementation(libs.kmpkit)
+            implementation(compose.foundation)
+            implementation(libs.firebase.messaging)
         }
     }
 }

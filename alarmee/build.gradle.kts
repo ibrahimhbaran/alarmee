@@ -48,11 +48,6 @@ kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     applyDefaultHierarchyTemplate {
         common {
-            group("mobile") {
-                withAndroidTarget()
-                withIos()
-            }
-
             group("nonMobile") {
                 withJvm()
                 withJs()
@@ -80,12 +75,6 @@ kotlin {
         }
     }
 
-    cocoapods {
-        ios.deploymentTarget = ProjectConfiguration.iOS.deploymentTarget
-        noPodspec()
-        pod("FirebaseMessaging")
-    }
-
     jvm()
 
     @OptIn(ExperimentalWasmDsl::class)
@@ -100,44 +89,14 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kmpkit)
-
-            // Coroutines
             implementation(libs.kotlin.coroutines.core)
-
-            // Compose
             implementation(compose.foundation)
         }
 
-        val mobileMain by getting {
-            dependencies {
-                implementation(libs.firebase.messaging)
-            }
-        }
-
-        iosMain {
-            dependsOn(mobileMain)
-        }
-
         androidMain {
-            dependsOn(mobileMain)
-
             dependencies {
                 implementation(libs.android.startup)
             }
-        }
-
-        val nonMobileMain by getting
-
-        jvmMain {
-            dependsOn(nonMobileMain)
-        }
-
-        wasmJsMain {
-            dependsOn(nonMobileMain)
-        }
-
-        jsMain {
-            dependsOn(nonMobileMain)
         }
     }
 }

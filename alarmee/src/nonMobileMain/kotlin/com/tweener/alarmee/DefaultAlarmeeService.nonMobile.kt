@@ -8,17 +8,6 @@ import com.tweener.alarmee.configuration.AlarmeePlatformConfigurationNonMobile
  * @since 05/06/2025
  */
 
-actual fun initializeFirebase() {
-    // No-op for non-mobile platforms
-}
-
-actual fun configureFirebase() {
-    // No-op for non-mobile platforms
-}
-
-actual fun createAlarmeeService(): AlarmeeService =
-    DefaultAlarmeeService()
-
 actual fun createLocalNotificationService(config: AlarmeePlatformConfiguration): LocalNotificationService {
     requirePlatformConfiguration(providedPlatformConfiguration = config, targetPlatformConfiguration = AlarmeePlatformConfigurationNonMobile::class)
     return DefaultLocalNotificationService(config = config)

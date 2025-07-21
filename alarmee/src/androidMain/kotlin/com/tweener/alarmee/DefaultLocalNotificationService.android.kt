@@ -31,7 +31,7 @@ import kotlinx.datetime.LocalDateTime
  * @since 06/11/2024
  */
 
-internal const val DEFAULT_NOTIFICATION_CHANNEL_ID = "defaultNotificationChannelId"
+const val DEFAULT_NOTIFICATION_CHANNEL_ID = "defaultNotificationChannelId"
 private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
 actual fun createLocalNotificationService(config: AlarmeePlatformConfiguration): LocalNotificationService {
