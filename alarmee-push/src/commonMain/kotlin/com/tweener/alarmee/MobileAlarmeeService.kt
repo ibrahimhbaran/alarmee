@@ -6,12 +6,12 @@ import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
 import dev.gitlive.firebase.Firebase
 
 @Composable
-fun rememberAlarmeeService(
+fun rememberMobileAlarmeeService(
     platformConfiguration: AlarmeePlatformConfiguration,
-    firebase: Firebase,
+    firebase: Firebase? = null,
 ): MobileAlarmeeService =
     remember(platformConfiguration, firebase) {
-        (createAlarmeeService() as MobileAlarmeeService).apply {
+        createMobileAlarmeeService().apply {
             initialize(platformConfiguration = platformConfiguration, firebase = firebase)
         }
     }
@@ -44,19 +44,6 @@ interface MobileAlarmeeService : AlarmeeService {
     val push: PushNotificationService
 
     /**
-     * Initializes the Alarmee service with platform-specific configuration.
-     *
-     * This method **must be called once when the app is launched**. For example, in your root Composable:
-     *
-     * ```kotlin
-     * val alarmeeService = rememberAlarmeeService(createAlarmeePlatformConfiguration())
-     * ```
-     *
-     * @param platformConfiguration The platform-specific configuration for Alarmee.
-     */
-    override fun initialize(platformConfiguration: AlarmeePlatformConfiguration)
-
-    /**
      * Initializes the Alarmee service with platform-specific configuration and Firebase instance.
      *
      * This method **must be called once when the app is launched**. For example, in your root Composable:
@@ -70,6 +57,6 @@ interface MobileAlarmeeService : AlarmeeService {
      * @param platformConfiguration The platform-specific configuration for Alarmee.
      * @param firebase The Firebase instance to use for push notifications.
      */
-    fun initialize(platformConfiguration: AlarmeePlatformConfiguration, firebase: Firebase)
+    fun initialize(platformConfiguration: AlarmeePlatformConfiguration, firebase: Firebase? = null)
 
 }

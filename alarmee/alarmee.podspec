@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'alarmee'
-    spec.version                  = '2.0.0'
+    spec.version                  = '2.2.0'
     spec.homepage                 = ''
     spec.source                   = { :http=> ''}
     spec.authors                  = ''
@@ -8,8 +8,8 @@ Pod::Spec.new do |spec|
     spec.summary                  = ''
     spec.vendored_frameworks      = 'build/cocoapods/framework/alarmee.framework'
     spec.libraries                = 'c++'
-    spec.ios.deployment_target    = '12.0'
-    spec.dependency 'FirebaseMessaging'
+                
+                
                 
     if !Dir.exist?('build/cocoapods/framework/alarmee.framework') || Dir.empty?('build/cocoapods/framework/alarmee.framework')
         raise "

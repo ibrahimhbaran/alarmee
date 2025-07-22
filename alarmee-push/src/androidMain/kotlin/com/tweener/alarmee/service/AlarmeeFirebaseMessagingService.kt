@@ -46,7 +46,7 @@ internal class AlarmeeFirebaseMessagingService : FirebaseMessagingService() {
 
             scope.launch {
                 val notification = NotificationFactory.create(
-                    context = com.tweener.alarmee._internal.applicationContext,
+                    context = applicationContext,
                     channelId = DEFAULT_NOTIFICATION_CHANNEL_ID,
                     title = title,
                     body = body,

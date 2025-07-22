@@ -31,7 +31,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(project(":alarmee"))
+            api(project(":alarmee-push"))
 
             implementation(libs.kmpkit)
 

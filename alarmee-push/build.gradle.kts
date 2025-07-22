@@ -1,7 +1,6 @@
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -46,15 +45,7 @@ android {
 
 kotlin {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    applyDefaultHierarchyTemplate {
-        common {
-            group("nonMobile") {
-                withJvm()
-                withJs()
-                withWasmJs()
-            }
-        }
-    }
+    applyDefaultHierarchyTemplate()
 
     androidTarget {
         publishLibraryVariants("release")
@@ -70,33 +61,24 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "alarmee"
+            baseName = "alarmee-push"
             isStatic = true
         }
     }
 
-    jvm()
-
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        browser()
-    }
-
-    js(IR) {
-        browser()
+    cocoapods {
+        ios.deploymentTarget = ProjectConfiguration.iOS.deploymentTarget
+        noPodspec()
+        pod("FirebaseMessaging")
     }
 
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.kmpkit)
-            implementation(libs.kotlin.coroutines.core)
-            implementation(compose.foundation)
-        }
+            api(project(":alarmee"))
 
-        androidMain {
-            dependencies {
-                implementation(libs.android.startup)
-            }
+            implementation(libs.kmpkit)
+            implementation(compose.foundation)
+            implementation(libs.firebase.messaging)
         }
     }
 }
@@ -115,7 +97,7 @@ mavenPublishing {
         signAllPublications()
     }
 
-    coordinates(groupId = group.toString(), artifactId = ProjectConfiguration.Alarmee.Maven.name.lowercase(), version = version.toString())
+    coordinates(groupId = group.toString(), artifactId = "alarmee-push", version = version.toString())
     configure(
         platform = KotlinMultiplatform(
             javadocJar = JavadocJar.Dokka("dokkaHtml"),
