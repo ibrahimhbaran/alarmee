@@ -36,7 +36,7 @@ internal class MobileDefaultAlarmeeService : DefaultAlarmeeService(), MobileAlar
     }
 }
 
-fun createMobileAlarmeeService(): MobileAlarmeeService = MobileDefaultAlarmeeService()
+fun createAlarmeeMobileService(): MobileAlarmeeService = MobileDefaultAlarmeeService()
 
 internal expect fun initializeFirebase()
 

@@ -182,14 +182,14 @@ Alarmee also supports push notifications on mobile via Firebase (Android) or APN
 
 - If you're **not using Firebase yet**:
 ```kotlin
-val alarmService: MobileAlarmeeService = rememberMobileAlarmeeService(
+val alarmService: MobileAlarmeeService = rememberAlarmeeMobileService(
     platformConfiguration = createAlarmeePlatformConfiguration()
 )
 ```
 
 - If you're **already using Firebase** elsewhere in your app:
 ```kotlin
-val alarmService: MobileAlarmeeService = rememberMobileAlarmeeService(
+val alarmService: MobileAlarmeeService = rememberAlarmeeMobileService(
     platformConfiguration = createAlarmeePlatformConfiguration(),
     firebase = Firebase
 )
@@ -199,13 +199,13 @@ val alarmService: MobileAlarmeeService = rememberMobileAlarmeeService(
 
 - If you're **not using Firebase yet**:
 ```kotlin
-val alarmeeService = createMobileAlarmeeService()
+val alarmeeService = createAlarmeeMobileService()
 alarmeeService.initialize(platformConfiguration = createAlarmeePlatformConfiguration())
 ```
 
 - If you're **already using Firebase**:
 ```kotlin
-val alarmeeService = createMobileAlarmeeService()
+val alarmeeService = createAlarmeeMobileService()
 alarmeeService.initialize(
     platformConfiguration = createAlarmeePlatformConfiguration(),
     firebase = Firebase

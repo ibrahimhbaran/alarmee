@@ -6,12 +6,12 @@ import com.tweener.alarmee.configuration.AlarmeePlatformConfiguration
 import dev.gitlive.firebase.Firebase
 
 @Composable
-fun rememberMobileAlarmeeService(
+fun rememberAlarmeeMobileService(
     platformConfiguration: AlarmeePlatformConfiguration,
     firebase: Firebase? = null,
 ): MobileAlarmeeService =
     remember(platformConfiguration, firebase) {
-        createMobileAlarmeeService().apply {
+        createAlarmeeMobileService().apply {
             initialize(platformConfiguration = platformConfiguration, firebase = firebase)
         }
     }

@@ -22,7 +22,7 @@ import com.tweener.alarmee.model.AndroidNotificationConfiguration
 import com.tweener.alarmee.model.AndroidNotificationPriority
 import com.tweener.alarmee.model.IosNotificationConfiguration
 import com.tweener.alarmee.model.RepeatInterval
-import com.tweener.alarmee.rememberMobileAlarmeeService
+import com.tweener.alarmee.rememberAlarmeeMobileService
 import com.tweener.alarmee.sample.ui.theme.AlarmeeTheme
 import com.tweener.kmpkit.kotlinextensions.now
 import com.tweener.kmpkit.kotlinextensions.plus
@@ -37,7 +37,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun App() {
-    val alarmService: MobileAlarmeeService = rememberMobileAlarmeeService(platformConfiguration = createAlarmeePlatformConfiguration())
+    val alarmService: MobileAlarmeeService = rememberAlarmeeMobileService(platformConfiguration = createAlarmeePlatformConfiguration())
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     // Example of how to get the Firebase push token
