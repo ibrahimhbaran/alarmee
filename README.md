@@ -475,6 +475,21 @@ You can also manually refresh the token for testing purposes:
 pushService.forceTokenRefresh()
 ```
 
+#### Push Message Callbacks
+
+To handle incoming push message payloads in your app (e.g., for custom processing, updating UI, or syncing data), register a callback that will be invoked whenever a push message is received:
+
+```kotlin
+pushService.onPushMessageReceived { payload ->
+    println("📩 Push message received with payload: $payload")
+    // Handle custom logic here, e.g., update UI, sync data, etc.
+}
+```
+
+This callback receives the complete key-value payload from the push message, allowing you to access any custom data sent with the notification. The callback is triggered before the notification is displayed to the user.
+
+**Note:** You can register multiple callbacks - all registered callbacks will be invoked when a push message is received.
+
 #### Add the Notification Service Extension (iOS only)
 
 To display images in push notifications on iOS, create a **Notification Service Extension** and paste the provided `NotificationService.swift` file:
