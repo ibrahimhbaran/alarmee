@@ -35,4 +35,20 @@ interface PushNotificationService {
      * @return A [Result] containing the FCM token on success, or an exception on failure.
      */
     suspend fun getToken(): Result<String>
+
+    /**
+     * Registers a callback to be invoked when a new FCM token is generated.
+     * This is typically used to update the server with the new token.
+     *
+     * @param callback The function to call with the new token when it is available.
+     */
+    suspend fun onNewToken(callback: (String) -> Unit)
+
+    /**
+     * Forces a token refresh for testing purposes.
+     * This will trigger the onNewToken callback if successful.
+     *
+     * Note: This is primarily for debugging and testing.
+     */
+    suspend fun forceTokenRefresh(): Result<String>
 }

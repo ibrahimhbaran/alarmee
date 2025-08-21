@@ -18,3 +18,12 @@ internal actual suspend fun getFirebaseToken(): String =
     } catch (throwable: Throwable) {
         throw throwable
     }
+
+internal actual suspend fun forceFirebaseTokenRefresh(): String =
+    try {
+        // On Android, we can delete the token and get a new one to force refresh
+        Firebase.messaging.deleteToken()
+        Firebase.messaging.getToken()
+    } catch (throwable: Throwable) {
+        throw throwable
+    }

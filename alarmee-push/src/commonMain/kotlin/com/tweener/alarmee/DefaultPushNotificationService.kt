@@ -19,6 +19,7 @@ internal class DefaultPushNotificationService(
 ) : PushNotificationService {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val tokenCallbacks = mutableListOf<(String) -> Unit>()
 
     override fun unregister() {
         scope.launch {
@@ -36,8 +37,34 @@ internal class DefaultPushNotificationService(
     }.onFailure { throwable ->
         println("Error getting Firebase token: $throwable")
     }
+
+    override suspend fun onNewToken(callback: (String) -> Unit) {
+        tokenCallbacks.add(callback)
+    }
+    
+    override suspend fun forceTokenRefresh(): Result<String> = suspendCatching {
+        forceFirebaseTokenRefresh()
+    }
+    
+    /**
+     * Internal method to notify all registered callbacks when a new token is received.
+     * This is called from platform-specific code when the token changes.
+     */
+    internal fun notifyTokenUpdated(token: String) {
+        scope.launch {
+            tokenCallbacks.forEachIndexed { index, callback ->
+                try {
+                    callback(token)
+                } catch (e: Exception) {
+                    println("Error in token callback $index: $e")
+                }
+            }
+        }
+    }
 }
 
 internal expect fun handleNotificationData(data: Map<String, String>)
 
 internal expect suspend fun getFirebaseToken(): String
+
+internal expect suspend fun forceFirebaseTokenRefresh(): String

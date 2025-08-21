@@ -1,5 +1,9 @@
 package com.tweener.alarmee
 
+import com.tweener.alarmee.PushNotificationServiceRegistry.clear
+import com.tweener.alarmee.PushNotificationServiceRegistry.get
+
+
 /**
  * Registry to access the current [PushNotificationService] instance at runtime.
  *

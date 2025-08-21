@@ -43,9 +43,10 @@ fun App() {
     // Example of how to get the Firebase push token
     scope.launch {
         alarmService.push.let { pushService ->
-            pushService.getToken()
-                .onSuccess { token -> println("Firebase push token: $token") }
-                .onFailure { throwable -> println("Failed to get Firebase push token: $throwable") }
+            // Register for token updates
+            pushService.onNewToken { newToken ->
+                println("🔥 New Firebase token received: $newToken")
+            }
         }
     }
 
@@ -74,7 +75,7 @@ fun App() {
 
                 Button(onClick = {
                     val now = LocalDateTime.now()
-                    val scheduledDateTime = LocalDateTime(year = now.year, month = now.month, dayOfMonth = now.dayOfMonth, hour = 9, minute = 36, second = 0)
+                    val scheduledDateTime = LocalDateTime(year = now.year, month = now.month, day = now.day, hour = 9, minute = 36, second = 0)
 
                     alarmService.local.schedule(
                         alarmee = Alarmee(
@@ -141,6 +142,27 @@ fun App() {
                         )
                     )
                 }) { Text("Push a notification with sound") }
+
+                Button(onClick = {
+                    scope.launch {
+                        alarmService.push.let { pushService ->
+                            pushService.getToken()
+                                .onSuccess { token -> println("Current Firebase token: $token") }
+                                .onFailure { throwable -> println("Failed to get Firebase token: $throwable") }
+                        }
+                    }
+                }) { Text("Get Current Firebase Token") }
+
+                Button(onClick = {
+                    scope.launch {
+                        alarmService.push.let { pushService ->
+                            println("🔄 Manual token refresh requested...")
+                            pushService.forceTokenRefresh()
+                                .onSuccess { token -> println("🔄 Token refresh successful: ${token.take(10)}...") }
+                                .onFailure { throwable -> println("🔄 Token refresh failed: $throwable") }
+                        }
+                    }
+                }) { Text("Force Token Refresh (Test)") }
             }
         }
     }
