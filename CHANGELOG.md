@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.0] - August 21, 2025
+- ✨ **`[FEATURE]`**: Added Firebase token update callbacks for push notifications on mobile targets (Android & iOS).
+  - New method `PushNotificationService#onNewToken(callback)` allows registering callbacks to be notified when Firebase generates a new FCM token
+  - Callbacks are triggered automatically when tokens are refreshed (e.g., app reinstall, backup restore, or periodic refresh)
+  - Added `PushNotificationService#forceTokenRefresh()` method for manual token refresh (useful for testing and development)
+
 ## [2.2.0] - July 22, 2025
 * 🚨 **`[BREAKING]`** Local & push notifications features are now separated into two dependencies:
   * For local notifications only (all targets): use `io.github.tweener:alarmee:$alarmee_version`
@@ -23,7 +29,7 @@
 - 🐛 **`[FIX]`**: Fix Alarmee missing initialize method when a Firebase instance already exists.
 
 ## [2.1.0] - July 6, 2025
-- ✨ **`[FEATURE]`**: : Notifications can now display images, from both local and push sources.
+- ✨ **`[FEATURE]`**: Notifications can now display images, from both local and push sources.
 - 🔄 Update Kotlin to 2.2.0.
 - 🔄 Update Compose Multiplatform to 1.8.2.
 
