@@ -22,11 +22,11 @@ jobs:
       matrix:
         include:
           - target: publishIosArm64PublicationToMavenCentralRepository
-            os: macos-latest
+            os: macos-14
           - target: publishIosSimulatorArm64PublicationToMavenCentralRepository
-            os: macos-latest
+            os: macos-14
           - target: publishIosX64PublicationToMavenCentralRepository
-            os: macos-latest
+            os: macos-14
           - target: publishAndroidReleasePublicationToMavenCentralRepository
             os: ubuntu-latest
           - target: publishJsPublicationToMavenCentralRepository
