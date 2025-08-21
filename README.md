@@ -452,6 +452,29 @@ val pushService = alarmService.push
 
 This is only available on **Android** and **iOS**. On other targets, `pushService` will be `null`.
 
+#### Firebase Token Updates
+
+Firebase Cloud Messaging (FCM) tokens can change when:
+- The app is restored on a new device
+- The app is restored from backup  
+- The app data is cleared
+- The token is periodically refreshed by Firebase
+
+To handle token updates, register a callback that will be notified whenever a new token is generated:
+
+```kotlin
+pushService.onNewToken { newToken ->
+    // Update your server with the new token
+    sendTokenToServer(newToken)
+}
+```
+
+You can also manually refresh the token for testing purposes:
+
+```kotlin
+pushService.forceTokenRefresh()
+```
+
 #### Add the Notification Service Extension (iOS only)
 
 To display images in push notifications on iOS, create a **Notification Service Extension** and paste the provided `NotificationService.swift` file:
