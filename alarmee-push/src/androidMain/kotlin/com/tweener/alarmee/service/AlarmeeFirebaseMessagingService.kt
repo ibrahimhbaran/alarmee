@@ -48,7 +48,7 @@ internal class AlarmeeFirebaseMessagingService : FirebaseMessagingService() {
         super.onMessageReceived(message)
 
         // First, notify the PushNotificationService with the raw data for any registered callbacks
-        PushNotificationServiceRegistry.get()?.onMessageReceived(message.data)
+        PushNotificationServiceRegistry.get()?.handleIncomingMessage(message.data)
 
         // Then handle the notification display as before
         safeLet(message.data[TITLE_PAYLOAD_PARAM], message.data[BODY_PAYLOAD_PARAM]) { title, body ->

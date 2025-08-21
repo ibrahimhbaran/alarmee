@@ -21,10 +21,12 @@ interface PushNotificationService {
     /**
      * Handles a push message received from the platform.
      * This function parses the payload and shows a local notification.
+     * 
+     * Note: This method is intended for internal platform use only.
      *
      * @param data The key-value payload of the remote push message.
      */
-    fun onMessageReceived(data: Map<String, String>)
+    fun handleIncomingMessage(data: Map<String, String>)
 
     /**
      * Retrieves the current Firebase Cloud Messaging (FCM) token for the device.

@@ -18,6 +18,6 @@ class AlarmeeHelper {
             ?.toMap()
             ?: emptyMap()
 
-        PushNotificationServiceRegistry.get()?.onMessageReceived(data = parsed)
+        PushNotificationServiceRegistry.get()?.handleIncomingMessage(data = parsed)
     }
 }

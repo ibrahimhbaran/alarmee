@@ -29,7 +29,7 @@ internal class DefaultPushNotificationService(
         }
     }
 
-    override fun onMessageReceived(data: Map<String, String>) {
+    override fun handleIncomingMessage(data: Map<String, String>) {
         handleNotificationData(data)
         
         // Notify all registered message callbacks
