@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.3.1] - August 21, 2025
+- ✨ **`[FEATURE]`**: Added push message callback support for custom payload handling on mobile targets (Android & iOS).
+  - New method `PushNotificationService#onPushMessageReceived(callback)` allows registering callbacks to receive push message payloads
+  - Renamed internal method from `onMessageReceived` to `handleIncomingMessage` to clarify API boundaries
+
 ## [2.3.0] - August 21, 2025
 - ✨ **`[FEATURE]`**: Added Firebase token update callbacks for push notifications on mobile targets (Android & iOS).
   - New method `PushNotificationService#onNewToken(callback)` allows registering callbacks to be notified when Firebase generates a new FCM token
