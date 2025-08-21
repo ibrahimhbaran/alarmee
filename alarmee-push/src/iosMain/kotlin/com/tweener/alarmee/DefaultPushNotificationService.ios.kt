@@ -33,3 +33,26 @@ internal actual suspend fun getFirebaseToken(): String {
         throw throwable
     }
 }
+
+@OptIn(ExperimentalForeignApi::class)
+internal actual suspend fun forceFirebaseTokenRefresh(): String =
+    try {
+        // On iOS, delete token and get new one
+        Firebase.messaging.deleteToken()
+        delay(1000) // Give some time for token deletion to process
+
+        // Wait for APNs token if needed
+        var attempts = 0
+        val maxAttempts = 10
+        val delayMillis = 500L
+
+        while (FIRMessaging.messaging().APNSToken == null && attempts < maxAttempts) {
+            delay(delayMillis)
+            attempts++
+        }
+
+        Firebase.messaging.getToken()
+    } catch (throwable: Throwable) {
+        throw throwable
+    }
+

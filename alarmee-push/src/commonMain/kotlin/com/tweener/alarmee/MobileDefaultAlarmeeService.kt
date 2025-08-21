@@ -21,16 +21,16 @@ internal class MobileDefaultAlarmeeService : DefaultAlarmeeService(), MobileAlar
             return
         }
 
+        // Initialize push notification service BEFORE configureFirebase to avoid race condition
+        push = DefaultPushNotificationService(platformConfiguration)
+        PushNotificationServiceRegistry.register(push)
+
         // No need to initialize Firebase if it's already done
         if (firebase == null) {
             initializeFirebase()
         }
 
         configureFirebase()
-
-        // Initialize push notification service
-        push = DefaultPushNotificationService(platformConfiguration)
-        PushNotificationServiceRegistry.register(push)
 
         isInitialized = true
     }

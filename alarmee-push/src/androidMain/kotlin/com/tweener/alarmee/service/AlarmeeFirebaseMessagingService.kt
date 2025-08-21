@@ -5,6 +5,8 @@ import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.tweener.alarmee.DEFAULT_NOTIFICATION_CHANNEL_ID
+import com.tweener.alarmee.DefaultPushNotificationService
+import com.tweener.alarmee.PushNotificationServiceRegistry
 import com.tweener.alarmee.notification.NotificationFactory
 import com.tweener.alarmee.notification.NotificationFactory.Companion.DEEP_LINK_URI_PARAM
 import com.tweener.alarmee.notification.NotificationFactory.Companion.IMAGE_URL_PARAM
@@ -34,7 +36,12 @@ internal class AlarmeeFirebaseMessagingService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
 
-//        println("New Firebase token received: $token")
+        // Notify the PushNotificationService about the new token
+        PushNotificationServiceRegistry.get()?.let { service ->
+            if (service is DefaultPushNotificationService) {
+                service.notifyTokenUpdated(token)
+            }
+        }
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
