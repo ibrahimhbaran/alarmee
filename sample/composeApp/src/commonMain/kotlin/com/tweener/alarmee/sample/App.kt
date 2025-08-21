@@ -47,6 +47,11 @@ fun App() {
             pushService.onNewToken { newToken ->
                 println("🔥 New Firebase token received: $newToken")
             }
+
+            // Register for push message callbacks
+            pushService.onPushMessageReceived { payload ->
+                println("📩 Push message received with payload: $payload")
+            }
         }
     }
 

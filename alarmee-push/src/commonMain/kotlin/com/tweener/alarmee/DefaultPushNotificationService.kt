@@ -20,6 +20,7 @@ internal class DefaultPushNotificationService(
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val tokenCallbacks = mutableListOf<(String) -> Unit>()
+    private val messageCallbacks = mutableListOf<(Map<String, String>) -> Unit>()
 
     override fun unregister() {
         scope.launch {
@@ -30,6 +31,17 @@ internal class DefaultPushNotificationService(
 
     override fun onMessageReceived(data: Map<String, String>) {
         handleNotificationData(data)
+        
+        // Notify all registered message callbacks
+        scope.launch {
+            messageCallbacks.forEachIndexed { index, callback ->
+                try {
+                    callback(data)
+                } catch (e: Exception) {
+                    println("Error in message callback $index: $e")
+                }
+            }
+        }
     }
 
     override suspend fun getToken(): Result<String> = suspendCatching {
@@ -40,6 +52,10 @@ internal class DefaultPushNotificationService(
 
     override suspend fun onNewToken(callback: (String) -> Unit) {
         tokenCallbacks.add(callback)
+    }
+
+    override suspend fun onPushMessageReceived(callback: (Map<String, String>) -> Unit) {
+        messageCallbacks.add(callback)
     }
     
     override suspend fun forceTokenRefresh(): Result<String> = suspendCatching {

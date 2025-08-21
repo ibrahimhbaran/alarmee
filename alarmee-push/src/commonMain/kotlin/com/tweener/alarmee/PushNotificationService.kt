@@ -51,4 +51,12 @@ interface PushNotificationService {
      * Note: This is primarily for debugging and testing.
      */
     suspend fun forceTokenRefresh(): Result<String>
+
+    /**
+     * Registers a callback to be invoked when a push message is received.
+     * This allows the app to handle push message payloads for custom processing.
+     *
+     * @param callback The function to call with the push message payload when it is received.
+     */
+    suspend fun onPushMessageReceived(callback: (Map<String, String>) -> Unit)
 }

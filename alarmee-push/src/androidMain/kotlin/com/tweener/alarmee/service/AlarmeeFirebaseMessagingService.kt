@@ -47,6 +47,10 @@ internal class AlarmeeFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
+        // First, notify the PushNotificationService with the raw data for any registered callbacks
+        PushNotificationServiceRegistry.get()?.onMessageReceived(message.data)
+
+        // Then handle the notification display as before
         safeLet(message.data[TITLE_PAYLOAD_PARAM], message.data[BODY_PAYLOAD_PARAM]) { title, body ->
             val deepLinkUri = message.data[DEEP_LINK_URI_PARAM]
             val imageUrl = message.data[IMAGE_URL_PARAM]
