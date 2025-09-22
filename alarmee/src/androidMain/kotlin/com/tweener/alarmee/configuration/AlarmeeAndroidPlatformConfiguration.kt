@@ -11,4 +11,5 @@ data class AlarmeeAndroidPlatformConfiguration(
     val notificationIconResId: Int,
     val notificationIconColor: Color = Color.Transparent,
     val notificationChannels: List<AlarmeeNotificationChannel>,
+    val useExactScheduling: Boolean = false,
 ) : AlarmeePlatformConfiguration

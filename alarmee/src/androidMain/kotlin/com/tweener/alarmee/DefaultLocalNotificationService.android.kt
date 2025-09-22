@@ -48,7 +48,13 @@ actual fun scheduleAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration,
 
     // Schedule the alarm
     applicationContext.getAlarmManager()?.let { alarmManager ->
-        alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmee.scheduledDateTime!!.toEpochMilliseconds(timeZone = alarmee.timeZone), pendingIntent)
+        val triggerAtMillis = alarmee.scheduledDateTime!!.toEpochMilliseconds(timeZone = alarmee.timeZone)
+
+        if (config.useExactScheduling && canScheduleExactAlarms(alarmManager)) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent)
+        } else {
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent)
+        }
 
         // Notification scheduled successfully
         onSuccess()
@@ -229,3 +235,10 @@ private fun mapPriority(priority: AndroidNotificationPriority): Int =
         AndroidNotificationPriority.HIGH -> NotificationCompat.PRIORITY_HIGH
         AndroidNotificationPriority.MAXIMUM -> NotificationCompat.PRIORITY_MAX
     }
+
+/**
+ * Checks if the app can schedule exact alarms.
+ * On Android 12+ (API 31+), this requires the SCHEDULE_EXACT_ALARM permission to be granted.
+ */
+private fun canScheduleExactAlarms(alarmManager: AlarmManager): Boolean =
+    Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()

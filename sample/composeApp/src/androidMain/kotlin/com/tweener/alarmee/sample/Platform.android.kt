@@ -20,7 +20,8 @@ private val alarmeePlatformConfiguration =
             AlarmeeNotificationChannel(id = "breakingNewsChannelId", name = "Breaking news notifications", importance = NotificationManager.IMPORTANCE_HIGH),
             AlarmeeNotificationChannel(id = "immediateChannelId", name = "Immediate notifications", importance = NotificationManager.IMPORTANCE_HIGH),
             AlarmeeNotificationChannel(id = "soundChannelId", name = "Sound notifications", importance = NotificationManager.IMPORTANCE_HIGH, soundFilename = "hello"),
-        )
+        ),
+        useExactScheduling = true, // Enable exact scheduling for more precise alarms
     )
 
 actual fun createAlarmeePlatformConfiguration(): AlarmeePlatformConfiguration = alarmeePlatformConfiguration
