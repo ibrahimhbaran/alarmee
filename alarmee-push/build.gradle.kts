@@ -14,7 +14,7 @@ plugins {
 }
 
 android {
-    namespace = ProjectConfiguration.Alarmee.namespace
+    namespace = ProjectConfiguration.Alarmee.namespace + ".push"
     compileSdk = ProjectConfiguration.Alarmee.compileSDK
 
     defaultConfig {
