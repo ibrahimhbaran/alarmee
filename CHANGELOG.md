@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.4.0] - September 22, 2025
+- ✨ **`[FEATURE]`**: 🤖 On Android, added exact alarm scheduling support using `setExactAndAllowWhileIdle` with new `useExactScheduling` parameter in `AlarmeeAndroidPlatformConfiguration`. Automatically checks for `SCHEDULE_EXACT_ALARM` permission and gracefully falls back to standard scheduling when not available.
+- 🔄 Update Kotlin to 2.2.20.
+- 🔄 Update Compose Multiplatform to 1.9.0.
+- 🔄 Update Gradle to 8.13.0.
+- 🔄 Update GitLiveApp to 2.3.0.
+- 🔄 Update Android Activity to 1.11.0.
+
 ## [2.3.2] - September 22, 2025
 - 🛠 **`[IMPROVMENT]`**: Update namespace for alarmee-push module
 - 🐛 **`[FIX]`**: Move Firebase messaging service to push module
