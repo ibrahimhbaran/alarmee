@@ -58,6 +58,10 @@ internal class DefaultLocalNotificationService(
         cancelAlarm(uuid = uuid, config = config)
     }
 
+    override fun cancelAll() {
+        cancelAllAlarms(config = config)
+    }
+
     private fun validateAlarmee(alarmee: Alarmee, schedule: Boolean = false) {
         if (schedule) {
             if (alarmee.repeatInterval == null) {
@@ -120,6 +124,8 @@ internal expect fun scheduleAlarm(alarmee: Alarmee, config: AlarmeePlatformConfi
 internal expect fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: RepeatInterval, config: AlarmeePlatformConfiguration, onSuccess: () -> Unit)
 
 internal expect fun cancelAlarm(uuid: String, config: AlarmeePlatformConfiguration)
+
+internal expect fun cancelAllAlarms(config: AlarmeePlatformConfiguration)
 
 internal expect fun immediateAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration, onSuccess: () -> Unit)
 

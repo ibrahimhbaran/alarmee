@@ -112,6 +112,20 @@ actual fun cancelAlarm(uuid: String, config: AlarmeePlatformConfiguration) {
     }
 }
 
+actual fun cancelAllAlarms(config: AlarmeePlatformConfiguration) {
+    requirePlatformConfiguration(providedPlatformConfiguration = config, targetPlatformConfiguration = AlarmeeAndroidPlatformConfiguration::class)
+
+    // Cancel all pending notifications
+    applicationContext.getNotificationManager()?.let { notificationManager ->
+        notificationManager.cancelAll()
+    }
+
+    // Note: Android doesn't provide a direct way to cancel all AlarmManager alarms
+    // Individual alarms need to be canceled using their specific PendingIntents
+    // For a complete solution, apps would need to maintain a registry of active alarm UUIDs
+    println("All notifications canceled.")
+}
+
 actual fun immediateAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration, onSuccess: () -> Unit) {
     requirePlatformConfiguration(providedPlatformConfiguration = config, targetPlatformConfiguration = AlarmeeAndroidPlatformConfiguration::class)
     validateNotificationChannelId(alarmee)

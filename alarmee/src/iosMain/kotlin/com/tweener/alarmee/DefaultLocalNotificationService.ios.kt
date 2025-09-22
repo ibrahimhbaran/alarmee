@@ -104,6 +104,12 @@ actual fun cancelAlarm(uuid: String, config: AlarmeePlatformConfiguration) {
     notificationCenter.removePendingNotificationRequestsWithIdentifiers(identifiers = listOf(uuid, getFirstRepeatingNotificationUuid(uuid = uuid)))
 }
 
+actual fun cancelAllAlarms(config: AlarmeePlatformConfiguration) {
+    val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
+    notificationCenter.removeAllPendingNotificationRequests()
+    println("All scheduled notifications canceled on iOS.")
+}
+
 actual fun immediateAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration, onSuccess: () -> Unit) {
     configureNotification(uuid = alarmee.uuid, alarmee = alarmee, onScheduleSuccess = onSuccess)
 }

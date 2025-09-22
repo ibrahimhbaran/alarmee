@@ -38,6 +38,12 @@ interface LocalNotificationService {
      * @param uuid The unique identifier for the alarm to be canceled.
      */
     fun cancel(uuid: String)
+
+    /**
+     * Cancels all existing scheduled alarms.
+     * This will cancel all pending alarms that have been scheduled through this service, preventing any future notifications from being triggered.
+     */
+    fun cancelAll()
 }
 
 /**

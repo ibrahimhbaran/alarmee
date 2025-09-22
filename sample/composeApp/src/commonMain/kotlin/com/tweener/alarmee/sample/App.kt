@@ -168,6 +168,14 @@ fun App() {
                         }
                     }
                 }) { Text("Force Token Refresh (Test)") }
+
+                Button(onClick = {
+                    alarmService.local.cancel("myOneOffAlarmId")
+                }) { Text("Cancel One-off Alarmee") }
+
+                Button(onClick = {
+                    alarmService.local.cancelAll()
+                }) { Text("Cancel All Alarmees") }
             }
         }
     }

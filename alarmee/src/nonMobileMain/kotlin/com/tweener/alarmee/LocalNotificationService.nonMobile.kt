@@ -21,6 +21,10 @@ actual fun cancelAlarm(uuid: String, config: AlarmeePlatformConfiguration) {
     TODO("Not yet implemented")
 }
 
+actual fun cancelAllAlarms(config: AlarmeePlatformConfiguration) {
+    TODO("Not yet implemented")
+}
+
 actual fun immediateAlarm(alarmee: Alarmee, config: AlarmeePlatformConfiguration, onSuccess: () -> Unit) {
     TODO("Not yet implemented")
 }
