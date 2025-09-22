@@ -70,7 +70,7 @@ Open `libs.versions.toml`:
 
 ```Groovy
 [versions]
-alarmee = "2.0.0" // Check latest version
+alarmee = "2.4.0" // Check latest version
 
 [libraries]
 alarmee = { group = "io.github.tweener", name = "alarmee", version.ref = "alarmee" } // For local notifications only
@@ -94,7 +94,7 @@ dependencies {
 In your module `build.gradle.kts` add:
 ```Groovy
 dependencies {
-    val alarmee_version = "2.0.0" // Check latest version
+    val alarmee_version = "2.4.0" // Check latest version
 
     // Only one of these is needed, depending on your use case
     implementation("io.github.tweener:alarmee:$alarmee_version") // For local notifications only
@@ -125,22 +125,25 @@ In the `androidMain` source set, implement the actual function and return an `Al
 
 ```kotlin
 actual fun createAlarmeePlatformConfiguration(): AlarmeePlatformConfiguration =
-    notificationIconResId = R.drawable.ic_notification,
-notificationIconColor = androidx.compose.ui.graphics.Color.Red, // Defaults to Color.Transparent is not specified
-notificationChannels = listOf(
-    AlarmeeNotificationChannel(
-        id = "dailyNewsChannelId",
-        name = "Daily news notifications",
-        importance = NotificationManager.IMPORTANCE_HIGH,
-        soundFilename = "notifications_sound",
-    ),
-    AlarmeeNotificationChannel(
-        id = "breakingNewsChannelId",
-        name = "Breaking news notifications",
-        importance = NotificationManager.IMPORTANCE_LOW,
-    ),
-    // List all the notification channels you need here
-)
+    AlarmeeAndroidPlatformConfiguration(
+        notificationIconResId = R.drawable.ic_notification,
+        notificationIconColor = androidx.compose.ui.graphics.Color.Red, // Defaults to Color.Transparent is not specified
+        useExactScheduling = true, // Enable exact alarm scheduling for more precise timing (Android 12+, requires SCHEDULE_EXACT_ALARM permission)
+        notificationChannels = listOf(
+            AlarmeeNotificationChannel(
+                id = "dailyNewsChannelId",
+                name = "Daily news notifications",
+                importance = NotificationManager.IMPORTANCE_HIGH,
+                soundFilename = "notifications_sound",
+            ),
+            AlarmeeNotificationChannel(
+                id = "breakingNewsChannelId",
+                name = "Breaking news notifications",
+                importance = NotificationManager.IMPORTANCE_LOW,
+            ),
+            // List all the notification channels you need here
+        )
+    )
 ```
 
 ### 3. Provide the actual implementation in `iosMain`
@@ -318,7 +321,16 @@ An alarm can be cancelled using its uuid, using `Alarmee#cancel(...)`. If an ala
 localService.cancel(uuid = "myAlarmId")
 ```
 
-#### 4. Trigger an alarm right away
+#### 4. Cancelling all alarms
+You can cancel all scheduled alarms at once using `cancelAll()`. This will cancel all pending alarms that have been scheduled through this service.
+```Kotlin
+localService.cancelAll()
+```
+
+> [!NOTE]
+> On Android, this cancels all displayed notifications. Due to AlarmManager API limitations, scheduled alarms cannot be canceled in bulk - they must be canceled individually using their specific identifiers.
+
+#### 5. Trigger an alarm right away
 You can trigger an alarm to instantly display a notification without scheduling it for a specific time:
 ```Kotlin
 localService.immediate(
@@ -335,7 +347,7 @@ localService.immediate(
 )
 ```
 
-#### 5. Notification customization
+#### 6. Notification customization
 ##### Notification sound
 You can customize the notification sound on both Android and iOS.
 
