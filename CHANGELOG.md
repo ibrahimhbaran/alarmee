@@ -2,6 +2,7 @@
 
 ## [2.4.0] - September 22, 2025
 - ✨ **`[FEATURE]`**: 🤖 On Android, added exact alarm scheduling support using `setExactAndAllowWhileIdle` with new `useExactScheduling` parameter in `AlarmeeAndroidPlatformConfiguration`. Automatically checks for `SCHEDULE_EXACT_ALARM` permission and gracefully falls back to standard scheduling when not available.
+- ✨ **`[FEATURE]`**: Added `cancelAll()` method to cancel all scheduled alarms at once. 🤖 On Android, cancels all displayed notifications (AlarmManager doesn't provide API to cancel all scheduled alarms).
 - 🔄 Update Kotlin to 2.2.20.
 - 🔄 Update Compose Multiplatform to 1.9.0.
 - 🔄 Update Gradle to 8.13.0.
