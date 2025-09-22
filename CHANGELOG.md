@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.3.2] - September 22, 2025
+- 🛠 **`[IMPROVMENT]`**: Update namespace for alarmee-push module
+- 🐛 **`[FIX]`**: Move Firebase messaging service to push module
+
 ## [2.3.1] - August 21, 2025
 - ✨ **`[FEATURE]`**: Added push message callback support for custom payload handling on mobile targets (Android & iOS).
   - New method `PushNotificationService#onPushMessageReceived(callback)` allows registering callbacks to receive push message payloads
