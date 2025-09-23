@@ -1,5 +1,8 @@
 # Changelog
 
+## [2.4.1] - September 23, 2025
+- ✨ **`[FIX]`**: 🤖 On Android, Remove exact alarm permissions from AndroidManifest. You should add the permission in your app's manifest if you really need it.
+
 ## [2.4.0] - September 22, 2025
 - ✨ **`[FEATURE]`**: 🤖 On Android, added exact alarm scheduling support using `setExactAndAllowWhileIdle` with new `useExactScheduling` parameter in `AlarmeeAndroidPlatformConfiguration`. Automatically checks for `SCHEDULE_EXACT_ALARM` permission and gracefully falls back to standard scheduling when not available.
 - ✨ **`[FEATURE]`**: Added `cancelAll()` method to cancel all scheduled alarms at once. 🤖 On Android, cancels all displayed notifications (AlarmManager doesn't provide API to cancel all scheduled alarms).
