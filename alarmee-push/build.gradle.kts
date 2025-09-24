@@ -68,7 +68,9 @@ kotlin {
     cocoapods {
         ios.deploymentTarget = ProjectConfiguration.iOS.deploymentTarget
         noPodspec()
-        pod("FirebaseMessaging")
+        pod("FirebaseMessaging") {
+            linkOnly = true
+        }
     }
 
     sourceSets {
