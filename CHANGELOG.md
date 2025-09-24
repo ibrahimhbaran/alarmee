@@ -1,5 +1,8 @@
 # Changelog
 
+## [2.4.2] - September 24, 2025
+- ✨ **`[FIX]`**: 🍎 On iOS, Set FirebaseMessaging pod to linkOnly in iOS config. This change ensures the pod is only linked and not embedded, which may help resolve integration or duplication issues.
+
 ## [2.4.1] - September 23, 2025
 - ✨ **`[FIX]`**: 🤖 On Android, Remove exact alarm permissions from AndroidManifest. You should add the permission in your app's manifest if you really need it.
 
