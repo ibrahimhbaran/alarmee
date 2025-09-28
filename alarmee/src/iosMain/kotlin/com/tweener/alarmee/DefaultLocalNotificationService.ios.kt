@@ -78,7 +78,7 @@ actual fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: RepeatInterv
 
             is RepeatInterval.Weekly -> {
                 dateComponents.hour = alarmee.scheduledDateTime.hour.toLong()
-                let kotlinIsoDayNumber = Int(alarmee.scheduledDateTime.dayOfWeek.isoDayNumber) // Assuming this comes as Int32 or similar from Kotlin
+                val kotlinIsoDayNumber = alarmee.scheduledDateTime.dayOfWeek.isoDayNumber // Assuming this comes as Int32 or similar from Kotlin
 
                 // kotlinIsoDayNumber: MON=1, TUE=2, ..., SUN=7
                 // Swift dateComponents.weekday: SUN=1, MON=2, ..., SAT=7
