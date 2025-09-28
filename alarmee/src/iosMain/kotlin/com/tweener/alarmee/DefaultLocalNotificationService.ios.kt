@@ -83,11 +83,11 @@ actual fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: RepeatInterv
                 // kotlinIsoDayNumber: MON=1, TUE=2, ..., SUN=7
                 // Swift dateComponents.weekday: SUN=1, MON=2, ..., SAT=7
 
-               // var swiftWeekday: Int
-               if kotlinIsoDayNumber == 7 { // Kotlin's Sunday
-               swiftWeekday = 1 // Swift's Sunday
-               } else {
-               swiftWeekday = kotlinIsoDayNumber + 1
+                // var swiftWeekday: Int
+                if kotlinIsoDayNumber == 7 { // Kotlin's Sunday
+                 swiftWeekday = 1 // Swift's Sunday
+                } else {
+                swiftWeekday = kotlinIsoDayNumber + 1
         
                 dateComponents.weekday = swiftWeekday.toLong
             }
