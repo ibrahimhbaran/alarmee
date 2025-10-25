@@ -81,7 +81,7 @@ actual fun scheduleRepeatingAlarm(alarmee: Alarmee, repeatInterval: RepeatInterv
 
                 val kotlinIsoDayNumber: Int = alarmee.scheduledDateTime.dayOfWeek.isoDayNumber
 
-                val swiftCompatibleWeekday: Int
+                var swiftCompatibleWeekday: Int
                 if (kotlinIsoDayNumber == 7) { 
                     swiftCompatibleWeekday = 1 
                 } else {
